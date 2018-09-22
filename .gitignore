@@ -1,0 +1,17 @@
+*.opensdf
+*.sdf
+*.suo
+*.user
+*_debug/
+*_release/
+*.log
+*_x86/
+*_x64/
+*.wrn
+build/
+ipch/
+x64/
+x86/
+doxygen/
+*.db
+*.opendb
