@@ -1,2 +1,0 @@
-# bob7
-study
