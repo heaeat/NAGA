@@ -1,6 +1,18 @@
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "stdafx.h"
 #include "log.h"
+
+#include <errno.h>
+
+#include <iostream>
+#include <string>
+#include <Msi.h>
+#pragma comment(lib, "msi.lib")
+
+using namespace std;
+
 
 bool get_installed_program(void)
 {
@@ -23,58 +35,79 @@ bool get_installed_program(void)
 	//
 	//	로그의 출력 형식을 지정한다. 
 	//
-	set_log_format(true,false,false,false);
+	set_log_format(true, false, false, false);
 
+	//
+	//	MyLib version
+	//
 
-	HKEY hUninstKey = NULL;
-	HKEY hAppKey = NULL;
-	TCHAR sAppKeyName[1024];
-	TCHAR sSubKey[1024];
-	TCHAR sDisplayName[1024];
-	const TCHAR *sRoot = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall";
-	long lResult = ERROR_SUCCESS;
-	DWORD dwType = KEY_ALL_ACCESS;
-	DWORD dwBufferSize = 0;
-
-	// uninstall key 받아오기
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sRoot, 0, KEY_READ, &hUninstKey) != ERROR_SUCCESS)
+	std::list<pprogram> softwares;
+	_ASSERTE(true == get_installed_programs(softwares));
+	
+	for (auto software : softwares)
 	{
-		return false;
+		log_info
+			"product code: %ws, name(%ws)-vender(%ws)-version(%ws)",
+			software->id().c_str(),
+			software->name().c_str(),
+			software->vendor().c_str(),
+			software->version().c_str()
+			log_end;
+		delete software;
 	}
 
-	for (DWORD dwIndex = 0; lResult == ERROR_SUCCESS; dwIndex++)
+	/*
+	UINT ret;
+	const TCHAR* szUserSid = L"s-1-1-0";
+	DWORD dwContext = MSIINSTALLCONTEXT_ALL;
+	DWORD dwIndex = 0;
+	TCHAR szInstalledProductCode[39] = { 0 };
+	MSIINSTALLCONTEXT dwInstalledContext ;yy
+	TCHAR szSid[100] = { 0 };
+	DWORD pcchSid;
+
+	//LPWSTR szValue = { 0 };
+	//LPDWORD pcchValue = { 0 };
+
+	do
 	{
-		//모든 서브키 받아오기
-		dwBufferSize = sizeof(sAppKeyName);
-		if ((lResult = RegEnumKeyEx(hUninstKey, dwIndex, sAppKeyName,
-			&dwBufferSize, NULL, NULL, NULL, NULL)) == ERROR_SUCCESS)
+		memset(szInstalledProductCode, 0, sizeof(szInstalledProductCode));
+		pcchSid = (DWORD)(sizeof(szSid) / sizeof(szSid[0]));
+
+		ret = MsiEnumProductsEx(
+			NULL,          
+			szUserSid,  
+			dwContext,
+			dwIndex,
+			szInstalledProductCode,
+			&dwInstalledContext,
+			szSid,
+			&pcchSid
+		);
+
+		if (ret == ERROR_SUCCESS)
 		{
-			//서브키 열기
-			wsprintf(sSubKey, L"%s\\%s", sRoot, sAppKeyName);
-			if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, sSubKey, 0, KEY_READ, &hAppKey) != ERROR_SUCCESS)
-			{
-				RegCloseKey(hAppKey);
-				RegCloseKey(hUninstKey);
-				return false;
-			}
+			TCHAR productNameBuffer[256];
+			DWORD pcchValue = sizeof(productNameBuffer);
+			MsiGetProductInfoEx(
+				szInstalledProductCode,
+				pcchSid == 0 ? NULL : szSid,
+				dwInstalledContext,
+				INSTALLPROPERTY_INSTALLEDPRODUCTNAME,
+				productNameBuffer,
+				&pcchValue);
+				
+				cout << productNameBuffer << endl;
 
-			//서브키로 이름 가져옴!
-			dwBufferSize = sizeof(sDisplayName);
-			if (RegQueryValueEx(hAppKey, L"DisplayName", NULL,
-				&dwType, (unsigned char*)sDisplayName, &dwBufferSize) == ERROR_SUCCESS)
-			{
-				fwprintf(stderr, L"%s\n", sDisplayName);
-//				log_info "%s",sDisplayName log_end;
-			}
-			else {
-//				 에러!
-			}
+				dwIndex++;
 
-			RegCloseKey(hAppKey);
 		}
-	}
+		else {
+			fwprintf(stdout, L"%s\n", strerror(errno));
+		}
 
-	RegCloseKey(hUninstKey);
+	} while (ret == ERROR_SUCCESS);
+	*/
 
 	//
 	//	로그 모듈을 종료한다. 
