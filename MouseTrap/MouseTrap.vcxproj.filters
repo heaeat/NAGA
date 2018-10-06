@@ -48,6 +48,9 @@
     <ClInclude Include="..\..\work.mylib\src\CStream.h">
       <Filter>mylib</Filter>
     </ClInclude>
+    <ClInclude Include="program.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="..\..\work.mylib\src\CStream.cpp">
       <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="program.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
