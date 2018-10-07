@@ -48,10 +48,10 @@ bool get_installed_program(void)
 	{
 		log_info
 			"product code: %ws, name(%ws)-vender(%ws)-version(%ws)",
-			software->id().c_str(),
-			software->name().c_str(),
-			software->vendor().c_str(),
-			software->version().c_str()
+			software->id(),
+			software->name(),
+			software->vendor(),
+			software->version()
 			log_end;
 		delete software;
 	}
