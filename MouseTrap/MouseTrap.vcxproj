@@ -155,25 +155,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\work.mylib\src\BaseWindowsHeader.h" />
-    <ClInclude Include="..\..\work.mylib\src\CStream.h" />
-    <ClInclude Include="..\..\work.mylib\src\curl_client.h" />
-    <ClInclude Include="..\..\work.mylib\src\log.h" />
-    <ClInclude Include="..\..\work.mylib\src\process_tree.h" />
-    <ClInclude Include="..\..\work.mylib\src\Queue.h" />
-    <ClInclude Include="..\..\work.mylib\src\RegistryUtil.h" />
-    <ClInclude Include="..\..\work.mylib\src\Win32Utils.h" />
+    <ClInclude Include="c:\work.mylib\src\BaseWindowsHeader.h" />
+    <ClInclude Include="c:\work.mylib\src\CStream.h" />
+    <ClInclude Include="c:\work.mylib\src\curl_client.h" />
+    <ClInclude Include="c:\work.mylib\src\log.h" />
+    <ClInclude Include="c:\work.mylib\src\process_tree.h" />
+    <ClInclude Include="c:\work.mylib\src\Queue.h" />
+    <ClInclude Include="c:\work.mylib\src\RegistryUtil.h" />
+    <ClInclude Include="c:\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="program.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\work.mylib\src\CStream.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\curl_client.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\log.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\process_tree.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\RegistryUtil.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\Win32Utils.cpp" />
+    <ClCompile Include="c:\work.mylib\src\CStream.cpp" />
+    <ClCompile Include="c:\work.mylib\src\curl_client.cpp" />
+    <ClCompile Include="c:\work.mylib\src\log.cpp" />
+    <ClCompile Include="c:\work.mylib\src\process_tree.cpp" />
+    <ClCompile Include="c:\work.mylib\src\RegistryUtil.cpp" />
+    <ClCompile Include="c:\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="MouseTrap.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="stdafx.cpp">
