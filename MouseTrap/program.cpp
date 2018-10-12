@@ -1,6 +1,4 @@
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include "stdafx.h"
 #include "log.h"
 
@@ -29,7 +27,7 @@ bool get_installed_program(void)
 		strm.str().c_str()))
 	{
 		fwprintf(stderr, L"initialize_log() fail. give up! \n");
-		return -1;
+		return false;
 	}
 
 	//
@@ -47,11 +45,12 @@ bool get_installed_program(void)
 	for (auto software : softwares)
 	{
 		log_info
-			"product code: %ws, name(%ws)-vender(%ws)-version(%ws)",
+			"product code: %ws, name(%ws)-vender(%ws)-version(%ws)-uninstaller(%ws)",
 			software->id(),
 			software->name(),
 			software->vendor(),
-			software->version()
+			software->version(), 
+			software->uninstaller()
 			log_end;
 		delete software;
 	}
