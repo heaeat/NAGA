@@ -33,7 +33,7 @@ bool get_installed_program(void)
 	//
 	//	로그의 출력 형식을 지정한다. 
 	//
-	set_log_format(true, false, false, false);
+	set_log_format(false, false, false, false);
 
 	//
 	//	MyLib version
@@ -41,20 +41,23 @@ bool get_installed_program(void)
 
 	std::list<pprogram> softwares;
 	_ASSERTE(true == get_installed_programs(softwares));
-	
+	if (get_installed_programs(softwares)) {
+		cout << "된당!" << endl;
+	}
+
+
 	for (auto software : softwares)
 	{
 		log_info
-			"product code: %ws, name(%ws)-vender(%ws)-version(%ws)-uninstaller(%ws)",
+			",%ws,%ws,%ws,%ws",
 			software->id(),
 			software->name(),
-			software->vendor(),
 			software->version(), 
 			software->uninstaller()
-			log_end;
+		log_end;		
 		delete software;
 	}
-
+	getchar();
 	/*
 	UINT ret;
 	const TCHAR* szUserSid = L"s-1-1-0";
