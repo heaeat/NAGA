@@ -9,11 +9,6 @@
 	"version": "1.5",
 	"uninstaller": "C:\\Program Files\\Daum\\Cleaner\\Uninstall.exe""
 },{
-	"guid": "OpenSSH",
-	"name": "OpenSSH for Windows 6.7p1-2 (remove only)",
-	"version": "",
-	"uninstaller": "C:\\Program Files\\OpenSSH\\uninstall.exe"
-},{
 	"guid": "UnINISafeWeb64",
 	"name": "INISAFE Web v6.4 64bit",
 	"version": "6.4.0.89.20161210",
@@ -213,11 +208,6 @@
 	"name": "WIZVERA Process Manager 1",
 	"version": "0",
 	"uninstaller": "4"
-},,{
-	"guid": "{CFEF48A8-BFB8-3EAC-8BA5-DE4F8AA267CE}.KB2504637",
-	"name": "Update for  (KB2504637)",
-	"version": "1",
-	"uninstaller": "C:\\Windows\\SysWOW64\\msiexec.exe /package {CFEF48A8-BFB8-3EAC-8BA5-DE4F8AA267CE} /uninstall {815F0BC1-7E54-300C-9ACA-C9460FDF6F78} /qb+ REBOOTPROMPT=&quot;&quot;\n"
 },{
 	"guid": "{F74D74CA-D2E6-4DD1-9D50-30532236274E}",
 	"name": "VestCert",
