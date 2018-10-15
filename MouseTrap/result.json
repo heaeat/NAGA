@@ -1,0 +1,287 @@
+{
+	"programs": [
+		{
+			"guid": "${MUI_UNINST_PRODUCT_NAME}",
+			"name": "MarkAny WebDRM NoAX SVC",
+			"version": "v1.0",
+			"uninstaller": "C:\\Program Files (x86)\\MarkAny\\WebDRMNoAX\\Uninst_WebDRM.exe"
+		},
+		{
+			"guid": "DaumCleaner",
+			"name": "Daum 클리너",
+			"version": "1.5",
+			"uninstaller": "C:\\Program Files\\Daum\\Cleaner\\Uninstall.exe""
+		},
+		{
+			"guid": "OpenSSH",
+			"name": "OpenSSH for Windows 6.7p1-2 (remove only)",
+			"version": "",
+			"uninstaller": "C:\\Program Files\\OpenSSH\\uninstall.exe"
+		},
+		{
+			"guid": "UnINISafeWeb64",
+			"name": "INISAFE Web v6.4 64bit",
+			"version": "6.4.0.89.20161210",
+			"uninstaller": "C:\\Program Files\\INITECH\\INISAFE Web Client v6.4\\UnINIS64.exe"
+		},
+		{
+			"guid": "UnINISafeWebEX64",
+			"name": "INISAFE Web EX Client 64bit",
+			"version": "1.0.0.1",
+			"uninstaller": "C:\\Program Files\\INITECH\\INISAFE Web EX Client\\UnINIS_EX64.exe"
+		},
+		{
+			"guid": "{19DD1D8D-927F-45DF-ADF4-75D38267848D}",
+			"name": "AhnLab Safe Transaction",
+			"version": "1.3.32.1127",
+			"uninstaller": "C:\\Program Files\\AhnLab\\Safe Transaction\\V3Medic.exe -Uninstall"
+		},
+		{
+			"guid": "{C132DF61-207E-4C59-90B8-1DA9E2E1A754}",
+			"name": "Puppet (64-bit)",
+			"version": "3.8.7",
+			"uninstaller": "MsiExec.exe /X{C132DF61-207E-4C59-90B8-1DA9E2E1A754}"
+		},
+		{
+			"guid": "AnySign4PC",
+			"name": "AnySign4PC 1.1.0.8",
+			"version": "1.1.0.8",
+			"uninstaller": "C:\\Program Files (x86)\\SoftForum\\XecureWeb\\AnySign\\uninst.exe"
+		},
+		{
+			"guid": "D'Amo WebCrypto_is1",
+			"name": "D'Amo WebCrypto 3.0",
+			"version": "3.0.1.7",
+			"uninstaller": "C:\\ProgramData\\Penta Security Systems\\DAmoWebCrypto\\unins000.exe"
+		},
+		{
+			"guid": "eISP 2.0",
+			"name": "eISP 2.0",
+			"version": "2.01",
+			"uninstaller": "\n"
+		},
+		{
+			"guid": "espider",
+			"name": "espider 2.0.5",
+			"version": "2.0.5",
+			"uninstaller": "C:\\Program Files (x86)\\espider\\espiderWin\\uninst.exe"
+		},
+		{
+			"guid": "INISAFE MoaSign EX",
+			"name": "INISAFE MoaSign EX v1.0",
+			"version": "1.0.16",
+			"uninstaller": "C:\\Program Files (x86)\\INITECH\\INISAFE MoaSign EX\\uninst.exe"
+		},
+		{
+			"guid": "INISAFE MoaSign S",
+			"name": "INISAFE MoaSign S v1.0",
+			"version": "1.0.45",
+			"uninstaller": "C:\\Program Files (x86)\\INITECH\\INISAFE MoaSignS\\uninst.exe"
+		},
+		{
+			"guid": "INISAFE SandBox",
+			"name": "INISAFE SandBox 1.0",
+			"version": "1.0",
+			"uninstaller": "C:\\Program Files (x86)\\initech\\INISAFE SandBox V1\\uninst.exe"
+		},
+		{
+			"guid": "INISAFE SmartManager",
+			"name": "INISAFE SmartManager 1.0.5.233",
+			"version": "1.0.5.233",
+			"uninstaller": "C:\\Program Files (x86)\\initech\\INISAFESmartManager\\uninst.exe"
+		},
+		{
+			"guid": "IPinside LWS Agent",
+			"name": "IPinside LWS Agent",
+			"version": "3.0.0.4",
+			"uninstaller": "C:\\Program Files (x86)\\IPinside_LWS\\I3GSvcManager.exe"
+		},
+		{
+			"guid": "KCPPayUX_is1",
+			"name": "KCPPayUX v1.0.21178.0",
+			"version": "",
+			"uninstaller": "C:\\Windows\\SysWOW64\\unins000.exe"
+		},
+		{
+			"guid": "kdefense",
+			"name": "K-Defense R6 : Anti-Keylogger",
+			"version": "",
+			"uninstaller": "C:\\Windows\\uninstallkdf8.exe"
+		},
+		{
+			"guid": "KOS",
+			"name": "Kings Online Security",
+			"version": "1.0.7.8",
+			"uninstaller": "C:\\Kings\\KOS\\Uninstall.exe"
+		},
+		{
+			"guid": "MagicLine4NPIZ",
+			"name": "MagicLine4NPIZ",
+			"version": "1.0.1.4",
+			"uninstaller": "C:\\Program Files (x86)\\DreamSecurity\\MagicLine4NPIZ\\MagicLineNPIZ_Uninstall.exe"
+		},
+		{
+			"guid": "MagicLineMBX",
+			"name": "MagicLineMBX",
+			"version": "1.0.6.3",
+			"uninstaller": "C:\\Program Files (x86)\\DreamSecurity\\MagicLineMBX\\MagicLineMBX Uninstall.exe"
+		},
+		{
+			"guid": "MAOnMultiWebSafer_STD",
+			"name": "MAOnMultiWebSafer_STD",
+			"version": "v2.5",
+			"uninstaller": "C:\\Users\\IEUser\\AppData\\Local\\MarkAny\\MAOnMultiWebSafer_STD.exe"
+		},
+		{
+			"guid": "MaWebSAFER_STDEP",
+			"name": "MaWebSAFER_STDEP(remove only)",
+			"version": "v2.5",
+			"uninstaller": "C:\\Windows\\system32\\MaWebSAFER_STDEP_uninstall.exe"
+		},
+		{
+			"guid": "npEfdsWCtrl",
+			"name": "npEfdsWCtrl",
+			"version": "",
+			"uninstaller": "C:\\Users\\IEUser\\AppData\\LocalLow\\nProtect\\npEfdsWCtrl\\npEfdsWCtrlUnInst.exe"
+		},
+		{
+			"guid": "npkfx",
+			"name": "nProtect KeyCrypt V6.5",
+			"version": "",
+			"uninstaller": "C:\\Windows\\SysWOW64\\npkfxust.exe"
+		},
+		{
+			"guid": "nProtect Netizen v5.5",
+			"name": "nProtect Netizen v5.5",
+			"version": "2016.10.31.1",
+			"uninstaller": "C:\\Program Files (x86)\\INCAInternet UnInstall\\nProtect Netizen v5.5\\npenUnInstall5.exe"
+		},
+		{
+			"guid": "nProtect Online Security V1.0(PFS)",
+			"name": "nProtect Online Security V1.0(PFS)",
+			"version": "2018.4.23.3",
+			"uninstaller": "C:\\Program Files (x86)\\INCAInternet UnInstall\\nProtect Online Security\\nProtectUninstaller.exe"
+		},
+		{
+			"guid": "NTSMagicLine ¼öµ¿¼³Ä¡ ÆÐÅ°Áö",
+			"name": "NTSMagicLine ¼öµ¿¼³Ä¡ ÆÐÅ°Áö",
+			"version": "1.0.7.8",
+			"uninstaller": "C:\\Program Files (x86)\\DreamSecurity\\NTSMagicLineMBX\\NTSMagicLine ¼öµ¿¼³Ä¡ ÆÐÅ°Áö Uninstall.exe"
+		},
+		{
+			"guid": "SoftcampSCSK",
+			"name": "Secure KeyStroke 4.0",
+			"version": "",
+			"uninstaller": "C:\\Windows\\system32\\UnSCSK.exe"
+		},
+		{
+			"guid": "SoftcampSCSKV",
+			"name": "Secure KeyStroke v5.0",
+			"version": "",
+			"uninstaller": "C:\\Windows\\system32\\UnSCSKV.exe"
+		},
+		{
+			"guid": "SoftcampSCWCS",
+			"name": "SoftCamp WebSecurity",
+			"version": "",
+			"uninstaller": "C:\\Windows\\UnSCWCS.exe"
+		},
+		{
+			"guid": "TouchEn nxKey",
+			"name": "TouchEn nxKey with E2E for 32bit",
+			"version": "1.0.0.35",
+			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe /uninstall appm"
+		},
+		{
+			"guid": "TouchEn nxWeb_32",
+			"name": "TouchEn nxWeb_32",
+			"version": "1.0.0.6",
+			"uninstaller": "C:\\Program Files\\RaonSecure\\NxWeb\\uninst_32.exe"
+		},
+		{
+			"guid": "TouchEn_key",
+			"name": "TouchEn key with E2E for 32bit",
+			"version": "3.1.0.42",
+			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe /uninstall"
+		},
+		{
+			"guid": "UnINISafeWeb64",
+			"name": "INISAFE Web v6.4",
+			"version": "6.4.0.89.20161210",
+			"uninstaller": "C:\\Program Files (x86)\\INITECH\\INISAFE Web Client v6.4\\UnINIS64.exe"
+		},
+		{
+			"guid": "UnINISafeWeb7",
+			"name": "INISafe SFilter v7.2",
+			"version": "7.2.0.15",
+			"uninstaller": "C:\\Windows\\system32\\UnINIS70.exe"
+		},
+		{
+			"guid": "UnINISafeWebEX",
+			"name": "INISAFE Web EX Client",
+			"version": "1.0.0.1",
+			"uninstaller": "C:\\Program Files (x86)\\INITECH\\INISAFE Web EX Client\\UnINIS_EX.exe"
+		},
+		{
+			"guid": "XecureCertShare",
+			"name": "XecureCertShare",
+			"version": "",
+			"uninstaller": "C:\\Program Files (x86)\\Softforum\\XecureCertShare\\XCSSetup.exe -ui"
+		},
+		{
+			"guid": "XecureWeb Control",
+			"name": "XecureWeb Control",
+			"version": "",
+			"uninstaller": "C:\\Program Files (x86)\\SoftForum\\XecureWeb\\xw_setup.exe -ui"
+		},
+		{
+			"guid": "yessign7ActiveX",
+			"name": "yessign7 ActiveX Control",
+			"version": "1",
+			"uninstaller": "0"
+		},
+		{
+			"guid": "{1CBD185A-9CB3-4f30-B7E4-75CC551455F9}_is1",
+			"name": "Delfino G3 (x86) version 3.5.2.2",
+			"version": "3.5.2.2",
+			"uninstaller": "\"C:\\Program Files (x86)\\Wizvera\\Delfino-G3\\unins000.exe\"\n"
+		},
+		{
+			"guid": "{3608B4ED-D2A5-4EC9-B4EF-7189FC25AD2E}_is1",
+			"name": "TrustPKI Enterprise Non-ActiveX Client(32ºñÆ®)",
+			"version": "1.0.5.1",
+			"uninstaller": "\"C:\\Program Files (x86)\\EPS\\Lib\\NXTPKIENT\\unins000.exe\"\n"
+		},
+		{
+			"guid": "{8941A397-4065-4F41-92CE-0EB610846EED}_is1",
+			"name": "WIZVERA Process Manager 1",
+			"version": "0",
+			"uninstaller": "4"
+		},
+		,
+		{
+			"guid": "{CFEF48A8-BFB8-3EAC-8BA5-DE4F8AA267CE}.KB2504637",
+			"name": "Update for  (KB2504637)",
+			"version": "1",
+			"uninstaller": "C:\\Windows\\SysWOW64\\msiexec.exe /package {CFEF48A8-BFB8-3EAC-8BA5-DE4F8AA267CE} /uninstall {815F0BC1-7E54-300C-9ACA-C9460FDF6F78} /qb+ REBOOTPROMPT=&quot;&quot;\n"
+		},
+		{
+			"guid": "{F74D74CA-D2E6-4DD1-9D50-30532236274E}",
+			"name": "VestCert",
+			"version": "2.0.4.2017",
+			"uninstaller": "MsiExec.exe /I{F74D74CA-D2E6-4DD1-9D50-30532236274E}\n"
+		},
+		{
+			"guid": "악성 웹 사이트 탐지 서비스(APS Engine)",
+			"name": "악성 웹 사이트 탐지 서비스(APS Engine) 1.7.0",
+			"version": "1.7.0",
+			"uninstaller": "C:\\Program Files (x86)\\YettieSoft\\APS Engine\\uninst.exe"
+		},
+		{
+			"guid": "우리은행 보안 로그 수집기 ",
+			"name": "우리은행 보안 로그 수집기 ",
+			"version": "1.0.1",
+			"uninstaller": "C:\\Program Files (x86)\\WooriBank\\RealIp\\uninst.exe"
+		}
+	]
+}
