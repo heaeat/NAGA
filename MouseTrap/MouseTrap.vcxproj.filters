@@ -5,16 +5,16 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="mylib">
       <UniqueIdentifier>{ea94104e-84cc-428a-a325-4c6ea86dd04e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,32 +24,32 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\BaseWindowsHeader.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\curl_client.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\log.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\process_tree.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\Queue.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\RegistryUtil.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\Win32Utils.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\work.mylib\src\CStream.h">
-      <Filter>mylib</Filter>
-    </ClInclude>
     <ClInclude Include="program.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\BaseWindowsHeader.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\CStream.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\curl_client.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\log.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\process_tree.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\Queue.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\RegistryUtil.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
+    <ClInclude Include="c:\work.mylib\src\Win32Utils.h">
+      <Filter>mylib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,26 +59,26 @@
     <ClCompile Include="MouseTrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\curl_client.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\log.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\process_tree.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\RegistryUtil.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\Win32Utils.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\CStream.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
     <ClCompile Include="program.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\CStream.cpp">
+      <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\curl_client.cpp">
+      <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\log.cpp">
+      <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\process_tree.cpp">
+      <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\RegistryUtil.cpp">
+      <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="c:\work.mylib\src\Win32Utils.cpp">
+      <Filter>mylib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -40,12 +40,9 @@ bool get_installed_program(void)
 	//
 
 	std::list<pprogram> softwares;
-	_ASSERTE(true == get_installed_programs(softwares));
-	if (get_installed_programs(softwares)) {
-		cout << "된당!" << endl;
-	}
-
-
+	//_ASSERTE(true == get_installed_programs(softwares));
+	get_installed_programs(softwares);
+	
 	for (auto software : softwares)
 	{
 		log_info
@@ -58,59 +55,6 @@ bool get_installed_program(void)
 		delete software;
 	}
 	getchar();
-	/*
-	UINT ret;
-	const TCHAR* szUserSid = L"s-1-1-0";
-	DWORD dwContext = MSIINSTALLCONTEXT_ALL;
-	DWORD dwIndex = 0;
-	TCHAR szInstalledProductCode[39] = { 0 };
-	MSIINSTALLCONTEXT dwInstalledContext ;yy
-	TCHAR szSid[100] = { 0 };
-	DWORD pcchSid;
-
-	//LPWSTR szValue = { 0 };
-	//LPDWORD pcchValue = { 0 };
-
-	do
-	{
-		memset(szInstalledProductCode, 0, sizeof(szInstalledProductCode));
-		pcchSid = (DWORD)(sizeof(szSid) / sizeof(szSid[0]));
-
-		ret = MsiEnumProductsEx(
-			NULL,          
-			szUserSid,  
-			dwContext,
-			dwIndex,
-			szInstalledProductCode,
-			&dwInstalledContext,
-			szSid,
-			&pcchSid
-		);
-
-		if (ret == ERROR_SUCCESS)
-		{
-			TCHAR productNameBuffer[256];
-			DWORD pcchValue = sizeof(productNameBuffer);
-			MsiGetProductInfoEx(
-				szInstalledProductCode,
-				pcchSid == 0 ? NULL : szSid,
-				dwInstalledContext,
-				INSTALLPROPERTY_INSTALLEDPRODUCTNAME,
-				productNameBuffer,
-				&pcchValue);
-				
-				cout << productNameBuffer << endl;
-
-				dwIndex++;
-
-		}
-		else {
-			fwprintf(stdout, L"%s\n", strerror(errno));
-		}
-
-	} while (ret == ERROR_SUCCESS);
-	*/
-
 	//
 	//	로그 모듈을 종료한다. 
 	//	
