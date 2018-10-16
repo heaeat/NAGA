@@ -8,6 +8,30 @@ std::list<pprogram> softwares;
 std::list<pprogram> removers;
 
 
+
+list<pprogram> compare_lists() {
+	get_installed_program();
+	read_json();
+
+	std::list<pprogram> my_list;
+	
+	int result;
+
+	for (auto remover : removers)
+	{
+		for (auto software : softwares) {
+			result = wcscmp(software->id(), remover->id());
+			if (result == 0) {
+				pprogram temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
+				my_list.push_back(temp);
+	//			delete temp;
+			}
+		}
+	}
+
+	return my_list;
+}
+
 bool get_installed_program(void)
 {
 	//
@@ -24,6 +48,7 @@ bool get_installed_program(void)
 	{
 		fwprintf(stderr, L"initialize_log() fail. give up! \n");
 	}
+
 	//
 	//	로그의 출력 형식을 지정한다. 
 	//
@@ -85,8 +110,6 @@ void read_json(void) {
 	//
 	set_log_format(false, false, false, false);
 
-
-
 	CkJsonObject json;
 	// json 파일 읽어오기
 	bool success = json.LoadFile("result.json");
@@ -128,7 +151,7 @@ void read_json(void) {
 			remover->version(),
 			remover->uninstaller()
 			log_end;
-	//	delete remover;
+//		delete remover;
 	}
 	//
 	//	로그 모듈을 종료한다. 
@@ -137,31 +160,4 @@ void read_json(void) {
 
 	getchar();
 
-}
-
-std::list<pprogram> compare_lists() {
-	get_installed_program();
-	read_json();
-
-	std::list<pprogram> my_list;
-
-	int result;
-
-	for (auto remover : removers)
-	{
-		cout << remover->id() << endl;
-		for (auto software : softwares) {
-			result = wcscmp(software->name(), remover->name());
-			if (result != 0) {
-				continue;
-			}
-			pprogram temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
-			my_list.push_back(temp);
-//			delete temp;
-
-		}
-	}
-	//	printf("%ws\n", my_list.front()->id());
-
-	return my_list;
 }

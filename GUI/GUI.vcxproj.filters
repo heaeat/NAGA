@@ -57,6 +57,9 @@
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h">
       <Filter>mylib</Filter>
     </ClInclude>
+    <ClInclude Include="program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -85,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp">
       <Filter>mylib</Filter>
+    </ClCompile>
+    <ClCompile Include="program.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -205,6 +205,7 @@
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
+    <ClInclude Include="program.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
+    <ClCompile Include="program.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
