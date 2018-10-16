@@ -94,6 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\chilkat-9.5.0-x86_64-vc2017\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/I "C:\work.mylib\src" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -118,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\chilkat-9.5.0-x86_64-vc2017\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/I "C:\work.mylib\src" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -144,6 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\chilkat-9.5.0-x86_64-vc2017\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/I "C:\work.mylib\src" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +175,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\chilkat-9.5.0-x86_64-vc2017\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/I "C:\work.mylib\src" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -191,6 +195,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\work.mylib\src\BaseWindowsHeader.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\CStream.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\curl_client.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\log.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\process_tree.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\Queue.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\RegistryUtil.h" />
+    <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -198,6 +210,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\work.mylib\src\CStream.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\curl_client.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\log.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\process_tree.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\RegistryUtil.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
