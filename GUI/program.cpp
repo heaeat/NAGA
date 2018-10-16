@@ -34,6 +34,8 @@ list<pprogram> compare_lists() {
 
 bool get_installed_program(void)
 {
+
+	softwares.clear();
 	//
 	//	파일 로그를 초기화한다. 
 	// 
@@ -89,6 +91,8 @@ const wchar_t *convert_char(const char *c)
 
 
 void read_json(void) {
+
+	removers.clear();
 
 	//
 	//	파일 로그를 초기화한다. 
