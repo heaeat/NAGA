@@ -90,7 +90,6 @@ const wchar_t *convert_char(const char *c)
 
 void read_json(void) {
 
-
 	//
 	//	파일 로그를 초기화한다. 
 	// 
