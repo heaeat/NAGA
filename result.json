@@ -184,7 +184,7 @@
 			"guid": "TouchEn nxKey",
 			"name": "TouchEn nxKey with E2E for 32bit",
 			"version": "1.0.0.35",
-			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe /uninstall appm"
+			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe"
 		},
 		{
 			"guid": "TouchEn nxWeb_32",
@@ -196,7 +196,7 @@
 			"guid": "TouchEn_key",
 			"name": "TouchEn key with E2E for 32bit",
 			"version": "3.1.0.42",
-			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe /uninstall"
+			"uninstaller": "C:\\Windows\\SysWOW64\\CKSetup32.exe"
 		},
 		{
 			"guid": "UnINISafeWeb64",
@@ -238,13 +238,13 @@
 			"guid": "{1CBD185A-9CB3-4f30-B7E4-75CC551455F9}_is1",
 			"name": "Delfino G3 (x86) version 3.5.2.2",
 			"version": "3.5.2.2",
-			"uninstaller": "C:\\Program Files (x86)\\Wizvera\\Delfino-G3\\unins000.exe\"
+			"uninstaller": "\"C:\\Program Files (x86)\\Wizvera\\Delfino-G3\\unins000.exe\"\n"
 		},
 		{
 			"guid": "{3608B4ED-D2A5-4EC9-B4EF-7189FC25AD2E}_is1",
 			"name": "TrustPKI Enterprise Non-ActiveX Client(32ºñÆ®)",
 			"version": "1.0.5.1",
-			"uninstaller": "C:\\Program Files (x86)\\EPS\\Lib\\NXTPKIENT\\unins000.exe\"
+			"uninstaller": "\"C:\\Program Files (x86)\\EPS\\Lib\\NXTPKIENT\\unins000.exe\"\n"
 		},
 		{
 			"guid": "{8941A397-4065-4F41-92CE-0EB610846EED}_is1",
