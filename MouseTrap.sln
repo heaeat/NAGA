@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MouseTrap", "MouseTrap\MouseTrap.vcxproj", "{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUI", "GUI\GUI.vcxproj", "{FF9AA0EA-9062-4773-8DEB-1B3EB2929414}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MouseTrap", "GUI\GUI.vcxproj", "{FF9AA0EA-9062-4773-8DEB-1B3EB2929414}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +13,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Debug|x64.ActiveCfg = Debug|x64
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Debug|x64.Build.0 = Debug|x64
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Debug|x86.ActiveCfg = Debug|Win32
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Debug|x86.Build.0 = Debug|Win32
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Release|x64.ActiveCfg = Release|x64
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Release|x64.Build.0 = Release|x64
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Release|x86.ActiveCfg = Release|Win32
-		{94A0B371-9B0E-4F76-AE5F-EE816D1D5C2C}.Release|x86.Build.0 = Release|Win32
 		{FF9AA0EA-9062-4773-8DEB-1B3EB2929414}.Debug|x64.ActiveCfg = Debug|x64
 		{FF9AA0EA-9062-4773-8DEB-1B3EB2929414}.Debug|x64.Build.0 = Debug|x64
 		{FF9AA0EA-9062-4773-8DEB-1B3EB2929414}.Debug|x86.ActiveCfg = Debug|Win32
