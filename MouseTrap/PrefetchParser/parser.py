@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
-# [+] Kali-KM		kali-km.tistory.com
-# [+] Usage : prefetch_parser.py <input dir>
+# kali-km.tistory.com의 코드를 수정하였습니다
+
 
 import decom_xpress
 
