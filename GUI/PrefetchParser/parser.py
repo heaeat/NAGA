@@ -1,6 +1,6 @@
 
 # -*- coding: utf-8 -*-
-# [+] Kali-KM		kali-km.tistory.com 을 기반으로 수정하였습니다.
+# kali-km.tistory.com의 코드를 수정하였습니다
 
 import decom_xpress
 
