@@ -15,4 +15,4 @@
 
 using namespace std;
 
-void get_prefetch_info(void);
+bool get_prefetch_info(void);
