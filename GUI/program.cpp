@@ -90,12 +90,11 @@ void read_json(void) {
 	// 각각 읽어오기
 	for (int i = 0; i < numPrograms; i++) {
 		CkJsonObject *programObj = programs->ObjectAt(i);
-		const wchar_t *guid = convert_char(programObj->stringOf("guid"));
-		const wchar_t *name = convert_char(programObj->stringOf("name"));
-		const wchar_t *version = convert_char(programObj->stringOf("version"));
-		const wchar_t *uninstaller = convert_char(programObj->stringOf("uninstaller"));
-
-		pprogram temp = new program(guid, name, version, version, uninstaller);
+		pprogram temp = new program(MbsToWcsEx(programObj->stringOf("guid")).c_str(),
+									MbsToWcsEx(programObj->stringOf("name")).c_str(),
+									MbsToWcsEx(programObj->stringOf("version")).c_str(),
+									MbsToWcsEx(programObj->stringOf("version")).c_str(),
+									MbsToWcsEx(programObj->stringOf("uninstaller")).c_str());
 		removers.push_back(temp);
 		delete programObj;
 	}
