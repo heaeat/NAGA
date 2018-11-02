@@ -60,6 +60,9 @@
     <ClInclude Include="program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="prefetch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -90,6 +93,9 @@
       <Filter>mylib</Filter>
     </ClCompile>
     <ClCompile Include="program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="prefetch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
