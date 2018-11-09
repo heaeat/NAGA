@@ -16,3 +16,4 @@
 using namespace std;
 
 bool get_prefetch_info(void);
+int DeleteAllcsv(LPCWSTR szDir, int recur);
