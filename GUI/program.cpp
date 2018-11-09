@@ -10,6 +10,7 @@ std::list<pprogram> removers;
 
 //	제거대상 목록과 설치된 프로그램을 비교하기 위한 함수
 list<pprogram> compare_lists() {
+
 	get_installed_program();
 	read_json();
 
@@ -21,12 +22,37 @@ list<pprogram> compare_lists() {
 	{
 		for (auto software : softwares) {
 			result = wcscmp(software->id(), remover->id());
+			pprogram temp;
+
 			if (result == 0) {
-				pprogram temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
+				//
+				//	사일런트 옵션이 존재할 경우 경로 뒤에 붙여줌
+				//
+				if (wcslen(remover->uninstaller()) > 0) {
+					std::wstring path = L"";
+					std::wstringstream path_strm;
+					path_strm << software->uninstaller() << remover->uninstaller();
+					temp = new program(software->id(), software->name(), software->version(), software->version(), path_strm.str().c_str());
+				}
+				else {
+					temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
+				}
+				
 				my_list.push_back(temp);
 			}
 		}
 	}
+
+	for (auto software : softwares) {
+		delete software;
+	}
+
+	for (auto remover : removers) {
+		delete remover;
+	}
+
+	softwares.clear();
+	removers.clear();
 
 	return my_list;
 }
@@ -34,6 +60,7 @@ list<pprogram> compare_lists() {
 // 설치된 프로그램을 받아오기 위한 함수
 bool get_installed_program(void)
 {
+	
 	softwares.clear();
 	get_installed_programs(softwares);
 
@@ -49,27 +76,21 @@ bool get_installed_program(void)
 			software->uninstaller()
 			log_end;
 	}
-	getchar();
-	
+	getchar();	
 	return true;
-}
-
-// const char *을 const wchar_t *로 변환하는 함수
-const wchar_t *convert_char(const char *c)
-{
-	const size_t cSize = strlen(c) + 1;
-	wchar_t* wc = new wchar_t[cSize];
-	mbstowcs(wc, c, cSize);
-	return wc;
+	
 }
 
 // json 파일을 읽어와 파싱하는 함수
 void read_json(void) {
+	
+	log_warn "[ 제거할 파일 목록 ]" log_end;
 
 	removers.clear();
-
+	
 	CkJsonObject json;
 
+	
 	// json 파일 읽어오기
 	bool success = json.LoadFile("result.json");
 	if (success != true) {
@@ -83,7 +104,7 @@ void read_json(void) {
 		cout << "not found" << "\r\n";
 		return;
 	}
-
+	
 	// 제거대상 갯수
 	int numPrograms = programs->get_Size();
 
@@ -92,14 +113,16 @@ void read_json(void) {
 		CkJsonObject *programObj = programs->ObjectAt(i);
 		pprogram temp = new program(MbsToWcsEx(programObj->stringOf("guid")).c_str(),
 									MbsToWcsEx(programObj->stringOf("name")).c_str(),
-									MbsToWcsEx(programObj->stringOf("version")).c_str(),
-									MbsToWcsEx(programObj->stringOf("version")).c_str(),
-									MbsToWcsEx(programObj->stringOf("uninstaller")).c_str());
+									L"",
+									L"",
+									MbsToWcsEx(programObj->stringOf("silent")).c_str());
 		removers.push_back(temp);
 		delete programObj;
 	}
 	delete programs;
-
+	
+	json.dispose();
 	getchar();
+	
 
 }
