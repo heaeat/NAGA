@@ -1,28 +1,32 @@
 #include "stdafx.h"
 #include "prefetch.h"
+#include <io.h>
 
 
 
+std::wstring result_path = L"\"C:\\Temp\\result\\";
 
 void get_prefetch_info() {
 	map<string, string> csv_map;
-	wstring result_path  = run_PECmd();
-	wstring file_name = find_timeline_file(result_path);
-	read_csv(const_cast<wchar_t *>(file_name.c_str()), &csv_map);
+	run_PECmd();
+	wchar_t *file_name = find_timeline_file(result_path);
+	read_csv(file_name, &csv_map);
 }
 
-wstring run_PECmd(void) 
+void run_PECmd(void) 
 {
 	// 현재경로 받아오기
 	std::wstring current_dir = get_current_module_dirEx();
 	std::wstringstream strm;
-	std::wstring result_path = L"\"C:\\Temp\\result\"";
 	strm << current_dir << L"\\PECmd.exe -d \"C:\\Windows\\Prefetch\" --csv " << result_path;
 
 	STARTUPINFO startupInfo = { 0 };
 	PROCESS_INFORMATION processInfo;
 	startupInfo.cb = sizeof(STARTUPINFO);
 
+
+	// 디버깅
+	/*
 	if (!CreateProcess(NULL,
 					  (LPWSTR)strm.str().c_str(),
 					   NULL,
@@ -38,13 +42,13 @@ wstring run_PECmd(void)
 			strm.str().c_str(),
 			GetLastError()
 			log_end;
-		return  NULL;
 	}
 
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 	CloseHandle(processInfo.hThread); 
 	CloseHandle(processInfo.hProcess);
-	return result_path;
+	*/
+	
 }
 
 
@@ -101,16 +105,27 @@ int delete_all_csv(LPCWSTR szDir, int recur)
 	return 0;
 }
 
-wstring find_timeline_file(wstring path) {
+wchar_t *find_timeline_file(wstring path) {
 
-	struct _wfinddata64i32_t file_search;
+	struct _wfinddata_t file_search;
 	long handle;
 
 	wstringstream strm;
-	strm << path << L"\\*Timeline.csv";
+	strm << L"C:\\Temp\\result\\" << L"*Timeline.csv";
 	handle = _tfindfirst(strm.str().c_str(), &file_search);
-	if (handle == -1) return NULL;
-	return file_search.name;
+
+
+	wchar_t *file_name = (wchar_t*)malloc(sizeof(wchar_t) * 260);
+	wcscpy(file_name, file_search.name);
+
+	if (handle == -1) {
+		log_err "힝 읍써" log_end;
+		return NULL;
+	}
+	else {
+		log_err "있써! %ws", file_search.name log_end;
+		return file_name;
+	}
 }
 
 
@@ -119,10 +134,12 @@ boolean read_csv(wchar_t *filename, map<string,string> *pdata)
 	pair<map<string, string>::iterator, bool> pr;
 
 	log_warn "[csv 파일 이름]" log_end;
-	log_info "%ws\n", filename log_end;
+	std::wstringstream strm;
+	strm << L"C:\\Temp\\result\\" << filename;
+	log_info "%ws", strm.str().c_str() log_end;
 	ifstream in_stream;
 	string line;
-	in_stream.open(filename);
+	in_stream.open(strm.str().c_str());
 	while (!in_stream.eof()) {
 		getline(in_stream, line);
 		if (line.length() <= 0 || line.find(",", 0) == string::npos) {
