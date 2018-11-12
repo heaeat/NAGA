@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "prefetch.h"
 #include <io.h>
-#include <time.h>
-
-std::wstring result_path = L"\"C:\\Temp\\result\\";
+#include "FileIoHelper.h"
 
 bool get_prefetch_info() 
 {
@@ -50,7 +48,7 @@ bool get_prefetch_info()
 	return true;
 }
 
-/// @brief PECmd.exe¸¦ ½ÇÇàÇÏ°í csv ÆÄÀÏÀ» »ı¼ºÇÑ´Ù.
+/// @brief PECmd.exeë¥¼ ì‹¤í–‰í•˜ê³  csv íŒŒì¼ì„ ìƒì„±í•œë‹¤.
 bool run_PECmd(void) 
 {
 	std::wstring current_dir = get_current_module_dirEx();
@@ -86,7 +84,7 @@ bool run_PECmd(void)
 	return true;
 }
 
-/// @brief CSVÆÄÀÏÀ» ÆÄ½ÌÇÏ±â À§ÇØ ÀÓ½Ã·Î »ı¼ºÇÑ Æú´õ¿Í ÆÄÀÏÀ» Á¦°ÅÇÑ´Ù.
+/// @brief CSVíŒŒì¼ì„ íŒŒì‹±í•˜ê¸° ìœ„í•´ ì„ì‹œë¡œ ìƒì„±í•œ í´ë”ì™€ íŒŒì¼ì„ ì œê±°í•œë‹¤.
 int delete_all_csv(LPCWSTR szDir, int recur)
 {
 	HANDLE hSrch;
@@ -139,7 +137,7 @@ int delete_all_csv(LPCWSTR szDir, int recur)
 	return 0;
 }
 
-/// @brief Timeline.csv ÆÄÀÏÀ» Ã£´Â´Ù.
+/// @brief Timeline.csv íŒŒì¼ì„ ì°¾ëŠ”ë‹¤.
 wchar_t *find_timeline_file(wstring path) {
 
 	struct _wfinddata_t file_search;
@@ -159,52 +157,114 @@ wchar_t *find_timeline_file(wstring path) {
 	}
 }
 
-/// @brief CSVÆÄÀÏÀ» ÀĞ¾î¿Í ÆÄ½ÌÇÑ ÈÄ Áßº¹µÈ °ªÀ» Á¦°ÅÇÑ´Ù.
-bool read_csv(wchar_t *filename, map<string,string> *pdata)
+/// @brief CSVíŒŒì¼ì„ ì½ì–´ì™€ íŒŒì‹±í•œ í›„ ì¤‘ë³µëœ ê°’ì„ ì œê±°í•œë‹¤.
+bool read_csv(wchar_t *filename, map<string, string> *pdata)
 {
-	pair<map<string, string>::iterator, bool> pr;
+	// README 
+	// stl stream ì´ ê¸°ë³¸ ì„¤ì •ìœ¼ë¡œëŠ” utf8 ë¬¸ìì—´ ì²˜ë¦¬ë¥¼ ì œëŒ€ë¡œ ëª»í•¨
+	// ë°©ë²•ì´ ìˆê¸´ í•œë°, ì–´ì¼€ í•˜ëŠ”ì§€ ëª¨ë¦„
+	// 
+	// ê·¸ëƒ¥ ë¬´ì‹í•˜ê²Œ txt íŒŒì¼ ì—´ì–´ì„œ, \r\n (ì¤„ë°”ê¿ˆ)ì„ ì°¾ì•„ì„œ ë¼ì¸ë‹¨ìœ„ë¡œ ëŠì–´ ì½ê³ ,
+	// ì²˜ë¦¬í•¨
+	//
 
-	std::wstringstream strm;
-	strm << L"C:\\Temp\\result\\" << filename;
+	PFILE_CTX file_context = nullptr;
+	if (true != OpenFileContext(filename, true, file_context))
+	{
+		log_err "Can not open file. file=%ws", filename log_end;
+		return false;
+	}
+	SmrtFileCtx context_guard(file_context);
 	
-	ifstream in_stream;
-	string line;
-	in_stream.open(strm.str().c_str());
+	//
+	// read line (0x0d0a)
+	//
+	char* buf = file_context->FileView;
+	uint32_t prev = 0;
+	uint32_t curr = 0;
+	while (curr < file_context->FileSize)
+	{
+		if (buf[curr] == 0x0D && buf[curr + 1] == 0x0A)
+		{
+			uint32_t length = (curr - prev) * sizeof(char);
+			char_ptr utf8_line((char*)malloc(length + sizeof(char)), [](char* p) {if (nullptr != p) free(p); });
+			if (nullptr == utf8_line.get())
+			{
+				log_err "not enough memory. give up." log_end;
+				return false;
+			}
+			memcpy(utf8_line.get(), &buf[prev], length);
+			utf8_line.get()[length] = 0x00;
 
-	if (!in_stream.good()) {
-		log_err  "ifstream open err" log_end;
-	}
-	while (!in_stream.eof()) {
-		getline(in_stream, line);
-		if (line.length() <= 0 || line.find(",", 0) == string::npos) {
-			continue;
+			//
+			// update position pointers
+			//
+			curr += 2;
+			prev = curr;
+			
+			//
+			// UTF-8 string --> Wide Char string (windows default)
+			//
+			std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());					
+			std::string utf8_string = utf8_line.get();
+		
+			
+			//
+			// ToDo. 
+			// line ë¬¸ìì—´ íŒŒì‹±í•´ì„œ í•„ìš”í•œ ì‘ì—…í•˜ê¸° 
+			//
+			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
 		}
-		char *token = strtok(const_cast<char *>(line.c_str()), ",");
-		char value[30];
-		strcpy(value, token);
-		token = strtok(NULL, ",");
-		pr = (*pdata).insert(pair<string, string>(string(token), string(value)));
+		else
+		{
+			++curr;
+		}		
+	};
 
-		if (pr.second) {}						//	Áßº¹µÇ´Â Å° °ªÀÌ ¾ø´Â °æ¿ì	
+	//
+	// íŒŒì¼ì˜ ëì´ \r\n ìœ¼ë¡œ ì¢…ë£Œë˜ì§€ ì•ŠëŠ” ê²½ìš° ë§ˆì§€ë§‰ ë¼ì¸ì´ ì¡´ì¬í•  ìˆ˜ ìˆìŒ
+	//
+	if (prev < curr)
+	{
+		uint32_t length = (curr - prev) * sizeof(char);
+		char_ptr utf8_line((char*)malloc(length + sizeof(char)), [](char* p) {if (nullptr != p) free(p); });
+		if (nullptr == utf8_line.get())
+		{
+			log_err "not enough memory. give up." log_end;
+			return false;
+		}		
+		memcpy(utf8_line.get(), &buf[prev], length);
+		utf8_line.get()[length] = 0x00;
+
+		//
+		// UTF-8 string --> Wide Char string (windows default)
+		//
+		std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());
+
+		//
+		// TODO.
+		// line ë¬¸ìì—´ íŒŒì‹±í•´ì„œ í•„ìš”í•œ ì‘ì—…í•˜ê¸° 
+		//
+		pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
 	}
-	in_stream.close();
+
 	return true;
 }
 
-/// @brief ÃÖ±Ù¿¡ »ç¿ëµÈ ÆÄÀÏÀº
-/// (prefetch.h¿¡ ¼±¾ğµÈ DAYCOUNT ±âÁØ)¸ñ·Ï¿¡¼­ Á¦°ÅÇÑ´Ù.
+/// @brief ìµœê·¼ì— ì‚¬ìš©ëœ íŒŒì¼ì€
+/// (prefetch.hì— ì„ ì–¸ëœ DAYCOUNT ê¸°ì¤€)ëª©ë¡ì—ì„œ ì œê±°í•œë‹¤.
 bool check_recently_used(map<string, string> *csv_map) {
 
-	csv_map->erase(string("ExecutableName"));				//	cSV ÆÄÀÏ Ã¹ ¹®Àå Á¦°Å
+	csv_map->erase(string("ExecutableName"));				//	cSV íŒŒì¼ ì²« ë¬¸ì¥ ì œê±°
 
-	//	MyLib È°¿ë, ÇöÀç system ½Ã°£À» stringÀ¸·Î º¯È¯
+	//	MyLib í™œìš©, í˜„ì¬ system ì‹œê°„ì„ stringìœ¼ë¡œ ë³€í™˜
 	string cur_time = time_now_to_str(true, false);
 	log_info "cur time : %s", cur_time.c_str() log_end;
 
-	//	FILETIME ¿¬»êÀ» À§ÇÑ ¼±¾ğ
+	//	FILETIME ì—°ì‚°ì„ ìœ„í•œ ì„ ì–¸
 	__int64 IN_DAY = (__int64)10000000 * 60 * 60 * 24;
 
-	//	string ÇüÅÂÀÇ ½Ã°£À» FILETIMEÀ¸·Î º¯È¯ (csv¿¡¼­ ÀĞ¾î¿Â ½Ã°£À» °è»êÇÏ±â À§ÇÔ)
+	//	string í˜•íƒœì˜ ì‹œê°„ì„ FILETIMEìœ¼ë¡œ ë³€í™˜ (csvì—ì„œ ì½ì–´ì˜¨ ì‹œê°„ì„ ê³„ì‚°í•˜ê¸° ìœ„í•¨)
 	FILETIME point_time = str_to_filetime(cur_time);
 	LARGE_INTEGER temp_time;
 	memcpy(&temp_time, &point_time, sizeof(FILETIME));
@@ -212,8 +272,8 @@ bool check_recently_used(map<string, string> *csv_map) {
 	memcpy(&point_time, &temp_time, sizeof(FILETIME));
 
 	//
-	//	ÃÖ±Ù¿¡ »ç¿ëµÈ exe ÆÄÀÏÀÇ ¸ñ·ÏÀ» Á¦°ÅÇÏ±â À§ÇÑ ¸®½ºÆ® »ı¼º
-	//	¸¶Áö¸· »ç¿ë½Ã°£ÀÌ ±âÁØ½Ã°£ ÀÌÈÄ ÀÏ ¶§ MAP ¿¡¼­ »èÁ¦ÇØÁÜ
+	//	ìµœê·¼ì— ì‚¬ìš©ëœ exe íŒŒì¼ì˜ ëª©ë¡ì„ ì œê±°í•˜ê¸° ìœ„í•œ ë¦¬ìŠ¤íŠ¸ ìƒì„±
+	//	ë§ˆì§€ë§‰ ì‚¬ìš©ì‹œê°„ì´ ê¸°ì¤€ì‹œê°„ ì´í›„ ì¼ ë•Œ MAP ì—ì„œ ì‚­ì œí•´ì¤Œ
 	list<string> remove_list;
 	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
 	{
@@ -237,8 +297,8 @@ bool check_recently_used(map<string, string> *csv_map) {
 }
 
 
-/// @brief  `2018-11-13 00:54:24 Æ÷¸Ë ½Ã°£ ¹®ÀÚ¿­À» ÀÔ·Â¹Ş´Â´Ù. 
-///			FILETIMEÀÇ ÇüÅÂ·Î ¹İÈ¯ÇÑ´Ù.
+/// @brief  `2018-11-13 00:54:24 í¬ë§· ì‹œê°„ ë¬¸ìì—´ì„ ì…ë ¥ë°›ëŠ”ë‹¤. 
+///			FILETIMEì˜ í˜•íƒœë¡œ ë°˜í™˜í•œë‹¤.
 ///
 FILETIME str_to_filetime(string &sTime) {
 	istringstream istr(sTime);

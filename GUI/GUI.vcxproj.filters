@@ -72,6 +72,9 @@
     <ClInclude Include="phVerify\verifyp.h">
       <Filter>phverify</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h">
+      <Filter>mylib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="phVerify\verify.cpp">
       <Filter>phverify</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp">
+      <Filter>mylib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

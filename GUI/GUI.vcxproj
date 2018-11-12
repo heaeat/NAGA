@@ -228,6 +228,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="..\..\..\work.mylib\src\Queue.h" />
     <ClInclude Include="..\..\..\work.mylib\src\RegistryUtil.h" />
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
+    <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
     <ClInclude Include="phVerify\verify.h" />
@@ -245,6 +246,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="..\..\..\work.mylib\src\process_tree.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\RegistryUtil.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
+    <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
     <ClCompile Include="phVerify\verify.cpp" />
