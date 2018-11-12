@@ -22,8 +22,8 @@ using namespace std;
 #pragma comment(lib, "msi.lib")
 #pragma comment(lib,"ChilkatRelDll_x64.lib")
 
-void get_prefetch_info();
-void run_PECmd(void);
+bool get_prefetch_info();
+bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
 wchar_t * find_timeline_file(wstring strm);
 boolean read_csv(wchar_t *filename, map<string, string> *pdata);

@@ -6,14 +6,41 @@
 
 std::wstring result_path = L"\"C:\\Temp\\result\\";
 
-void get_prefetch_info() {
+bool get_prefetch_info() 
+{
 	map<string, string> csv_map;
-	run_PECmd();
+	
+	bool ret = run_PECmd();
+	if (true != ret)
+	{
+		log_err "run_PECmd() failed." log_end;
+		return false;
+	}
+
 	wchar_t *file_name = find_timeline_file(result_path);
-	read_csv(file_name, &csv_map);
+	if (nullptr == file_name)
+	{
+		log_err "find_timeline_file() failed. result_path=%ws",
+			result_path
+			log_end;
+		return false;
+	}
+
+	if (!read_csv(file_name, &csv_map))
+	{
+		log_err "read_csv() failed. file_name=%ws",
+			file_name
+			log_end;
+
+		free(file_name); // <<!
+		return false;
+	}
+
+	free(file_name); // <<!
+	return true;
 }
 
-void run_PECmd(void) 
+bool run_PECmd(void) 
 {
 	// 현재경로 받아오기
 	std::wstring current_dir = get_current_module_dirEx();
@@ -42,13 +69,15 @@ void run_PECmd(void)
 			strm.str().c_str(),
 			GetLastError()
 			log_end;
+		return false;
 	}
 
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 	CloseHandle(processInfo.hThread); 
 	CloseHandle(processInfo.hProcess);
 	*/
-	
+
+	return true;
 }
 
 
@@ -114,16 +143,15 @@ wchar_t *find_timeline_file(wstring path) {
 	strm << L"C:\\Temp\\result\\" << L"*Timeline.csv";
 	handle = _tfindfirst(strm.str().c_str(), &file_search);
 
-
-	wchar_t *file_name = (wchar_t*)malloc(sizeof(wchar_t) * 260);
-	wcscpy(file_name, file_search.name);
-
 	if (handle == -1) {
 		log_err "힝 읍써" log_end;
-		return NULL;
+		return nullptr;
 	}
 	else {
 		log_err "있써! %ws", file_search.name log_end;
+
+		wchar_t *file_name = (wchar_t*)malloc(sizeof(wchar_t) * 260);
+		wcscpy(file_name, file_search.name);
 		return file_name;
 	}
 }

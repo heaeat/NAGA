@@ -230,6 +230,8 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
+    <ClInclude Include="phVerify\verify.h" />
+    <ClInclude Include="phVerify\verifyp.h" />
     <ClInclude Include="prefetch.h" />
     <ClInclude Include="program.h" />
     <ClInclude Include="Resource.h" />
@@ -245,6 +247,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
+    <ClCompile Include="phVerify\verify.cpp" />
     <ClCompile Include="prefetch.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="stdafx.cpp">

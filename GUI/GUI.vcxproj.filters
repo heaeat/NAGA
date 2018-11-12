@@ -16,6 +16,9 @@
     <Filter Include="mylib">
       <UniqueIdentifier>{058a5de7-00f2-4e84-b496-285d9af9d4e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="phverify">
+      <UniqueIdentifier>{0c5854cc-c3e4-4d12-aea0-a414a81b4e24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI.h">
@@ -63,6 +66,12 @@
     <ClInclude Include="prefetch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="phVerify\verify.h">
+      <Filter>phverify</Filter>
+    </ClInclude>
+    <ClInclude Include="phVerify\verifyp.h">
+      <Filter>phverify</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -97,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="prefetch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="phVerify\verify.cpp">
+      <Filter>phverify</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
