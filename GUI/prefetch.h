@@ -26,6 +26,9 @@ bool get_prefetch_info();
 bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
 wchar_t * find_timeline_file(wstring strm);
-boolean read_csv(wchar_t *filename, map<string, string> *pdata);
-string get_current_time();
-boolean convert_date(map<string, string> csv_map, string cur);
+bool  read_csv(wchar_t *filename, map<string, string> *pdata);
+bool check_recently_used(map<string, string> *csv_map);
+FILETIME str_to_filetime(string &sTime);
+
+
+#define DAYCONTROL				60
