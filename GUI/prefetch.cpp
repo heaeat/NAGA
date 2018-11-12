@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "prefetch.h"
 #include <io.h>
-
+#include "FileIoHelper.h"
 
 
 std::wstring result_path = L"\"C:\\Temp\\result\\";
@@ -157,35 +157,125 @@ wchar_t *find_timeline_file(wstring path) {
 }
 
 
-boolean read_csv(wchar_t *filename, map<string,string> *pdata)
+bool read_csv(wchar_t *filename, map<string, string> *pdata)
 {
-	pair<map<string, string>::iterator, bool> pr;
+	//pair<map<string, string>::iterator, bool> pr;
 
-	log_warn "[csv 파일 이름]" log_end;
-	std::wstringstream strm;
-	strm << L"C:\\Temp\\result\\" << filename;
-	log_info "%ws", strm.str().c_str() log_end;
-	ifstream in_stream;
-	string line;
-	in_stream.open(strm.str().c_str());
-	while (!in_stream.eof()) {
-		getline(in_stream, line);
-		if (line.length() <= 0 || line.find(",", 0) == string::npos) {
-			continue;
-		}
-		char *token = strtok(const_cast<char *>(line.c_str()), ",");
-		char value[30];
-		strcpy(value, token);
-		replace_string(line, token, "");
-		pr = (*pdata).insert(pair<string, string>(line, value));
-		if (true == pr.second) {
-			log_info "%ws\n", line log_end;
-		}
-		else {
-			cout << "Already exist ";
-		}
+	//log_warn "[csv 파일 이름]" log_end;
+	//std::wstringstream strm;
+	//strm << L"C:\\Temp\\result\\" << filename;
+	//log_info "%ws", strm.str().c_str() log_end;
+	//ifstream in_stream;
+	//string line;
+	//in_stream.open(strm.str().c_str());
+	//while (!in_stream.eof()) {
+	//	getline(in_stream, line);
+	//	if (line.length() <= 0 || line.find(",", 0) == string::npos) {
+	//		continue;
+	//	}
+	//	char *token = strtok(const_cast<char *>(line.c_str()), ",");
+	//	char value[30];
+	//	strcpy(value, token);
+	//	replace_string(line, token, "");
+	//	pr = (*pdata).insert(pair<string, string>(line, value));
+	//	if (true == pr.second) {
+	//		log_info "%ws\n", line log_end;
+	//	}
+	//	else {
+	//		cout << "Already exist ";
+	//	}
+	//}
+	//in_stream.close();
+
+
+	// README 
+	// stl stream 이 기본 설정으로는 utf8 문자열 처리를 제대로 못함
+	// 방법이 있긴 한데, 어케 하는지 모름
+	// 
+	// 그냥 무식하게 txt 파일 열어서, \r\n (줄바꿈)을 찾아서 라인단위로 끊어 읽고,
+	// 처리함
+	//
+
+	PFILE_CTX file_context = nullptr;
+	if (true != OpenFileContext(filename, true, file_context))
+	{
+		log_err "Can not open file. file=%ws", filename log_end;
+		return false;
 	}
-	in_stream.close();
+	SmrtFileCtx context_guard(file_context);
+	
+	//
+	// read line (0x0d0a)
+	//
+	char* buf = file_context->FileView;
+	uint32_t prev = 0;
+	uint32_t curr = 0;
+	while (curr < file_context->FileSize)
+	{
+		if (buf[curr] == 0x0D && buf[curr + 1] == 0x0A)
+		{
+			uint32_t length = (curr - prev) * sizeof(char);
+			char_ptr utf8_line((char*)malloc(length + sizeof(char)), [](char* p) {if (nullptr != p) free(p); });
+			if (nullptr == utf8_line.get())
+			{
+				log_err "not enough memory. give up." log_end;
+				return false;
+			}
+			memcpy(utf8_line.get(), &buf[prev], length);
+			utf8_line.get()[length] = 0x00;
+
+			//
+			// update position pointers
+			//
+			curr += 2;
+			prev = curr;
+			
+			//
+			// UTF-8 string --> Wide Char string (windows default)
+			//
+			std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());					
+			std::string utf8_string = utf8_line.get();
+		
+			
+			//
+			// ToDo. 
+			// line 문자열 파싱해서 필요한 작업하기 
+			//
+			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+		}
+		else
+		{
+			++curr;
+		}		
+	};
+
+	//
+	// 파일의 끝이 \r\n 으로 종료되지 않는 경우 마지막 라인이 존재할 수 있음
+	//
+	if (prev < curr)
+	{
+		uint32_t length = (curr - prev) * sizeof(char);
+		char_ptr utf8_line((char*)malloc(length + sizeof(char)), [](char* p) {if (nullptr != p) free(p); });
+		if (nullptr == utf8_line.get())
+		{
+			log_err "not enough memory. give up." log_end;
+			return false;
+		}		
+		memcpy(utf8_line.get(), &buf[prev], length);
+		utf8_line.get()[length] = 0x00;
+
+		//
+		// UTF-8 string --> Wide Char string (windows default)
+		//
+		std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());
+
+		//
+		// TODO.
+		// line 문자열 파싱해서 필요한 작업하기 
+		//
+		pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+	}
+
 	return true;
 }
 
