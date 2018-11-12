@@ -3,13 +3,11 @@
 #include <io.h>
 #include "FileIoHelper.h"
 
-
-std::wstring result_path = L"\"C:\\Temp\\result\\";
-
 bool get_prefetch_info() 
 {
 	map<string, string> csv_map;
-	
+
+
 	bool ret = run_PECmd();
 	if (true != ret)
 	{
@@ -32,17 +30,27 @@ bool get_prefetch_info()
 			file_name
 			log_end;
 
-		free(file_name); // <<!
+		free(file_name);
 		return false;
 	}
+	free(file_name);
+	
+	if (!check_recently_used(&csv_map)) {
+		log_err "check_recently_used() failed." log_end;
+	}
 
-	free(file_name); // <<!
+	
+	for (map<string, string>::iterator iter = csv_map.begin(); iter != csv_map.end(); iter++)
+	{
+		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
+	}
+	
 	return true;
 }
 
+/// @brief PECmd.exeë¥¼ ì‹¤í–‰í•˜ê³  csv íŒŒì¼ì„ ìƒì„±í•œë‹¤.
 bool run_PECmd(void) 
 {
-	// ÇöÀç°æ·Î ¹Ş¾Æ¿À±â
 	std::wstring current_dir = get_current_module_dirEx();
 	std::wstringstream strm;
 	strm << current_dir << L"\\PECmd.exe -d \"C:\\Windows\\Prefetch\" --csv " << result_path;
@@ -50,16 +58,13 @@ bool run_PECmd(void)
 	STARTUPINFO startupInfo = { 0 };
 	PROCESS_INFORMATION processInfo;
 	startupInfo.cb = sizeof(STARTUPINFO);
-
-
-	// µğ¹ö±ë
-	/*
+	
 	if (!CreateProcess(NULL,
 					  (LPWSTR)strm.str().c_str(),
 					   NULL,
 					   NULL,
 					   FALSE,
-					   0,
+					   CREATE_NO_WINDOW,			
 					   NULL,
 					   NULL,
 					   &startupInfo,
@@ -75,13 +80,11 @@ bool run_PECmd(void)
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 	CloseHandle(processInfo.hThread); 
 	CloseHandle(processInfo.hProcess);
-	*/
-
+	
 	return true;
 }
 
-
-
+/// @brief CSVíŒŒì¼ì„ íŒŒì‹±í•˜ê¸° ìœ„í•´ ì„ì‹œë¡œ ìƒì„±í•œ í´ë”ì™€ íŒŒì¼ì„ ì œê±°í•œë‹¤.
 int delete_all_csv(LPCWSTR szDir, int recur)
 {
 	HANDLE hSrch;
@@ -134,6 +137,7 @@ int delete_all_csv(LPCWSTR szDir, int recur)
 	return 0;
 }
 
+/// @brief Timeline.csv íŒŒì¼ì„ ì°¾ëŠ”ë‹¤.
 wchar_t *find_timeline_file(wstring path) {
 
 	struct _wfinddata_t file_search;
@@ -144,56 +148,24 @@ wchar_t *find_timeline_file(wstring path) {
 	handle = _tfindfirst(strm.str().c_str(), &file_search);
 
 	if (handle == -1) {
-		log_err "Èş À¾½á" log_end;
 		return nullptr;
 	}
 	else {
-		log_err "ÀÖ½á! %ws", file_search.name log_end;
-
 		wchar_t *file_name = (wchar_t*)malloc(sizeof(wchar_t) * 260);
 		wcscpy(file_name, file_search.name);
 		return file_name;
 	}
 }
 
-
+/// @brief CSVíŒŒì¼ì„ ì½ì–´ì™€ íŒŒì‹±í•œ í›„ ì¤‘ë³µëœ ê°’ì„ ì œê±°í•œë‹¤.
 bool read_csv(wchar_t *filename, map<string, string> *pdata)
 {
-	//pair<map<string, string>::iterator, bool> pr;
-
-	//log_warn "[csv ÆÄÀÏ ÀÌ¸§]" log_end;
-	//std::wstringstream strm;
-	//strm << L"C:\\Temp\\result\\" << filename;
-	//log_info "%ws", strm.str().c_str() log_end;
-	//ifstream in_stream;
-	//string line;
-	//in_stream.open(strm.str().c_str());
-	//while (!in_stream.eof()) {
-	//	getline(in_stream, line);
-	//	if (line.length() <= 0 || line.find(",", 0) == string::npos) {
-	//		continue;
-	//	}
-	//	char *token = strtok(const_cast<char *>(line.c_str()), ",");
-	//	char value[30];
-	//	strcpy(value, token);
-	//	replace_string(line, token, "");
-	//	pr = (*pdata).insert(pair<string, string>(line, value));
-	//	if (true == pr.second) {
-	//		log_info "%ws\n", line log_end;
-	//	}
-	//	else {
-	//		cout << "Already exist ";
-	//	}
-	//}
-	//in_stream.close();
-
-
 	// README 
-	// stl stream ÀÌ ±âº» ¼³Á¤À¸·Î´Â utf8 ¹®ÀÚ¿­ Ã³¸®¸¦ Á¦´ë·Î ¸øÇÔ
-	// ¹æ¹ıÀÌ ÀÖ±ä ÇÑµ¥, ¾îÄÉ ÇÏ´ÂÁö ¸ğ¸§
+	// stl stream ì´ ê¸°ë³¸ ì„¤ì •ìœ¼ë¡œëŠ” utf8 ë¬¸ìì—´ ì²˜ë¦¬ë¥¼ ì œëŒ€ë¡œ ëª»í•¨
+	// ë°©ë²•ì´ ìˆê¸´ í•œë°, ì–´ì¼€ í•˜ëŠ”ì§€ ëª¨ë¦„
 	// 
-	// ±×³É ¹«½ÄÇÏ°Ô txt ÆÄÀÏ ¿­¾î¼­, \r\n (ÁÙ¹Ù²Ş)À» Ã£¾Æ¼­ ¶óÀÎ´ÜÀ§·Î ²÷¾î ÀĞ°í,
-	// Ã³¸®ÇÔ
+	// ê·¸ëƒ¥ ë¬´ì‹í•˜ê²Œ txt íŒŒì¼ ì—´ì–´ì„œ, \r\n (ì¤„ë°”ê¿ˆ)ì„ ì°¾ì•„ì„œ ë¼ì¸ë‹¨ìœ„ë¡œ ëŠì–´ ì½ê³ ,
+	// ì²˜ë¦¬í•¨
 	//
 
 	PFILE_CTX file_context = nullptr;
@@ -239,7 +211,7 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 			
 			//
 			// ToDo. 
-			// line ¹®ÀÚ¿­ ÆÄ½ÌÇØ¼­ ÇÊ¿äÇÑ ÀÛ¾÷ÇÏ±â 
+			// line ë¬¸ìì—´ íŒŒì‹±í•´ì„œ í•„ìš”í•œ ì‘ì—…í•˜ê¸° 
 			//
 			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
 		}
@@ -250,7 +222,7 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 	};
 
 	//
-	// ÆÄÀÏÀÇ ³¡ÀÌ \r\n À¸·Î Á¾·áµÇÁö ¾Ê´Â °æ¿ì ¸¶Áö¸· ¶óÀÎÀÌ Á¸ÀçÇÒ ¼ö ÀÖÀ½
+	// íŒŒì¼ì˜ ëì´ \r\n ìœ¼ë¡œ ì¢…ë£Œë˜ì§€ ì•ŠëŠ” ê²½ìš° ë§ˆì§€ë§‰ ë¼ì¸ì´ ì¡´ì¬í•  ìˆ˜ ìˆìŒ
 	//
 	if (prev < curr)
 	{
@@ -271,7 +243,7 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 
 		//
 		// TODO.
-		// line ¹®ÀÚ¿­ ÆÄ½ÌÇØ¼­ ÇÊ¿äÇÑ ÀÛ¾÷ÇÏ±â 
+		// line ë¬¸ìì—´ íŒŒì‹±í•´ì„œ í•„ìš”í•œ ì‘ì—…í•˜ê¸° 
 		//
 		pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
 	}
@@ -279,10 +251,72 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 	return true;
 }
 
-void replace_string(std::string& subject, const std::string& search, const std::string& replace)
-{
-	size_t pos = 0;
-	while ((pos = subject.find(search, pos)) != std::string::npos) {
-		subject.replace(pos, search.length(), replace); pos += replace.length();
+/// @brief ìµœê·¼ì— ì‚¬ìš©ëœ íŒŒì¼ì€
+/// (prefetch.hì— ì„ ì–¸ëœ DAYCOUNT ê¸°ì¤€)ëª©ë¡ì—ì„œ ì œê±°í•œë‹¤.
+bool check_recently_used(map<string, string> *csv_map) {
+
+	csv_map->erase(string("ExecutableName"));				//	cSV íŒŒì¼ ì²« ë¬¸ì¥ ì œê±°
+
+	//	MyLib í™œìš©, í˜„ì¬ system ì‹œê°„ì„ stringìœ¼ë¡œ ë³€í™˜
+	string cur_time = time_now_to_str(true, false);
+	log_info "cur time : %s", cur_time.c_str() log_end;
+
+	//	FILETIME ì—°ì‚°ì„ ìœ„í•œ ì„ ì–¸
+	__int64 IN_DAY = (__int64)10000000 * 60 * 60 * 24;
+
+	//	string í˜•íƒœì˜ ì‹œê°„ì„ FILETIMEìœ¼ë¡œ ë³€í™˜ (csvì—ì„œ ì½ì–´ì˜¨ ì‹œê°„ì„ ê³„ì‚°í•˜ê¸° ìœ„í•¨)
+	FILETIME point_time = str_to_filetime(cur_time);
+	LARGE_INTEGER temp_time;
+	memcpy(&temp_time, &point_time, sizeof(FILETIME));
+	temp_time.QuadPart -= IN_DAY * DAYCONTROL;
+	memcpy(&point_time, &temp_time, sizeof(FILETIME));
+
+	//
+	//	ìµœê·¼ì— ì‚¬ìš©ëœ exe íŒŒì¼ì˜ ëª©ë¡ì„ ì œê±°í•˜ê¸° ìœ„í•œ ë¦¬ìŠ¤íŠ¸ ìƒì„±
+	//	ë§ˆì§€ë§‰ ì‚¬ìš©ì‹œê°„ì´ ê¸°ì¤€ì‹œê°„ ì´í›„ ì¼ ë•Œ MAP ì—ì„œ ì‚­ì œí•´ì¤Œ
+	list<string> remove_list;
+	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
+	{
+		string temp = iter->second;
+		FILETIME last_runtime = str_to_filetime(temp);
+		if (!(CompareFileTime(&point_time, &last_runtime) == 1)) {
+			remove_list.push_back(iter->first.c_str());		
+		}
 	}
+
+	for (auto remove : remove_list) {
+		csv_map->erase(remove);
+	}
+
+	for (auto remove : remove_list) {
+		remove_list.remove(remove);
+	}
+	remove_list.clear();
+
+	return true;
+}
+
+
+/// @brief  `2018-11-13 00:54:24 í¬ë§· ì‹œê°„ ë¬¸ìì—´ì„ ì…ë ¥ë°›ëŠ”ë‹¤. 
+///			FILETIMEì˜ í˜•íƒœë¡œ ë°˜í™˜í•œë‹¤.
+///
+FILETIME str_to_filetime(string &sTime) {
+	istringstream istr(sTime);
+	SYSTEMTIME st = { 0 };
+	FILETIME ft = { 0 };
+
+	istr >> st.wYear;
+	istr.ignore(1, '-');
+	istr >> st.wMonth;
+	istr.ignore(1, '-');
+	istr >> st.wDay;
+	istr.ignore(1, ' ');
+	istr >> st.wHour;
+	istr.ignore(1, ':');
+	istr >> st.wMinute;
+	istr.ignore(1, ':');
+	istr >> st.wSecond;
+	00 >> st.wMilliseconds;
+	SystemTimeToFileTime(&st, &ft);
+	return ft;
 }
