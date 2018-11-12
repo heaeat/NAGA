@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "prefetch.h"
 #include <io.h>
+#include <time.h>
 
 
 
@@ -9,7 +10,7 @@ std::wstring result_path = L"\"C:\\Temp\\result\\";
 bool get_prefetch_info() 
 {
 	map<string, string> csv_map;
-	
+
 	bool ret = run_PECmd();
 	if (true != ret)
 	{
@@ -37,6 +38,16 @@ bool get_prefetch_info()
 	}
 
 	free(file_name); // <<!
+	
+
+	for (map<string, string>::iterator iter = csv_map.begin(); iter != csv_map.end(); iter++)
+	{
+		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
+	}
+
+	string cur = get_current_time();
+	log_info "current time : %s", cur.c_str() log_end;
+
 	return true;
 }
 
@@ -52,14 +63,12 @@ bool run_PECmd(void)
 	startupInfo.cb = sizeof(STARTUPINFO);
 
 
-	// 디버깅
-	/*
 	if (!CreateProcess(NULL,
 					  (LPWSTR)strm.str().c_str(),
 					   NULL,
 					   NULL,
 					   FALSE,
-					   0,
+					   CREATE_NO_WINDOW,
 					   NULL,
 					   NULL,
 					   &startupInfo,
@@ -75,11 +84,9 @@ bool run_PECmd(void)
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
 	CloseHandle(processInfo.hThread); 
 	CloseHandle(processInfo.hProcess);
-	*/
-
+	
 	return true;
 }
-
 
 
 int delete_all_csv(LPCWSTR szDir, int recur)
@@ -156,7 +163,6 @@ wchar_t *find_timeline_file(wstring path) {
 	}
 }
 
-
 boolean read_csv(wchar_t *filename, map<string,string> *pdata)
 {
 	pair<map<string, string>::iterator, bool> pr;
@@ -165,34 +171,60 @@ boolean read_csv(wchar_t *filename, map<string,string> *pdata)
 	std::wstringstream strm;
 	strm << L"C:\\Temp\\result\\" << filename;
 	log_info "%ws", strm.str().c_str() log_end;
+
 	ifstream in_stream;
 	string line;
 	in_stream.open(strm.str().c_str());
+
+	if (!in_stream.good()) {
+		log_err  "ifstream open err" log_end;
+	}
 	while (!in_stream.eof()) {
 		getline(in_stream, line);
 		if (line.length() <= 0 || line.find(",", 0) == string::npos) {
 			continue;
 		}
+
 		char *token = strtok(const_cast<char *>(line.c_str()), ",");
 		char value[30];
 		strcpy(value, token);
-		replace_string(line, token, "");
-		pr = (*pdata).insert(pair<string, string>(line, value));
+		token = strtok(NULL, ",");
+		pr = (*pdata).insert(pair<string, string>(string(token), string(value)));
 		if (true == pr.second) {
-			log_info "%ws\n", line log_end;
+			//log_warn "%s", line.c_str() log_end;
 		}
 		else {
-			cout << "Already exist ";
+			//log_err "Already exist" log_end;
 		}
+		
 	}
 	in_stream.close();
 	return true;
 }
 
-void replace_string(std::string& subject, const std::string& search, const std::string& replace)
-{
-	size_t pos = 0;
-	while ((pos = subject.find(search, pos)) != std::string::npos) {
-		subject.replace(pos, search.length(), replace); pos += replace.length();
+string get_current_time() {
+	//
+	//	현재 시간을 time_t 타입으로 저장한다.
+	//
+	time_t now = time(0);
+	struct tm tstruct;
+	char buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+	return buf;
+}
+
+boolean convert_date(map<string, string> csv_map, string cur) {
+	for (map<string, string>::iterator iter = csv_map.begin(); iter != csv_map.end(); iter++)
+	{
+//		log_info "Key : %s  - Value : %s\n", iter->first.c_str(), iter->second.c_str() log_end;
+		char *value = strtok(const_cast<char *>(iter->second.c_str()), " ");
+		char date[30];
+		strcpy(date, value);
+		value = strtok(NULL, " ");
+		char time[30];
+		strcpy(time, value);
 	}
+
+	return true;
 }

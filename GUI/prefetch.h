@@ -27,4 +27,5 @@ bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
 wchar_t * find_timeline_file(wstring strm);
 boolean read_csv(wchar_t *filename, map<string, string> *pdata);
-void replace_string(std::string& subject, const std::string& search, const std::string& replace);
+string get_current_time();
+boolean convert_date(map<string, string> csv_map, string cur);
