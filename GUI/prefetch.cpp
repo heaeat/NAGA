@@ -181,7 +181,7 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 		log_err "Can not open file. file=%ws", filename log_end;
 		return false;
 	}
-	log_info "Open file. file=%s", strm.str().c_str() log_end;
+	log_info "Open file. file=%ws", strm.str().c_str() log_end;
 	SmrtFileCtx context_guard(file_context);
 	
 	//
@@ -221,14 +221,12 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 			// ToDo. 
 			// line 문자열 파싱해서 필요한 작업하기 
 			//
-			char *token = strtok(const_cast<char *>(utf8_string.c_str()), ",");
+			std::string comma_string = ",";
+			int location = utf8_string.find(comma_string);
 
-			char value[30];
-			strcpy(value, token);
-			token = strtok(NULL, ",");
-//			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
-			pdata->insert(pair<string, string>(string(token), string(value)));
-
+			string date = utf8_string.substr(0, location);
+			string name = utf8_string.substr(location + 1);
+			pdata->insert(std::pair<string, string>(name, date));
 		}
 		else
 		{
@@ -260,14 +258,9 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 		// TODO.
 		// line 문자열 파싱해서 필요한 작업하기 
 		//
-		//pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
-		char *token = strtok(utf8_line.get(), ",");
-		
-		char value[30];
-		strcpy(value, token);
-		token = strtok(NULL, ",");
-		log_info "움.... %s %s", token, value log_end;
-		pdata->insert(pair<string, string>(string(token), string(value)));
+
+	//	pdata->insert(std::pair<string, string>(wcs_string, wcs_string));
+
 	}
 
 	return true;
@@ -295,7 +288,6 @@ bool check_recently_used(map<string, string> *csv_map) {
 	
 
 
-
 	//
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성
 	//	마지막 사용시간이 기준시간 이후 일 때 MAP 에서 삭제해줌
@@ -309,14 +301,17 @@ bool check_recently_used(map<string, string> *csv_map) {
 		}
 	}
 
+	
 	for (auto remove : remove_list) {
 		csv_map->erase(remove);
 	}
 
+	/*
 	for (auto remove : remove_list) {
 		remove_list.remove(remove);
 	}
 	remove_list.clear();
+	*/
 
 	return true;
 }
