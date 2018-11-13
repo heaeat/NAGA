@@ -3,10 +3,11 @@
 #include <io.h>
 #include "FileIoHelper.h"
 
-bool get_prefetch_info() 
-{
-	map<string, string> csv_map;
 
+wstring result_path = L"\"C:\\Temp\\result\\";
+
+bool get_prefetch_info(map<string,string> *csv_map) 
+{
 
 	bool ret = run_PECmd();
 	if (true != ret)
@@ -14,6 +15,7 @@ bool get_prefetch_info()
 		log_err "run_PECmd() failed." log_end;
 		return false;
 	}
+
 
 	wchar_t *file_name = find_timeline_file(result_path);
 	if (nullptr == file_name)
@@ -24,7 +26,7 @@ bool get_prefetch_info()
 		return false;
 	}
 
-	if (!read_csv(file_name, &csv_map))
+	if (!read_csv(file_name, csv_map))
 	{
 		log_err "read_csv() failed. file_name=%ws",
 			file_name
@@ -35,15 +37,17 @@ bool get_prefetch_info()
 	}
 	free(file_name);
 	
-	if (!check_recently_used(&csv_map)) {
+	if (!check_recently_used(csv_map)) {
 		log_err "check_recently_used() failed." log_end;
 	}
 
-	
-	for (map<string, string>::iterator iter = csv_map.begin(); iter != csv_map.end(); iter++)
+	/*
+	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
 	{
 		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
 	}
+
+	*/
 	
 	return true;
 }
@@ -168,12 +172,16 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 	// 처리함
 	//
 
+	std::wstringstream strm;
+	strm << L"C:\\Temp\\result\\" << filename;
+
 	PFILE_CTX file_context = nullptr;
-	if (true != OpenFileContext(filename, true, file_context))
+	if (true != OpenFileContext(strm.str().c_str(), true, file_context))
 	{
 		log_err "Can not open file. file=%ws", filename log_end;
 		return false;
 	}
+	log_info "Open file. file=%s", strm.str().c_str() log_end;
 	SmrtFileCtx context_guard(file_context);
 	
 	//
@@ -213,7 +221,14 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 			// ToDo. 
 			// line 문자열 파싱해서 필요한 작업하기 
 			//
-			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+			char *token = strtok(const_cast<char *>(utf8_string.c_str()), ",");
+
+			char value[30];
+			strcpy(value, token);
+			token = strtok(NULL, ",");
+//			pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+			pdata->insert(pair<string, string>(string(token), string(value)));
+
 		}
 		else
 		{
@@ -245,7 +260,14 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 		// TODO.
 		// line 문자열 파싱해서 필요한 작업하기 
 		//
-		pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+		//pdata->insert(std::pair<string, string>(utf8_line.get(), utf8_line.get()));
+		char *token = strtok(utf8_line.get(), ",");
+		
+		char value[30];
+		strcpy(value, token);
+		token = strtok(NULL, ",");
+		log_info "움.... %s %s", token, value log_end;
+		pdata->insert(pair<string, string>(string(token), string(value)));
 	}
 
 	return true;
@@ -270,6 +292,9 @@ bool check_recently_used(map<string, string> *csv_map) {
 	memcpy(&temp_time, &point_time, sizeof(FILETIME));
 	temp_time.QuadPart -= IN_DAY * DAYCONTROL;
 	memcpy(&point_time, &temp_time, sizeof(FILETIME));
+	
+
+
 
 	//
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성

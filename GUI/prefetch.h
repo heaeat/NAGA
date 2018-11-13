@@ -22,9 +22,9 @@ using namespace std;
 #pragma comment(lib, "msi.lib")
 #pragma comment(lib,"ChilkatRelDll_x64.lib")
 
-#define DAYCONTROL				60
+#define DAYCONTROL 2
 
-bool get_prefetch_info();
+bool get_prefetch_info(map<string, string> *csv_map);
 bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
 wchar_t * find_timeline_file(wstring strm);
