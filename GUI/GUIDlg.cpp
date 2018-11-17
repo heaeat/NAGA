@@ -331,7 +331,7 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		// UTF8 인코딩된 문자열을 MFC 콘트롤에 (기본설정으로) 안보일껄? (모르겠음)
 		// 암튼 그래서 utf8 인코딩 된 문자열을 Wide char 문자열로 변경해서 
 		// 컨트롤에 출력하기 
-	//	log_info "힝" log_end;
+		log_info "file=%s, last used=%s",line.first.c_str(), line.second.c_str() log_end;
 		insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
 	}
 		
@@ -339,8 +339,6 @@ void CGUIDlg::OnBnClickedBtnVerify()
 	//
 	// c:\windows\system32\ 아래 있는 exe 파일들의 전자서명을 검증한다.
 	//
-
-	
 	std::list<std::wstring> files;
 	log_info "trying to find exe/dll files..." log_end;
 	bool ret = find_files(L"c:\\windows\\", [](_In_ DWORD_PTR tag, _In_ const wchar_t* path)->bool

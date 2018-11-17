@@ -3,8 +3,16 @@
 #include <io.h>
 #include "FileIoHelper.h"
 
+#include <iostream>
+#define ARRAYSIZE(A) sizeof(A) / sizeof((A)[0])
+
+list<wstring> volume_list;
+map<wstring, wstring> volume_serial_list;
 
 wstring result_path = L"\"C:\\Temp\\result\\";
+void get_volume_name();
+void get_volume_serial();
+void get_volume_path(__in PWCHAR VolumeName);
 
 bool get_prefetch_info(map<string,string> *csv_map) 
 {
@@ -48,7 +56,18 @@ bool get_prefetch_info(map<string,string> *csv_map)
 	}
 
 	*/
+
+	//
+	// 사용자 PC의 모든 volume의 목록을 받아온다.
+	//
+	get_volume_name();
+
+	//
+	//	volume의 이름과 serial을 맵의 형태로 만든다.
+	//
+	get_volume_serial();
 	
+
 	return true;
 }
 
@@ -339,4 +358,168 @@ FILETIME str_to_filetime(string &sTime) {
 	00 >> st.wMilliseconds;
 	SystemTimeToFileTime(&st, &ft);
 	return ft;
+}
+
+
+void get_volume_name() {
+	HANDLE find_handle = INVALID_HANDLE_VALUE;
+	WCHAR volume_name[MAX_PATH] = L"";
+	WCHAR device_name[MAX_PATH] = L"";
+	size_t index = 0;
+	DWORD char_count = 0;
+	BOOL success = FALSE;
+
+
+	find_handle = FindFirstVolumeW(volume_name, ARRAYSIZE(volume_name));
+	if (find_handle == INVALID_HANDLE_VALUE) {
+		log_err "FindFirstVolumeW failed" log_end;
+	}
+
+	for (;;) {
+		index = wcslen(volume_name) - 1;
+		if (volume_name[0] != L'\\' ||
+			volume_name[1] != L'\\' ||
+			volume_name[2] != L'?' ||
+			volume_name[3] != L'\\' ||
+			volume_name[index] != L'\\')
+		{
+			log_err "FindFirstVolumeW/FindNextVolumeW returned a bad path: %s\n", volume_name log_end;
+			break;
+		}
+		//
+		//  QueryDosDeviceW does not allow a trailing backslash,
+		//  so temporarily remove it.
+		volume_name[index] = L'\0';
+
+		char_count = QueryDosDeviceW(&volume_name[4], device_name, ARRAYSIZE(device_name));
+
+		volume_name[index] = L'\\';
+
+		if (char_count == 0)
+		{
+			log_err "QueryDosDeviceW failed with error code \n" log_end;
+			break;
+		}
+		get_volume_path(volume_name);
+		//
+		//  Move on to the next volume.
+		success = FindNextVolumeW(find_handle, volume_name, ARRAYSIZE(volume_name));
+
+		if (!success)
+		{
+			log_err "FindNextVolumeW failed with error code" log_end;
+			break;
+		}
+	}
+
+	FindVolumeClose(find_handle);
+	find_handle = INVALID_HANDLE_VALUE;
+}
+
+void get_volume_path(
+	__in PWCHAR VolumeName
+)
+{
+	DWORD  CharCount = MAX_PATH + 1;
+	PWCHAR Names = NULL;
+	PWCHAR NameIdx = NULL;
+	BOOL   Success = FALSE;
+
+
+	for (;;)
+	{
+		//
+		//  Allocate a buffer to hold the paths.
+
+
+		Names = (PWCHAR) new BYTE[CharCount * sizeof(WCHAR)];
+
+		if (!Names)
+		{
+			//
+			//  If memory can't be allocated, return.
+			return;
+		}
+
+		//
+		//  Obtain all of the paths
+		//  for this volume.
+		Success = GetVolumePathNamesForVolumeNameW(
+			VolumeName, Names, CharCount, &CharCount
+		);
+
+		if (Success)
+		{
+			break;
+		}
+
+		if (GetLastError() != ERROR_MORE_DATA)
+		{
+			break;
+		}
+
+		//
+		//  Try again with the
+		//  new suggested size.
+		delete[] Names;
+		Names = NULL;
+	}
+
+	if (Success)
+	{
+		//
+		//  Display the various paths.
+		for (NameIdx = Names;
+			NameIdx[0] != L'\0';
+			NameIdx += wcslen(NameIdx) + 1)
+		{
+			wprintf(L"  %s", NameIdx);
+			log_info "%s",NameIdx log_end;
+			wstring str(NameIdx);
+			volume_list.push_back(str);
+		}
+		wprintf(L"\n");
+	}
+
+	if (Names != NULL)
+	{
+		delete[] Names;
+		Names = NULL;
+	}
+
+	return;
+}
+
+void get_volume_serial() {
+
+	for (auto volume : volume_list) {
+		DWORD VolumeSerialNumber = 0;
+
+		GetVolumeInformation(volume.c_str(), NULL, NULL, &VolumeSerialNumber, NULL, NULL, NULL, NULL);
+		char Hex_output[500];
+		itoa(VolumeSerialNumber, Hex_output, 16);
+
+		wstringstream strm;
+		strm << Hex_output;
+		volume_serial_list.insert(pair<wstring, wstring>(strm.str().c_str(), volume.c_str()));
+		log_info "%ws, %ws", strm.str().c_str(), volume.c_str() log_end;
+	}
+	
+}
+
+void parse_volume_serial(map<string, string> *csv_map) {
+	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
+	{
+		for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
+			//
+			//	volume_serial_list은 serial, name 의 형태로 저장되어 있다.
+			//	ex) 122a601d, C:\
+			
+			//
+			//	csv_map은 pull path, time 의 형태로 저장되어 있다.
+			//	ex) \VOLUME{01d2cb8a2a2d3680-122a601d}\USERS\HEAT\APPDATA\LOCAL\TEMP\IS-5KMTA.TMP\DELFINOUNLOADER-G3.EXE, 2018-10-19 06:59:05
+			int location = iter->first.find(serial_iter->first);
+		
+		}
+	}
 }
