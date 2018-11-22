@@ -1,14 +1,16 @@
 import os
 import requests
 import json
+from collections import OrderedDict
 import hashlib
-from pprint import pprint
+#from pprint import pprint
 
 #print(os.getcwd())
 
 pwd = os.getcwd()
 path = pwd +'/installer/'
-
+data = OrderedDict()
+arr  = []
 
 def download_file(pwd):
 
@@ -27,16 +29,36 @@ def download_file(pwd):
 	    file = path + data["install"][i]["bank"] + '.exe'
 	    #print(file)
 	    open(file,'wb').write(r.content)
-	    get_file_hash(file)
+	    os.system(file)
 
+def find_hash(dir_path,data):
+	try:
 
-def get_file_hash(file):
+		filenames = os.listdir(dir_path)
+		for filename in filenames:
+			full_filename = os.path.join(dir_path,filename)
+			if os.path.isdir(full_filename):
+				find_hash(full_filename,data)
+			else:
+				ext = os.path.splitext(full_filename)[-1]
+				if ext == '.exe':
+					#print(full_filename)
+					file_hash = hash(full_filename)
+					#print(file_hash)
+					data[full_filename] = file_hash
+	except PermissionError:
+		pass
 
-		f = open(file,'rb')
-		data = f.read()
-		hash = hashlib.sha1(data).hexdigest()
-		print(file)
-		print(hash)
+	return data
+
+def hash(file):
+
+	f = open(file,'rb')
+	data = f.read()
+	hash = hashlib.sha256(data).hexdigest()
+	#print(file)
+	#print(hash)
+	return hashh
 	
 def make_dir():
 	try:
@@ -47,8 +69,13 @@ def make_dir():
 			print("실패실패!!")
 			raise
 
-#def make_json():
+def make_json(data):
+	with open ('hash.json','w') as f:
+		json.dump(data,f, ensure_ascii=False, indent="\t")
 
 
 if __name__ =="__main__":
 	download_file(path)
+	find_hash("/mnt/c/Program Files/Wizvera",data)
+	find_hash("/mnt/c/Program Files (x86)/Wizvera/",data)
+	make_json(data)
