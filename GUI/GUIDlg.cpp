@@ -147,21 +147,29 @@ BOOL CGUIDlg::OnInitDialog()
 		m_listView.InsertColumn(i, &iCol);
 	}
 
+	//
+	//	항목 추가로 인해 잠시 주석처리!
+	//
+
+	/*
 	my_list = compare_lists();
 	for (auto mine : my_list)
 	{
 		insertData(const_cast<LPWSTR>(mine->name()), const_cast<LPWSTR>(mine->version()));
 	}
-
+	*/
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CGUIDlg::insertData(LPWSTR name, LPWSTR version) {
+
+/// @brief	리스트 컨트롤에 데이터를 추가하기 위한 함수
+///	이름, 마지막사용시간, 버젼, 인증서의 순서로 삽입한다.
+void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cert) {
 	LV_ITEM lvitem;
 	int count = m_listView.GetItemCount();
 
-	// 이름 입력
+	// 체크박스를 위한 공백
 	lvitem.mask = LVIF_TEXT;
 	lvitem.iItem = count;
 	lvitem.iSubItem = 0;
@@ -175,12 +183,27 @@ void CGUIDlg::insertData(LPWSTR name, LPWSTR version) {
 	lvitem.pszText = name;
 	m_listView.SetItem(&lvitem);
 
-	// 버젼 입력
+	//	마지막 사용시간 입력
 	lvitem.mask = LVIF_TEXT;
 	lvitem.iItem = count;
 	lvitem.iSubItem = 2;
+	lvitem.pszText = lastuse;
+	m_listView.SetItem(&lvitem);
+
+	// 버젼 입력
+	lvitem.mask = LVIF_TEXT;
+	lvitem.iItem = count;
+	lvitem.iSubItem = 3;
 	lvitem.pszText = version;
 	m_listView.SetItem(&lvitem);
+
+	//	인증서 유무 검증
+	lvitem.mask = LVIF_TEXT;
+	lvitem.iItem = count;
+	lvitem.iSubItem = 4;
+	lvitem.pszText = cert;
+	m_listView.SetItem(&lvitem);
+
 }
 
 void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -298,11 +321,13 @@ void CGUIDlg::OnBnClickedResetBtn()
 	my_list.clear();
 	my_list = compare_lists();
 
+	// 잠시 주석처리
+	/*
 	for (auto mine : my_list)
 	{
 		insertData(const_cast<LPWSTR>(mine->name()), const_cast<LPWSTR>(mine->version()));
 	}
-
+	*/
 }
 
 
@@ -354,12 +379,14 @@ void CGUIDlg::OnBnClickedBtnVerify()
 			if (signer_name.find(L"Microsoft") != string::npos) {
 				continue;
 			}
-			insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
+			// 잠시 주석처리
+			// insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
 			
 		}
 		else
 		{
-			insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
+			// 잠시 주석처리
+			//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
 		}
 	}
 	PhpVerifyFinalize();
@@ -397,8 +424,7 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	std::sort(vec.begin(), vec.end());
 
 	for (auto line : vec) {
-		insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
-		log_info "훔 %s", std::transform(line.first.begin(), line.first.end(), line.first.begin(), ::tolower) log_end;
-
+		// 잠시 주석처리
+		//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
 	}
 }
