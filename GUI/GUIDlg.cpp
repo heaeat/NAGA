@@ -74,6 +74,7 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RESET_BTN, &CGUIDlg::OnBnClickedResetBtn)
 	ON_BN_CLICKED(IDC_BTN_VERIFY, &CGUIDlg::OnBnClickedBtnVerify)
 	ON_WM_DESTROY()
+	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CGUIDlg::OnLvnColumnclickList1)
 END_MESSAGE_MAP()
 
 
@@ -359,11 +360,15 @@ void CGUIDlg::OnBnClickedBtnVerify()
 
 		if (vr == VrTrusted)
 		{
-			insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)signer_name.c_str());
+			if (signer_name.find(L"Microsoft") != string::npos) {
+				continue;
+			}
+			insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
+			
 		}
 		else
 		{
-			insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(),L"not verified");
+			insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
 		}
 	}
 	PhpVerifyFinalize();
@@ -381,5 +386,28 @@ void CGUIDlg::OnDestroy()
 		delete p;
 	}
 	my_list.clear();
+}
 
+
+void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+
+	m_listView.DeleteAllItems();
+	my_list.clear();
+
+	std::map<std::string, std::string> data;
+	if (!get_prefetch_info(&data)) {
+		log_err "Èþ" log_end;
+	}
+	std::vector<std::pair<std::string, std::string> > vec(data.begin(), data.end());
+	std::sort(vec.begin(), vec.end());
+
+	for (auto line : vec) {
+		insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
+		log_info "ÈÉ %s", std::transform(line.first.begin(), line.first.end(), line.first.begin(), ::tolower) log_end;
+
+	}
 }
