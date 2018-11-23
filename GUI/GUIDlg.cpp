@@ -130,16 +130,16 @@ BOOL CGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-									// TODO: Add extra initialization here
-	LPWSTR szText[3] = { L"삭제여부" ,L"이름", L"버젼" };
-	int nWidth[3] = { 60,300,100 };
+	// TODO: Add extra initialization here
+	LPWSTR szText[COLNUM] = { L"삭제여부" ,L"이름", L"마지막 사용",  L"버젼", L"인증서" };
+	int nWidth[COLNUM] = { 60,300,200,100,100 };
 
 	LV_COLUMN iCol;
 	iCol.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 	iCol.fmt = LVCFMT_LEFT;
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < COLNUM; i++) {
 		iCol.pszText = szText[i];
 		iCol.iSubItem = i;
 		iCol.cx = nWidth[i];
@@ -147,23 +147,14 @@ BOOL CGUIDlg::OnInitDialog()
 		m_listView.InsertColumn(i, &iCol);
 	}
 
-	/*
-	if (true != get_prefetch_info())
-	{
-		MessageBox(L"Can not get prefetch information", L"Error", 0);
-		return TRUE;
-	}
-	*/
-
 	my_list = compare_lists();
 	for (auto mine : my_list)
 	{
 		insertData(const_cast<LPWSTR>(mine->name()), const_cast<LPWSTR>(mine->version()));
 	}
 
-	//	delete_all_csv(L"C:\\Temp\\result", 1);
-	return TRUE;  // return TRUE  unless you set the focus to a control
 
+	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 void CGUIDlg::insertData(LPWSTR name, LPWSTR version) {
