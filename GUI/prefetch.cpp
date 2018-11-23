@@ -13,6 +13,7 @@ wstring result_path = L"\"C:\\Temp\\result\\";
 void get_volume_name();
 void get_volume_serial();
 void get_volume_path(__in PWCHAR VolumeName);
+void parse_volume_serial(map<string, string> *csv_map);
 
 bool get_prefetch_info(map<string,string> *csv_map) 
 {
@@ -49,13 +50,7 @@ bool get_prefetch_info(map<string,string> *csv_map)
 		log_err "check_recently_used() failed." log_end;
 	}
 
-	/*
-	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
-	{
-		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
-	}
 
-	*/
 
 	//
 	// 사용자 PC의 모든 volume의 목록을 받아온다.
@@ -67,6 +62,11 @@ bool get_prefetch_info(map<string,string> *csv_map)
 	//
 	get_volume_serial();
 	
+	parse_volume_serial(csv_map);
+	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
+	{
+		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
+	}
 
 	return true;
 }
@@ -510,6 +510,8 @@ void get_volume_serial() {
 void parse_volume_serial(map<string, string> *csv_map) {
 	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
 	{
+		log_info "for : %s", iter->first.c_str() log_end;
+
 		for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
 			//
 			//	volume_serial_list은 serial, name 의 형태로 저장되어 있다.
@@ -518,8 +520,26 @@ void parse_volume_serial(map<string, string> *csv_map) {
 			//
 			//	csv_map은 pull path, time 의 형태로 저장되어 있다.
 			//	ex) \VOLUME{01d2cb8a2a2d3680-122a601d}\USERS\HEAT\APPDATA\LOCAL\TEMP\IS-5KMTA.TMP\DELFINOUNLOADER-G3.EXE, 2018-10-19 06:59:05
-			int location = iter->first.find(serial_iter->first);
-		
+			stringstream str_serial;
+			str_serial << WcsToMbsUTF8Ex(serial_iter->first.c_str());
+						
+			//debug
+			int location = iter->first.find(str_serial.str());
+			log_info "location : %d", location log_end;
+
+			if (location != string::npos) {
+				int len = str_serial.str().length();
+
+				stringstream str_name;
+				str_name << WcsToMbsUTF8Ex(serial_iter->second.c_str());
+
+				string temp = iter->first;
+				temp.replace(0, location + len + 2, str_name.str().c_str());
+				log_info "name : %s , parsed : %s",str_name.str().c_str(),temp.c_str() log_end;
+				csv_map->erase(iter->first);
+				csv_map->insert(std::pair<string, string>(temp, iter->second));				
+			}
+			
 		}
 	}
 }
