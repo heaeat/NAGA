@@ -24,6 +24,8 @@ using namespace std;
 
 #define DAYCONTROL 2
 
+
+/// prefetch 관련 함수
 bool get_prefetch_info(map<string, string> *csv_map);
 bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
@@ -32,3 +34,8 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata);
 bool check_recently_used(map<string, string> *csv_map);
 FILETIME str_to_filetime(string &sTime);
 
+/// volume과 관련된 함수
+void get_volume_name();
+void get_volume_serial();
+void get_volume_path(__in PWCHAR VolumeName);
+void parse_volume_serial(map<string, string> *csv_map);

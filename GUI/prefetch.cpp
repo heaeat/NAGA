@@ -4,16 +4,13 @@
 #include "FileIoHelper.h"
 
 #include <iostream>
+
 #define ARRAYSIZE(A) sizeof(A) / sizeof((A)[0])
 
 list<wstring> volume_list;
 map<wstring, wstring> volume_serial_list;
-
 wstring result_path = L"\"C:\\Temp\\result\\";
-void get_volume_name();
-void get_volume_serial();
-void get_volume_path(__in PWCHAR VolumeName);
-void parse_volume_serial(map<string, string> *csv_map);
+
 
 bool get_prefetch_info(map<string,string> *csv_map) 
 {
@@ -520,10 +517,10 @@ void parse_volume_serial(map<string, string> *csv_map) {
 			//
 			//	csv_map은 pull path, time 의 형태로 저장되어 있다.
 			//	ex) \VOLUME{01d2cb8a2a2d3680-122a601d}\USERS\HEAT\APPDATA\LOCAL\TEMP\IS-5KMTA.TMP\DELFINOUNLOADER-G3.EXE, 2018-10-19 06:59:05
+			boolean find = false;
 			stringstream str_serial;
 			str_serial << WcsToMbsUTF8Ex(serial_iter->first.c_str());
 						
-			//debug
 			int location = iter->first.find(str_serial.str());
 			log_info "location : %d", location log_end;
 
@@ -535,11 +532,12 @@ void parse_volume_serial(map<string, string> *csv_map) {
 
 				string temp = iter->first;
 				temp.replace(0, location + len + 2, str_name.str().c_str());
-				log_info "name : %s , parsed : %s",str_name.str().c_str(),temp.c_str() log_end;
+
+				// 원래의 데이터를 map 에서 삭제하고 새롭게 추가함
 				csv_map->erase(iter->first);
 				csv_map->insert(std::pair<string, string>(temp, iter->second));				
 			}
-			
+				
 		}
 	}
 }

@@ -332,41 +332,13 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		// 암튼 그래서 utf8 인코딩 된 문자열을 Wide char 문자열로 변경해서 
 		// 컨트롤에 출력하기 
 		log_info "file=%s, last used=%s",line.first.c_str(), line.second.c_str() log_end;
-		insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
+	//	insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
 	}
 		
 
 	//
 	// c:\windows\system32\ 아래 있는 exe 파일들의 전자서명을 검증한다.
 	//
-	std::list<std::wstring> files;
-	log_info "trying to find exe/dll files..." log_end;
-	bool ret = find_files(L"c:\\windows\\", [](_In_ DWORD_PTR tag, _In_ const wchar_t* path)->bool
-	{
-		auto files = (std::list<std::wstring>*)(tag);
-
-		if (true == rstrnicmp(path, L".exe") || true == rstrnicmp(path, L".dll"))
-		{
-			log_info "found. %ws", path log_end;
-			files->push_back(path);
-		}
-
-		if (files->size() == 10)
-		{
-			// 10 개의 실행파일만... 
-			// false 를 리턴하면 파일 찾기를 중지한다. 
-			log_info "Done..." log_end;
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-
-	},
-		(DWORD_PTR)&files,	// tag
-		false);				// recursive
-
 	if (true != PhpVerifyInitialize())
 	{
 		MessageBoxW(L"전자서명 검증 모듈을 초기화 할 수 없습니다.",
@@ -375,29 +347,26 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		return;
 	}
 
-	for (auto file : files)
-	{
+	for (auto line : data){
 		std::wstring signer_name;
-		VERIFY_RESULT vr = PhVerifyFile(file.c_str(), &signer_name);
+		VERIFY_RESULT vr = PhVerifyFile(Utf8MbsToWcsEx(line.first.c_str()).c_str(), &signer_name);
 
-		log_info "file=%ws, verify result=%u, signer=%ws",
-			file.c_str(),
+		log_info "file=%s, verify result=%u, signer=%ws",
+			line.first.c_str(),
 			vr,
 			signer_name.c_str()
 			log_end;
 
 		if (vr == VrTrusted)
 		{
-			insertData((LPWSTR)file.c_str(), (LPWSTR)signer_name.c_str());
+			insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)signer_name.c_str());
 		}
 		else
 		{
-			insertData((LPWSTR)file.c_str(), L"Not verified");
+			insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(),L"not verified");
 		}
 	}
-
 	PhpVerifyFinalize();
-	
 }
 
 void CGUIDlg::OnDestroy()
