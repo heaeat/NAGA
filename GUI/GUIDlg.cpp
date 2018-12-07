@@ -84,27 +84,6 @@ BOOL CGUIDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	//
-	//	파일 로그를 초기화한다. 
-	// 
-	std::wstring current_dir = get_current_module_dirEx();
-	std::wstringstream strm;
-	strm << current_dir << L"\\MouseTrap.log";
-
-	if (true != initialize_log(log_mask_all,
-		log_level_debug,
-		log_to_file | log_to_con | log_to_ods,
-		strm.str().c_str()))
-	{
-		fwprintf(stderr, L"initialize_log() fail. give up! \n");
-	}
-
-	//
-	//	로그의 출력 형식을 지정한다. 
-	//
-	set_log_format(false, false, false, false);
-
-
 	// Add "About..." menu item to system menu.
 
 	// IDM_ABOUTBOX must be in the system command range.
@@ -208,6 +187,8 @@ void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cer
 
 void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
+
+	
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
 		CAboutDlg dlgAbout;
@@ -217,6 +198,7 @@ void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
+	
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -352,10 +334,6 @@ void CGUIDlg::OnBnClickedBtnVerify()
 	//	insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
 	}
 		
-
-	//
-	// c:\windows\system32\ 아래 있는 exe 파일들의 전자서명을 검증한다.
-	//
 	if (true != PhpVerifyInitialize())
 	{
 		MessageBoxW(L"전자서명 검증 모듈을 초기화 할 수 없습니다.",
@@ -381,7 +359,6 @@ void CGUIDlg::OnBnClickedBtnVerify()
 			}
 			// 잠시 주석처리
 			// insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
-			
 		}
 		else
 		{

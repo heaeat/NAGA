@@ -229,8 +229,12 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="..\..\..\work.mylib\src\RegistryUtil.h" />
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h" />
+    <ClInclude Include="CGdiPlusBitmap.h" />
+    <ClInclude Include="CStartDlg.h" />
+    <ClInclude Include="GdipButton.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
+    <ClInclude Include="MemDC.h" />
     <ClInclude Include="phVerify\verify.h" />
     <ClInclude Include="phVerify\verifyp.h" />
     <ClInclude Include="prefetch.h" />
@@ -247,6 +251,8 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="..\..\..\work.mylib\src\RegistryUtil.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp" />
+    <ClCompile Include="CStartDlg.cpp" />
+    <ClCompile Include="GdipButton.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
     <ClCompile Include="phVerify\verify.cpp" />
@@ -266,7 +272,11 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <None Include="res\GUI.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\heat\Desktop\naga.png" />
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\GUI.ico" />
+    <Image Include="res\hing.png" />
+    <Image Include="res\icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

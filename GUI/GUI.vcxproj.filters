@@ -75,6 +75,18 @@
     <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h">
       <Filter>mylib</Filter>
     </ClInclude>
+    <ClInclude Include="CStartDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GdipButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGdiPlusBitmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemDC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -116,6 +128,12 @@
     <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp">
       <Filter>mylib</Filter>
     </ClCompile>
+    <ClCompile Include="CStartDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GdipButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUI.rc">
@@ -129,6 +147,18 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\GUI.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\hing.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\heat\Desktop\naga.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

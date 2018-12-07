@@ -2,6 +2,7 @@
 #include "prefetch.h"
 #include <io.h>
 #include "FileIoHelper.h"
+#include "list.h"
 
 #include <iostream>
 
@@ -21,8 +22,7 @@ bool get_prefetch_info(map<string,string> *csv_map)
 		log_err "run_PECmd() failed." log_end;
 		return false;
 	}
-
-
+	
 	wchar_t *file_name = find_timeline_file(result_path);
 	if (nullptr == file_name)
 	{
@@ -47,8 +47,6 @@ bool get_prefetch_info(map<string,string> *csv_map)
 		log_err "check_recently_used() failed." log_end;
 	}
 
-
-
 	//
 	// 사용자 PC의 모든 volume의 목록을 받아온다.
 	//
@@ -64,7 +62,6 @@ bool get_prefetch_info(map<string,string> *csv_map)
 	{
 		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
 	}
-
 	return true;
 }
 
