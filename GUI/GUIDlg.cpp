@@ -318,7 +318,7 @@ void CGUIDlg::OnBnClickedBtnVerify()
 	//
 	// README - test 코드
 	//
-	std::map<std::string, std::string> data;
+	std::list<punknownp> data;
 	if (!get_prefetch_info(&data)) {
 		log_err "힝" log_end;
 	}
@@ -330,7 +330,7 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		// UTF8 인코딩된 문자열을 MFC 콘트롤에 (기본설정으로) 안보일껄? (모르겠음)
 		// 암튼 그래서 utf8 인코딩 된 문자열을 Wide char 문자열로 변경해서 
 		// 컨트롤에 출력하기 
-		log_info "file=%s, last used=%s",line.first.c_str(), line.second.c_str() log_end;
+		log_info "file=%ws, last used=%ws",line->id(), line->lastuse() log_end;
 	//	insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
 	}
 		
@@ -342,6 +342,7 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		return;
 	}
 
+	/*
 	for (auto line : data){
 		std::wstring signer_name;
 		VERIFY_RESULT vr = PhVerifyFile(Utf8MbsToWcsEx(line.first.c_str()).c_str(), &signer_name);
@@ -367,6 +368,7 @@ void CGUIDlg::OnBnClickedBtnVerify()
 		}
 	}
 	PhpVerifyFinalize();
+	*/
 }
 
 void CGUIDlg::OnDestroy()
@@ -393,15 +395,9 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	m_listView.DeleteAllItems();
 	my_list.clear();
 
-	std::map<std::string, std::string> data;
+	std::list<punknownp> data;
 	if (!get_prefetch_info(&data)) {
 		log_err "힝" log_end;
 	}
-	std::vector<std::pair<std::string, std::string> > vec(data.begin(), data.end());
-	std::sort(vec.begin(), vec.end());
 
-	for (auto line : vec) {
-		// 잠시 주석처리
-		//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
-	}
 }

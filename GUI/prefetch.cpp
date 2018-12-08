@@ -2,7 +2,6 @@
 #include "prefetch.h"
 #include <io.h>
 #include "FileIoHelper.h"
-#include "list.h"
 
 #include <iostream>
 
@@ -13,7 +12,7 @@ map<wstring, wstring> volume_serial_list;
 wstring result_path = L"\"C:\\Temp\\result\\";
 
 
-bool get_prefetch_info(map<string,string> *csv_map) 
+bool get_prefetch_info(list<punknownp> *unknown_list) 
 {
 
 	bool ret = run_PECmd();
@@ -32,7 +31,7 @@ bool get_prefetch_info(map<string,string> *csv_map)
 		return false;
 	}
 
-	if (!read_csv(file_name, csv_map))
+	if (!read_csv(file_name, unknown_list))
 	{
 		log_err "read_csv() failed. file_name=%ws",
 			file_name
@@ -43,7 +42,7 @@ bool get_prefetch_info(map<string,string> *csv_map)
 	}
 	free(file_name);
 	
-	if (!check_recently_used(csv_map)) {
+	if (!check_recently_used(unknown_list)) {
 		log_err "check_recently_used() failed." log_end;
 	}
 
@@ -57,11 +56,13 @@ bool get_prefetch_info(map<string,string> *csv_map)
 	//
 	get_volume_serial();
 	
-	parse_volume_serial(csv_map);
+	parse_volume_serial(unknown_list);
+	/*
 	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
 	{
 		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
 	}
+	*/
 	return true;
 }
 
@@ -175,7 +176,7 @@ wchar_t *find_timeline_file(wstring path) {
 }
 
 /// @brief CSV파일을 읽어와 파싱한 후 중복된 값을 제거한다.
-bool read_csv(wchar_t *filename, map<string, string> *pdata)
+bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 {
 	// README 
 	// stl stream 이 기본 설정으로는 utf8 문자열 처리를 제대로 못함
@@ -203,6 +204,12 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 	char* buf = file_context->FileView;
 	uint32_t prev = 0;
 	uint32_t curr = 0;
+
+	//
+	//	편리하게 중복을 제거하기 위해 map 을 통해 받은 후 list에 넣고자 한다.
+	//
+
+	map<string, string> csv_map; 
 	while (curr < file_context->FileSize)
 	{
 		if (buf[curr] == 0x0D && buf[curr + 1] == 0x0A)
@@ -222,14 +229,13 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 			//
 			curr += 2;
 			prev = curr;
-			
+		
 			//
 			// UTF-8 string --> Wide Char string (windows default)
 			//
 			std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());					
 			std::string utf8_string = utf8_line.get();
-		
-			
+
 			//
 			// ToDo. 
 			// line 문자열 파싱해서 필요한 작업하기 
@@ -239,7 +245,9 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 
 			string date = utf8_string.substr(0, location);
 			string name = utf8_string.substr(location + 1);
-			pdata->insert(std::pair<string, string>(name, date));
+			
+			csv_map.insert(std::pair<string,string>(name, date));
+			
 		}
 		else
 		{
@@ -283,17 +291,40 @@ bool read_csv(wchar_t *filename, map<string, string> *pdata)
 
 		string date = stm.str().substr(0, location);
 		string name = stm.str().substr(location + 1);
-		pdata->insert(std::pair<string, string>(name, date));
+		csv_map.insert(std::pair<string, string>(name, date));
 	}
+	//
+	//	중복 제거를 위해 map 에 넣어놨던 data를 list로 옮기기
+	// id , lastuse, version, cert, uninstaller의 순서
+	for (map<string, string>::iterator iter = csv_map.begin(); iter != csv_map.end(); iter++)
+	{
+		wstring null = L"";
+		punknownp temp = new unknownp(Utf8MbsToWcs(iter->first.c_str()),					// 이름
+			Utf8MbsToWcs(iter->second.c_str()),					// 날짜
+			null.c_str(),					// version (아직 모름)
+			null.c_str(),					// 인증서 유무 (아직 모름)
+			null.c_str());				// uninstaller 경로 (아직 모름)
 
+		unknown_list->push_back(temp);
+	}
 	return true;
 }
 
 /// @brief 최근에 사용된 파일은
 /// (prefetch.h에 선언된 DAYCOUNT 기준)목록에서 제거한다.
-bool check_recently_used(map<string, string> *csv_map) {
+bool check_recently_used(list<punknownp> *unknown_list) {
 
-	csv_map->erase(string("ExecutableName"));				//	cSV 파일 첫 문장 제거
+
+	for (auto unknown : *unknown_list)
+	{
+		stringstream str_id;
+		str_id << WcsToMbsUTF8Ex(unknown->id());
+
+		if ((str_id.str()).compare("ExecutableName") == 0) {
+			delete unknown;
+			break;
+		}
+	}
 
 	//	MyLib 활용, 현재 system 시간을 string으로 변환
 	string cur_time = time_now_to_str(true, false);
@@ -313,18 +344,29 @@ bool check_recently_used(map<string, string> *csv_map) {
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성
 	//	마지막 사용시간이 기준시간 이후 일 때 MAP 에서 삭제해줌
 	list<string> remove_list;
-	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
+	for (auto unknown: *unknown_list)
 	{
-		string temp = iter->second;
-		FILETIME last_runtime = str_to_filetime(temp);
+		stringstream str_lastuse;
+		str_lastuse << WcsToMbsUTF8Ex(unknown->lastuse());
+		
+		FILETIME last_runtime = str_to_filetime(str_lastuse.str());
 		if (!(CompareFileTime(&point_time, &last_runtime) == 1)) {
-			remove_list.push_back(iter->first.c_str());		
+			stringstream str_id;
+			str_id << WcsToMbsUTF8Ex(unknown->id());
+			log_info "%s", str_id.str().c_str() log_end;
+			remove_list.push_back(str_id.str());		
 		}
 	}
-
-	
+		
 	for (auto remove : remove_list) {
-		csv_map->erase(remove);
+		for (auto unknown : *unknown_list) {
+			stringstream str_id;
+			str_id << WcsToMbsUTF8Ex(unknown->id());
+
+			if((str_id.str()).compare(remove) == 0){
+				delete unknown;
+			}
+		}
 	}
 
 	/*
@@ -333,7 +375,7 @@ bool check_recently_used(map<string, string> *csv_map) {
 	}
 	remove_list.clear();
 	*/
-
+	
 	return true;
 }
 
@@ -509,8 +551,8 @@ void get_volume_serial() {
 	
 }
 
-void parse_volume_serial(map<string, string> *csv_map) {
-	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
+void parse_volume_serial(list<punknownp> *unknown_list) {
+	for (auto unknown : *unknown_list)
 	{
 		for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
 			//
@@ -521,29 +563,36 @@ void parse_volume_serial(map<string, string> *csv_map) {
 			//	csv_map은 pull path, time 의 형태로 저장되어 있다.
 			//	ex) \VOLUME{01d2cb8a2a2d3680-122a601d}\USERS\HEAT\APPDATA\LOCAL\TEMP\IS-5KMTA.TMP\DELFINOUNLOADER-G3.EXE, 2018-10-19 06:59:05
 
-			
-			if (iter->first.find("\\") == string::npos) {		//	full path를 알 수 없는 파일인 경우
-				log_info "No full path file : %s", iter->first.c_str() log_end;
-				csv_map->erase(iter->first);					//	우선은 목록에서 제거
+			stringstream str_id;
+			str_id << WcsToMbsUTF8Ex(unknown->id());
+
+			if ((str_id.str()).find("\\") == string::npos) {		//	full path를 알 수 없는 파일인 경우
+				log_info "No full path file : %ws", unknown->id() log_end;
+				delete unknown;					//	우선은 목록에서 제거
 				continue;
 			}
 
 			stringstream str_serial;
 			str_serial << WcsToMbsUTF8Ex(serial_iter->first.c_str());
-						
-			int location = iter->first.find(str_serial.str());
+		
+			int location = (str_id.str()).find(str_serial.str());
 			if (location != string::npos) {
 				int len = str_serial.str().length();
 
 				stringstream str_name;
 				str_name << WcsToMbsUTF8Ex(serial_iter->second.c_str());
 
-				string temp = iter->first;
+				string temp = str_id.str();
 				temp.replace(0, location + len + 2, str_name.str().c_str());
 
 				// 원래의 데이터를 map 에서 삭제하고 새롭게 추가함
-				csv_map->insert(std::pair<string, string>(temp, iter->second));
-				csv_map->erase(iter->first);
+
+				log_info "%s", temp.c_str() log_end;
+				wstring null = L"";
+				// id , lastuse, version, cert, uninstaller의 순서
+				punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), unknown->lastuse(), null.c_str(), null.c_str(), null.c_str());
+				unknown_list->push_back(temp_unknown);
+				delete unknown;
 			}
 				
 		}

@@ -15,6 +15,7 @@
 #include <sstream>
 #include <istream>
 #include <stdlib.h>
+#include "list.h"
 
 
 using namespace std;
@@ -26,16 +27,16 @@ using namespace std;
 
 
 /// prefetch 관련 함수
-bool get_prefetch_info(map<string, string> *csv_map);
+bool get_prefetch_info(list<punknownp> *unknown_list);
 bool run_PECmd(void);
 int delete_all_csv(LPCWSTR szDir, int recur);
 wchar_t * find_timeline_file(wstring strm);
-bool read_csv(wchar_t *filename, map<string, string> *pdata);
-bool check_recently_used(map<string, string> *csv_map);
+bool read_csv(wchar_t *filename, list<punknownp> *unknown_list);
+bool check_recently_used(list<punknownp> *unknown_list);
 FILETIME str_to_filetime(string &sTime);
 
 /// volume과 관련된 함수
 void get_volume_name();
 void get_volume_serial();
 void get_volume_path(__in PWCHAR VolumeName);
-void parse_volume_serial(map<string, string> *csv_map);
+void parse_volume_serial(list<punknownp> *unknown_list);

@@ -234,6 +234,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="GdipButton.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="GUIDlg.h" />
+    <ClInclude Include="list.h" />
     <ClInclude Include="MemDC.h" />
     <ClInclude Include="phVerify\verify.h" />
     <ClInclude Include="phVerify\verifyp.h" />
