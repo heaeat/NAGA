@@ -45,7 +45,6 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 	if (!check_recently_used(unknown_list)) {
 		log_err "check_recently_used() failed." log_end;
 	}
-
 	//
 	// 사용자 PC의 모든 volume의 목록을 받아온다.
 	//
@@ -353,29 +352,27 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		if (!(CompareFileTime(&point_time, &last_runtime) == 1)) {
 			stringstream str_id;
 			str_id << WcsToMbsUTF8Ex(unknown->id());
-			log_info "%s", str_id.str().c_str() log_end;
 			remove_list.push_back(str_id.str());		
 		}
 	}
-		
-	for (auto remove : remove_list) {
-		for (auto unknown : *unknown_list) {
+	
+	for (auto unknown : *unknown_list) {
+		for (auto remove : remove_list) {
 			stringstream str_id;
 			str_id << WcsToMbsUTF8Ex(unknown->id());
-
 			if((str_id.str()).compare(remove) == 0){
+				log_info "Recently used %s",str_id.str().c_str() log_end;
 				delete unknown;
 			}
 		}
 	}
-
 	/*
 	for (auto remove : remove_list) {
-		remove_list.remove(remove);
+	remove_list.remove(remove);
 	}
 	remove_list.clear();
 	*/
-	
+
 	return true;
 }
 
@@ -586,13 +583,16 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 				temp.replace(0, location + len + 2, str_name.str().c_str());
 
 				// 원래의 데이터를 map 에서 삭제하고 새롭게 추가함
-
 				log_info "%s", temp.c_str() log_end;
 				wstring null = L"";
-				// id , lastuse, version, cert, uninstaller의 순서
+				/*// id , lastuse, version, cert, uninstaller의 순서
 				punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), unknown->lastuse(), null.c_str(), null.c_str(), null.c_str());
 				unknown_list->push_back(temp_unknown);
 				delete unknown;
+				*/
+				wstringstream name;
+				name << Utf8MbsToWcsEx(temp.c_str()).c_str();
+				unknown->setId(name);
 			}
 				
 		}

@@ -256,6 +256,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="GdipButton.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
+    <ClCompile Include="list.cpp" />
     <ClCompile Include="phVerify\verify.cpp" />
     <ClCompile Include="prefetch.cpp" />
     <ClCompile Include="program.cpp" />
