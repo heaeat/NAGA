@@ -62,12 +62,19 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 
 	log_err "[출력]" log_end;
 	for (auto list : *unknown_list) {
-		log_info "%ws - [%ws]", list->id(),list->cert() log_end;
+		log_info "%ws - [%ws]", list->id(), list->cert() log_end;
 	}
+
+	if (!check_version(unknown_list)) {
+		log_err "check_version() failed" log_end;
+	}
+
 	return true;
 }
 
 /// @brief PECmd.exe를 실행하고 csv 파일을 생성한다.
+///
+///
 bool run_PECmd(void)
 {
 	std::wstring current_dir = get_current_module_dirEx();
@@ -463,9 +470,7 @@ void get_volume_name() {
 /// @brief  현재 PC의 Volume 경로를 가져온다.
 ///			
 ///
-void get_volume_path(
-	__in PWCHAR VolumeName
-)
+void get_volume_path(__in PWCHAR VolumeName)
 {
 	DWORD  CharCount = MAX_PATH + 1;
 	PWCHAR Names = NULL;
@@ -603,8 +608,8 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 				wstring null = L"";
 				// id , lastuse, version, cert, uninstaller의 순서
 				(*iter)->setId(Utf8MbsToWcsEx(temp.c_str()).c_str());
-			//	punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), (*iter)->lastuse(), null.c_str(), null.c_str(), null.c_str());
-			//	unknown_list->push_back(temp_unknown);
+				//	punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), (*iter)->lastuse(), null.c_str(), null.c_str(), null.c_str());
+				//	unknown_list->push_back(temp_unknown);
 			}
 
 		}
@@ -645,5 +650,40 @@ bool check_certification(list<punknownp> *unknown_list) {
 		}
 	}
 	PhpVerifyFinalize();
+	return true;
+}
+
+
+///	@brief  버젼정보를 알아오기 위한 함수
+///
+///
+bool check_version(list<punknownp> *unknown_list) {
+	std::list<pprogram> softwares;
+	get_installed_programs(softwares);
+
+	for (auto software : softwares)
+	{
+		for (auto unknown : *unknown_list) {
+			stringstream unknown_str;
+			std::string exe_string = ".";
+			unknown_str << WcsToMbsUTF8Ex((file_name_from_file_pathw(unknown->id())).c_str());
+
+			int location = unknown_str.str().find(exe_string);
+			string pure_name = unknown_str.str().substr(0, location);
+
+			stringstream sw_str;
+			sw_str << WcsToMbsUTF8Ex(software->name());
+			string temp = sw_str.str();
+			to_upper_string(temp);
+
+			log_info "%s---%s", pure_name.c_str(), temp.c_str() log_end;
+		
+			if (temp.find(pure_name) != std::string::npos) {
+				unknown->setVersion(software->version());
+				unknown->setUninstaller(software->uninstaller());
+				log_info "name : %ws, uninstaller : %ws", unknown->id(), unknown->uninstaller() log_end;
+			}
+		}
+	}
 	return true;
 }

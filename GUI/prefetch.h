@@ -44,3 +44,6 @@ void parse_volume_serial(list<punknownp> *unknown_list);
 
 ///	인증서 관련 함수
 bool check_certification(list<punknownp> *unknown_list);
+
+/// 버젼 관련 함수
+bool check_version(list<punknownp> *unknown_list);
