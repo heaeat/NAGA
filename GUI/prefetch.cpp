@@ -55,6 +55,10 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 	//
 	get_volume_serial();
 	
+	log_err "[출력]" log_end;
+	for (auto list : *unknown_list) {
+		log_info "%ws", list->id() log_end;
+	}
 	parse_volume_serial(unknown_list);
 	/*
 	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
@@ -313,7 +317,18 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 /// (prefetch.h에 선언된 DAYCOUNT 기준)목록에서 제거한다.
 bool check_recently_used(list<punknownp> *unknown_list) {
 
+	list<punknownp>::iterator it;
+	for (it = unknown_list->begin(); it != unknown_list->end(); it++) {
+		stringstream str_id;
+		str_id << WcsToMbsUTF8Ex((*it)->id());
 
+		if ((str_id.str()).compare("ExecutableName") == 0) {
+			unknown_list->erase(it);
+			break;
+		}
+	}
+
+	/*
 	for (auto unknown : *unknown_list)
 	{
 		stringstream str_id;
@@ -324,6 +339,7 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 			break;
 		}
 	}
+	*/
 
 	//	MyLib 활용, 현재 system 시간을 string으로 변환
 	string cur_time = time_now_to_str(true, false);
@@ -355,14 +371,32 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 			remove_list.push_back(str_id.str());		
 		}
 	}
-	
+	/*
 	for (auto unknown : *unknown_list) {
+		log_info "%ws", unknown->id() log_end;
 		for (auto remove : remove_list) {
 			stringstream str_id;
 			str_id << WcsToMbsUTF8Ex(unknown->id());
 			if((str_id.str()).compare(remove) == 0){
 				log_info "Recently used %s",str_id.str().c_str() log_end;
 				delete unknown;
+			}
+		}
+	}
+	*/
+
+	//
+	//	왜 공백이 들어가지...?
+	//
+	list<punknownp>::iterator iter;
+	for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++) {
+		log_info "%ws", (*iter)->id() log_end;
+		for (auto remove : remove_list) {
+			stringstream str_id;
+			str_id << WcsToMbsUTF8Ex((*iter)->id());
+			if ((str_id.str()).compare(remove) == 0) {
+				log_info "Recently used %s", str_id.str().c_str() log_end;
+				unknown_list->erase(iter);
 			}
 		}
 	}
@@ -549,9 +583,12 @@ void get_volume_serial() {
 }
 
 void parse_volume_serial(list<punknownp> *unknown_list) {
-	for (auto unknown : *unknown_list)
-	{
+
+	list<punknownp>::iterator iter;
+	 
 		for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
+			for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++)
+			{
 			//
 			//	volume_serial_list은 serial, name 의 형태로 저장되어 있다.
 			//	ex) 122a601d, C:\
@@ -561,11 +598,11 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 			//	ex) \VOLUME{01d2cb8a2a2d3680-122a601d}\USERS\HEAT\APPDATA\LOCAL\TEMP\IS-5KMTA.TMP\DELFINOUNLOADER-G3.EXE, 2018-10-19 06:59:05
 
 			stringstream str_id;
-			str_id << WcsToMbsUTF8Ex(unknown->id());
+			str_id << WcsToMbsUTF8Ex((*iter)->id());
 
 			if ((str_id.str()).find("\\") == string::npos) {		//	full path를 알 수 없는 파일인 경우
-				log_info "No full path file : %ws", unknown->id() log_end;
-				delete unknown;					//	우선은 목록에서 제거
+				log_info "No full path file : %ws", (*iter)->id() log_end;
+				unknown_list->erase(iter);				//	우선은 목록에서 제거
 				continue;
 			}
 
@@ -592,7 +629,6 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 				*/
 				wstringstream name;
 				name << Utf8MbsToWcsEx(temp.c_str()).c_str();
-				unknown->setId(name);
 			}
 				
 		}

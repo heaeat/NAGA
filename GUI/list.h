@@ -5,6 +5,7 @@
 #include <winsvc.h>
 #include <string>
 #include <BaseWindowsHeader.h>
+#include "stdafx.h"
 
 
 typedef class blackp
@@ -64,11 +65,7 @@ public:
 	const wchar_t* version() { return _version.c_str(); }
 	const wchar_t* cert() { return _cert.c_str(); }
 	const wchar_t* uninstaller() { return _uninstaller.c_str(); }
-	void setId(std::wstring id);
-	void setLastuse(std::wstring lastuse);
-	void setVersion(std::wstring version);
-	void setCert(std::wstring cert);
-	void setUninstaller(std::wstring uninstaller);
+	
 private:
 	std::wstring _id;
 	std::wstring _lastuse;
