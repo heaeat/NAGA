@@ -65,7 +65,11 @@ public:
 	const wchar_t* version() { return _version.c_str(); }
 	const wchar_t* cert() { return _cert.c_str(); }
 	const wchar_t* uninstaller() { return _uninstaller.c_str(); }
-	
+	void setId(_In_ std::wstring id) { _id = id; }
+	void setUse(_In_ std::wstring lastuse) { _lastuse = lastuse; }
+	void setVersion(_In_ std::wstring version) { _version = version; }
+	void setCert(_In_ std::wstring cert) { _cert = cert; }
+	void setUninstaller(_In_ std::wstring uninstaller) { _uninstaller = uninstaller; }
 private:
 	std::wstring _id;
 	std::wstring _lastuse;

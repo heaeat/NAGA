@@ -12,7 +12,7 @@ map<wstring, wstring> volume_serial_list;
 wstring result_path = L"\"C:\\Temp\\result\\";
 
 
-bool get_prefetch_info(list<punknownp> *unknown_list) 
+bool get_prefetch_info(list<punknownp> *unknown_list)
 {
 
 	bool ret = run_PECmd();
@@ -21,7 +21,7 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 		log_err "run_PECmd() failed." log_end;
 		return false;
 	}
-	
+
 	wchar_t *file_name = find_timeline_file(result_path);
 	if (nullptr == file_name)
 	{
@@ -41,7 +41,7 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 		return false;
 	}
 	free(file_name);
-	
+
 	if (!check_recently_used(unknown_list)) {
 		log_err "check_recently_used() failed." log_end;
 	}
@@ -54,23 +54,21 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 	//	volume의 이름과 serial을 맵의 형태로 만든다.
 	//
 	get_volume_serial();
-	
+	parse_volume_serial(unknown_list);
+
+	if (!check_certification(unknown_list)) {
+		log_err "check_certification() failed" log_end;
+	}
+
 	log_err "[출력]" log_end;
 	for (auto list : *unknown_list) {
-		log_info "%ws", list->id() log_end;
+		log_info "%ws - [%ws]", list->id(),list->cert() log_end;
 	}
-	parse_volume_serial(unknown_list);
-	/*
-	for (map<string, string>::iterator iter = csv_map->begin(); iter != csv_map->end(); iter++)
-	{
-		log_info "Key : %s  - Value : %s", iter->first.c_str(), iter->second.c_str() log_end;
-	}
-	*/
 	return true;
 }
 
 /// @brief PECmd.exe를 실행하고 csv 파일을 생성한다.
-bool run_PECmd(void) 
+bool run_PECmd(void)
 {
 	std::wstring current_dir = get_current_module_dirEx();
 	std::wstringstream strm;
@@ -79,17 +77,17 @@ bool run_PECmd(void)
 	STARTUPINFO startupInfo = { 0 };
 	PROCESS_INFORMATION processInfo;
 	startupInfo.cb = sizeof(STARTUPINFO);
-	
+
 	if (!CreateProcess(NULL,
-					  (LPWSTR)strm.str().c_str(),
-					   NULL,
-					   NULL,
-					   FALSE,
-					   CREATE_NO_WINDOW,			
-					   NULL,
-					   NULL,
-					   &startupInfo,
-					   &processInfo))
+		(LPWSTR)strm.str().c_str(),
+		NULL,
+		NULL,
+		FALSE,
+		CREATE_NO_WINDOW,
+		NULL,
+		NULL,
+		&startupInfo,
+		&processInfo))
 	{
 		log_err "CreateProcess() failed. cmd=%ws, gle=0x%08x",
 			strm.str().c_str(),
@@ -99,9 +97,9 @@ bool run_PECmd(void)
 	}
 
 	WaitForSingleObject(processInfo.hProcess, INFINITE);
-	CloseHandle(processInfo.hThread); 
+	CloseHandle(processInfo.hThread);
 	CloseHandle(processInfo.hProcess);
-	
+
 	return true;
 }
 
@@ -152,7 +150,7 @@ int delete_all_csv(LPCWSTR szDir, int recur)
 
 	FindClose(hSrch);
 
-	if (recur > 0) 
+	if (recur > 0)
 		RemoveDirectory(TempPath);
 
 	return 0;
@@ -200,7 +198,7 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 	}
 	log_info "Open file. file=%ws", strm.str().c_str() log_end;
 	SmrtFileCtx context_guard(file_context);
-	
+
 	//
 	// read line (0x0d0a)
 	//
@@ -212,7 +210,7 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 	//	편리하게 중복을 제거하기 위해 map 을 통해 받은 후 list에 넣고자 한다.
 	//
 
-	map<string, string> csv_map; 
+	map<string, string> csv_map;
 	while (curr < file_context->FileSize)
 	{
 		if (buf[curr] == 0x0D && buf[curr + 1] == 0x0A)
@@ -232,11 +230,11 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 			//
 			curr += 2;
 			prev = curr;
-		
+
 			//
 			// UTF-8 string --> Wide Char string (windows default)
 			//
-			std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());					
+			std::wstring wcs_string = Utf8MbsToWcsEx(utf8_line.get());
 			std::string utf8_string = utf8_line.get();
 
 			//
@@ -248,14 +246,14 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 
 			string date = utf8_string.substr(0, location);
 			string name = utf8_string.substr(location + 1);
-			
-			csv_map.insert(std::pair<string,string>(name, date));
-			
+
+			csv_map.insert(std::pair<string, string>(name, date));
+
 		}
 		else
 		{
 			++curr;
-		}		
+		}
 	};
 
 	//
@@ -269,7 +267,7 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 		{
 			log_err "not enough memory. give up." log_end;
 			return false;
-		}		
+		}
 		memcpy(utf8_line.get(), &buf[prev], length);
 		utf8_line.get()[length] = 0x00;
 
@@ -328,19 +326,6 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		}
 	}
 
-	/*
-	for (auto unknown : *unknown_list)
-	{
-		stringstream str_id;
-		str_id << WcsToMbsUTF8Ex(unknown->id());
-
-		if ((str_id.str()).compare("ExecutableName") == 0) {
-			delete unknown;
-			break;
-		}
-	}
-	*/
-
 	//	MyLib 활용, 현재 system 시간을 string으로 변환
 	string cur_time = time_now_to_str(true, false);
 	log_info "cur time : %s", cur_time.c_str() log_end;
@@ -354,36 +339,23 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 	memcpy(&temp_time, &point_time, sizeof(FILETIME));
 	temp_time.QuadPart -= IN_DAY * DAYCONTROL;
 	memcpy(&point_time, &temp_time, sizeof(FILETIME));
-	
+
 	//
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성
 	//	마지막 사용시간이 기준시간 이후 일 때 MAP 에서 삭제해줌
 	list<string> remove_list;
-	for (auto unknown: *unknown_list)
+	for (auto unknown : *unknown_list)
 	{
 		stringstream str_lastuse;
 		str_lastuse << WcsToMbsUTF8Ex(unknown->lastuse());
-		
+
 		FILETIME last_runtime = str_to_filetime(str_lastuse.str());
 		if (!(CompareFileTime(&point_time, &last_runtime) == 1)) {
 			stringstream str_id;
 			str_id << WcsToMbsUTF8Ex(unknown->id());
-			remove_list.push_back(str_id.str());		
+			remove_list.push_back(str_id.str());
 		}
 	}
-	/*
-	for (auto unknown : *unknown_list) {
-		log_info "%ws", unknown->id() log_end;
-		for (auto remove : remove_list) {
-			stringstream str_id;
-			str_id << WcsToMbsUTF8Ex(unknown->id());
-			if((str_id.str()).compare(remove) == 0){
-				log_info "Recently used %s",str_id.str().c_str() log_end;
-				delete unknown;
-			}
-		}
-	}
-	*/
 
 	//
 	//	왜 공백이 들어가지...?
@@ -400,13 +372,6 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 			}
 		}
 	}
-	/*
-	for (auto remove : remove_list) {
-	remove_list.remove(remove);
-	}
-	remove_list.clear();
-	*/
-
 	return true;
 }
 
@@ -436,6 +401,9 @@ FILETIME str_to_filetime(string &sTime) {
 }
 
 
+/// @brief  현재 PC의 Volume 이름 정보를 가져온다.
+///			ex) C://, D://
+///
 void get_volume_name() {
 	HANDLE find_handle = INVALID_HANDLE_VALUE;
 	WCHAR volume_name[MAX_PATH] = L"";
@@ -491,6 +459,10 @@ void get_volume_name() {
 	find_handle = INVALID_HANDLE_VALUE;
 }
 
+
+/// @brief  현재 PC의 Volume 경로를 가져온다.
+///			
+///
 void get_volume_path(
 	__in PWCHAR VolumeName
 )
@@ -549,7 +521,7 @@ void get_volume_path(
 			NameIdx += wcslen(NameIdx) + 1)
 		{
 			wprintf(L"  %s", NameIdx);
-			log_info "%s",NameIdx log_end;
+			log_info "%s", NameIdx log_end;
 			wstring str(NameIdx);
 			volume_list.push_back(str);
 		}
@@ -565,6 +537,10 @@ void get_volume_path(
 	return;
 }
 
+
+/// @brief  현재 PC의 Volume serial 정보를 가져온다.
+///			
+///
 void get_volume_serial() {
 
 	for (auto volume : volume_list) {
@@ -579,16 +555,19 @@ void get_volume_serial() {
 		volume_serial_list.insert(pair<wstring, wstring>(strm.str().c_str(), volume.c_str()));
 		log_info "%ws, %ws", strm.str().c_str(), volume.c_str() log_end;
 	}
-	
+
 }
 
+/// @brief  이상한... 형태로 저장되어 있는 VOLUME 시리얼번호를 파싱한다.
+///			
+///
 void parse_volume_serial(list<punknownp> *unknown_list) {
 
 	list<punknownp>::iterator iter;
-	 
-		for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
-			for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++)
-			{
+
+	for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
+		for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++)
+		{
 			//
 			//	volume_serial_list은 serial, name 의 형태로 저장되어 있다.
 			//	ex) 122a601d, C:\
@@ -608,7 +587,7 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 
 			stringstream str_serial;
 			str_serial << WcsToMbsUTF8Ex(serial_iter->first.c_str());
-		
+
 			int location = (str_id.str()).find(str_serial.str());
 			if (location != string::npos) {
 				int len = str_serial.str().length();
@@ -622,15 +601,49 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 				// 원래의 데이터를 map 에서 삭제하고 새롭게 추가함
 				log_info "%s", temp.c_str() log_end;
 				wstring null = L"";
-				/*// id , lastuse, version, cert, uninstaller의 순서
-				punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), unknown->lastuse(), null.c_str(), null.c_str(), null.c_str());
-				unknown_list->push_back(temp_unknown);
-				delete unknown;
-				*/
-				wstringstream name;
-				name << Utf8MbsToWcsEx(temp.c_str()).c_str();
+				// id , lastuse, version, cert, uninstaller의 순서
+				(*iter)->setId(Utf8MbsToWcsEx(temp.c_str()).c_str());
+			//	punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), (*iter)->lastuse(), null.c_str(), null.c_str(), null.c_str());
+			//	unknown_list->push_back(temp_unknown);
 			}
-				
+
 		}
 	}
+}
+
+/// @brief  인증서의 유무를 판별한다.
+///			MS 사의 프로그램은 목록에서 제거
+///
+bool check_certification(list<punknownp> *unknown_list) {
+
+	if (true != PhpVerifyInitialize())
+	{
+		log_err "전자서명 검증 모듈을 초기화 할 수 없습니다." log_end;
+		return false;
+	}
+
+	list<punknownp>::iterator iter;
+	for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++)
+	{
+		{
+			std::wstring signer_name;
+			VERIFY_RESULT vr = PhVerifyFile((*iter)->id(), &signer_name);
+
+			if (vr == VrTrusted)
+			{
+				if (signer_name.find(L"Microsoft") != string::npos) {		// 인증서가 MS 사의 것이면
+					unknown_list->erase(iter);
+				}
+				(*iter)->setCert(signer_name);
+				// insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
+			}
+			else
+			{
+				(*iter)->setCert(L"Not verified");
+				//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
+			}
+		}
+	}
+	PhpVerifyFinalize();
+	return true;
 }

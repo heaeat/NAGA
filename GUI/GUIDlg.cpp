@@ -320,55 +320,12 @@ void CGUIDlg::OnBnClickedBtnVerify()
 	//
 	std::list<punknownp> data;
 	if (!get_prefetch_info(&data)) {
-		log_err "힝" log_end;
+		log_err "get_prefetch_info() err" log_end;
 	}
 
-	for (auto line : data)
-	{
-		// README
-		//
-		// UTF8 인코딩된 문자열을 MFC 콘트롤에 (기본설정으로) 안보일껄? (모르겠음)
-		// 암튼 그래서 utf8 인코딩 된 문자열을 Wide char 문자열로 변경해서 
-		// 컨트롤에 출력하기 
-		log_info "file=%ws, last used=%ws",line->id(), line->lastuse() log_end;
-	//	insertData((LPWSTR)Utf8MbsToWcsEx(line.first.c_str()).c_str(), (LPWSTR)Utf8MbsToWcsEx(line.second.c_str()).c_str());
+	for (auto line : data) {
+		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),(LPWSTR)(line->version()), (LPWSTR)(line->lastuse()), (LPWSTR)line->cert());
 	}
-		
-	if (true != PhpVerifyInitialize())
-	{
-		MessageBoxW(L"전자서명 검증 모듈을 초기화 할 수 없습니다.",
-			L"오류",
-			0);
-		return;
-	}
-
-	/*
-	for (auto line : data){
-		std::wstring signer_name;
-		VERIFY_RESULT vr = PhVerifyFile(Utf8MbsToWcsEx(line.first.c_str()).c_str(), &signer_name);
-
-		log_info "file=%s, verify result=%u, signer=%ws",
-			line.first.c_str(),
-			vr,
-			signer_name.c_str()
-			log_end;
-
-		if (vr == VrTrusted)
-		{
-			if (signer_name.find(L"Microsoft") != string::npos) {
-				continue;
-			}
-			// 잠시 주석처리
-			// insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
-		}
-		else
-		{
-			// 잠시 주석처리
-			//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
-		}
-	}
-	PhpVerifyFinalize();
-	*/
 }
 
 void CGUIDlg::OnDestroy()

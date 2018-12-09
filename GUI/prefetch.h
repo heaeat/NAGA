@@ -16,6 +16,7 @@
 #include <istream>
 #include <stdlib.h>
 #include "list.h"
+#include "phverify/verify.h"
 
 
 using namespace std;
@@ -40,3 +41,6 @@ void get_volume_name();
 void get_volume_serial();
 void get_volume_path(__in PWCHAR VolumeName);
 void parse_volume_serial(list<punknownp> *unknown_list);
+
+///	인증서 관련 함수
+bool check_certification(list<punknownp> *unknown_list);
