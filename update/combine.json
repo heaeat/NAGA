@@ -1,0 +1,223 @@
+{
+	"busanbank": [
+		{
+			"npveraport20.dll": "e7500708a8e7e8885ee72b64f9c2371448f576cb4dfc7a42481f58c5dd434ee7"
+		},
+		{
+			"veraport-x64.exe": "6ab83d80240832448b060271b1aab79c072926468f24c39e404b1b053f987315"
+		},
+		{
+			"veraport20.dll": "64900b606f50df90de09b53d1026d655c97f380f528dbc3cc89e4c957229d7ec"
+		},
+		{
+			"veraport20unloader.exe": "cbc749a851308720d186bed2012c0f1fbb50b8daf1eff1579b43b5560e766f87"
+		},
+		{
+			"veraportmain20.exe": "8020c32a0d272365ef34745a30e732bc45f0c8aa3c40abf0195308777f990158"
+		}
+	],
+	"citibank": [
+		{
+			"npveraport20.dll": "880df0ab752f674b81ddf80234ae0f7e75daba63eb16b0b9dd2ece4a6a352586"
+		},
+		{
+			"veraport-x64.exe": "abc93db8dd50d0a958b616e3074ab3c4d6996fed6c515717de5f37e75c560280"
+		},
+		{
+			"veraport20.dll": "9c02afd83e1ef90ced6de343ebdf44a794f2894e956f35bc0eaf980586865131"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "2105dbe12c2d664116ac18b5ee8e64bdf222fead381f635d320efac98e2247f0"
+		}
+	],
+	"dgb": [
+		{
+			"npveraport20.dll": "55141468e44b9f7c5d411e82fda5a4e80be7a9f4189184d8fcf0ee0947453b96"
+		},
+		{
+			"veraport-x64.exe": "7563cdece02a09dcec878b1cffb2aa41a69678e0bde13f3f1eeeddc112efdec5"
+		},
+		{
+			"veraport20.dll": "6ae492b22db5da2fdd8fd682d43586ee6ce39a389b36b91f91a9a12457e24b7b"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "fbcabc8bc82ffe4ca8cf8c4f9fed357a6f754c0ff2a0b0593bd0c3d2822a1139"
+		}
+	],
+	"ibk": [
+		{
+			"npveraport20.dll": "880df0ab752f674b81ddf80234ae0f7e75daba63eb16b0b9dd2ece4a6a352586"
+		},
+		{
+			"veraport-x64.exe": "abc93db8dd50d0a958b616e3074ab3c4d6996fed6c515717de5f37e75c560280"
+		},
+		{
+			"veraport20.dll": "9c02afd83e1ef90ced6de343ebdf44a794f2894e956f35bc0eaf980586865131"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "2105dbe12c2d664116ac18b5ee8e64bdf222fead381f635d320efac98e2247f0"
+		}
+	],
+	"jbbank": [
+		{
+			"npveraport20.dll": "e17b73720b3a74dbadc5229f1cd4dbea4ef4d9f81989078cc630479c2871c75f"
+		},
+		{
+			"veraport-x64.exe": "8a35cb1a3cc22033b6096ee8e6fd967b67bb6dcff11fd4dbca9945a70c69ae6a"
+		},
+		{
+			"veraport20.dll": "589fc44acbc9064b61b8ca48daaf3f033bb0a12f9011f72702d665ccc7b7ce42"
+		},
+		{
+			"veraport20unloader.exe": "969ab99f050e1faa9c4eec1da01bf5ac059c15ddd8bc692b1c18d9cad86fc018"
+		},
+		{
+			"veraportmain20.exe": "5cd3968fe5aca47526171afe3b9d635ce327ecf11b80fed1f09398d96ed0e4e4"
+		}
+	],
+	"kbstar": [
+		{
+			"npveraport20.dll": "1ba2b4f48a51bb8a4cdce515745b9fe2a56cb4503f2233e196d4238eb48817f4"
+		},
+		{
+			"veraport-x64.exe": "10fdc53f968a63842a39c9ca4e4b5834100c28e0c0988de6248b0945308a651c"
+		},
+		{
+			"veraport20.dll": "7845b74b434aaffe62550f77fb4674ab606a71f87c412736f608f096e981941c"
+		},
+		{
+			"veraport20unloader.exe": "f57dfe029b893124af9ba50d077bfb01084927eb3fcacf2eea52a5cae2cf12e4"
+		},
+		{
+			"veraportmain20.exe": "410af1a5d179d5b531cf13f6f3093e5beb73bf3002ed41e0ef83879323db0dd3"
+		}
+	],
+	"kdb": [
+		{
+			"npveraport20.dll": "880df0ab752f674b81ddf80234ae0f7e75daba63eb16b0b9dd2ece4a6a352586"
+		},
+		{
+			"veraport-x64.exe": "abc93db8dd50d0a958b616e3074ab3c4d6996fed6c515717de5f37e75c560280"
+		},
+		{
+			"veraport20.dll": "9c02afd83e1ef90ced6de343ebdf44a794f2894e956f35bc0eaf980586865131"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "2105dbe12c2d664116ac18b5ee8e64bdf222fead381f635d320efac98e2247f0"
+		}
+	],
+	"kebhana": [
+		{
+			"npveraport20.dll": "e7500708a8e7e8885ee72b64f9c2371448f576cb4dfc7a42481f58c5dd434ee7"
+		},
+		{
+			"veraport-x64.exe": "6ab83d80240832448b060271b1aab79c072926468f24c39e404b1b053f987315"
+		},
+		{
+			"veraport20.dll": "64900b606f50df90de09b53d1026d655c97f380f528dbc3cc89e4c957229d7ec"
+		},
+		{
+			"veraport20unloader.exe": "cbc749a851308720d186bed2012c0f1fbb50b8daf1eff1579b43b5560e766f87"
+		},
+		{
+			"veraportmain20.exe": "8020c32a0d272365ef34745a30e732bc45f0c8aa3c40abf0195308777f990158"
+		}
+	],
+	"kjbank": [
+		{
+			"npveraport20.dll": "1ba2b4f48a51bb8a4cdce515745b9fe2a56cb4503f2233e196d4238eb48817f4"
+		},
+		{
+			"veraport-x64.exe": "10fdc53f968a63842a39c9ca4e4b5834100c28e0c0988de6248b0945308a651c"
+		},
+		{
+			"veraport20.dll": "7845b74b434aaffe62550f77fb4674ab606a71f87c412736f608f096e981941c"
+		},
+		{
+			"veraport20unloader.exe": "f57dfe029b893124af9ba50d077bfb01084927eb3fcacf2eea52a5cae2cf12e4"
+		},
+		{
+			"veraportmain20.exe": "410af1a5d179d5b531cf13f6f3093e5beb73bf3002ed41e0ef83879323db0dd3"
+		}
+	],
+	"nonghyup": [
+		{
+			"npveraport20.dll": "e7500708a8e7e8885ee72b64f9c2371448f576cb4dfc7a42481f58c5dd434ee7"
+		},
+		{
+			"veraport-x64.exe": "c8c9eb015176d0a768c57609588b85628c0f5aba2f1641d446b34cdeba069659"
+		},
+		{
+			"veraport20.dll": "ebefa7c618f079e4c83c14457f3e2586e299115ff214c776eec69f6dc5faf5f4"
+		},
+		{
+			"veraport20unloader.exe": "f57dfe029b893124af9ba50d077bfb01084927eb3fcacf2eea52a5cae2cf12e4"
+		},
+		{
+			"veraportmain20.exe": "50052bdafcef1ee6be8155769bf6444ab0252597da9a512118f70fb4815da4a4"
+		}
+	],
+	"shinhan": [
+		{
+			"npveraport20.dll": "880df0ab752f674b81ddf80234ae0f7e75daba63eb16b0b9dd2ece4a6a352586"
+		},
+		{
+			"veraport-x64.exe": "abc93db8dd50d0a958b616e3074ab3c4d6996fed6c515717de5f37e75c560280"
+		},
+		{
+			"veraport20.dll": "9c02afd83e1ef90ced6de343ebdf44a794f2894e956f35bc0eaf980586865131"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "2105dbe12c2d664116ac18b5ee8e64bdf222fead381f635d320efac98e2247f0"
+		}
+	],
+	"standardchartered": [
+		{
+			"npveraport20.dll": "880df0ab752f674b81ddf80234ae0f7e75daba63eb16b0b9dd2ece4a6a352586"
+		},
+		{
+			"veraport-x64.exe": "abc93db8dd50d0a958b616e3074ab3c4d6996fed6c515717de5f37e75c560280"
+		},
+		{
+			"veraport20.dll": "9c02afd83e1ef90ced6de343ebdf44a794f2894e956f35bc0eaf980586865131"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "2105dbe12c2d664116ac18b5ee8e64bdf222fead381f635d320efac98e2247f0"
+		}
+	],
+	"wooribank": [
+		{
+			"npveraport20.dll": "4054e3f6aa9bcbce9916c0e93daf3af81f70cda3124b3176b08949aa987e9d74"
+		},
+		{
+			"veraport-x64.exe": "2e92094b53b9392aedfd742f77948c021970d621d24fb7a5bc06ae38de9ebb93"
+		},
+		{
+			"veraport20.dll": "fcc1918720fd4002fb3292b629bfc4038df4fe5c2a3c4967ee3782c70ec84952"
+		},
+		{
+			"veraport20unloader.exe": "9f02478a0e8d09b6760dfe14450799292c2c378f4fb956a5b2e6326331bdc4f8"
+		},
+		{
+			"veraportmain20.exe": "9e99f1d52d2ef6cf1c8441e8cd7583c8b81e880b2dbfe70bf004aa74bc5e0d3f"
+		}
+	]
+}

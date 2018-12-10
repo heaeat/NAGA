@@ -8,6 +8,7 @@
 #include "program.h"
 #include "afxdialogex.h"
 #include "prefetch.h"
+#include "update.h"
 #include "phverify/verify.h"
 #include "Win32Utils.h"
 
@@ -125,6 +126,12 @@ BOOL CGUIDlg::OnInitDialog()
 		iCol.fmt = LVCFMT_CENTER;
 		m_listView.InsertColumn(i, &iCol);
 	}
+
+
+	//
+	//	update 부분 추가
+	//
+	runCompare();
 
 	//
 	//	항목 추가로 인해 잠시 주석처리!
@@ -275,6 +282,16 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 }
 
+
+punknownp CGUIDlg::find_unknown(CString program_name, std::list<punknownp> temp_list) {
+	log_info "%ws", program_name log_end;
+	int result;
+	for (auto mine : temp_list) {
+		result = wcscmp(program_name, mine->id());
+		if (result == 0) return mine;
+	}
+	return NULL;
+}
 
 pprogram CGUIDlg::find_program(CString program_name, list<pprogram> temp_list) {
 	log_info "%ws", program_name log_end;

@@ -60,15 +60,15 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 		log_err "check_certification() failed" log_end;
 	}
 
-	log_err "[출력]" log_end;
-	for (auto list : *unknown_list) {
-		log_info "%ws - [%ws]", list->id(), list->cert() log_end;
-	}
 
 	if (!check_version(unknown_list)) {
 		log_err "check_version() failed" log_end;
 	}
 
+	log_err "[출력]" log_end;
+	for (auto list : *unknown_list) {
+		log_info "%ws - [%ws] - [%ws]", list->id(), list->cert(), list->uninstaller() log_end;
+	}
 	return true;
 }
 
@@ -675,9 +675,7 @@ bool check_version(list<punknownp> *unknown_list) {
 			sw_str << WcsToMbsUTF8Ex(software->name());
 			string temp = sw_str.str();
 			to_upper_string(temp);
-
-			log_info "%s---%s", pure_name.c_str(), temp.c_str() log_end;
-		
+	
 			if (temp.find(pure_name) != std::string::npos) {
 				unknown->setVersion(software->version());
 				unknown->setUninstaller(software->uninstaller());

@@ -243,6 +243,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="update.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\work.mylib\src\CStream.cpp" />
@@ -265,6 +266,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="update.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUI.rc" />
