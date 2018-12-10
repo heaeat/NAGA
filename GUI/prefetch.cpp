@@ -603,7 +603,6 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 				string temp = str_id.str();
 				temp.replace(0, location + len + 2, str_name.str().c_str());
 
-				// 원래의 데이터를 map 에서 삭제하고 새롭게 추가함
 				log_info "%s", temp.c_str() log_end;
 				wstring null = L"";
 				// id , lastuse, version, cert, uninstaller의 순서
