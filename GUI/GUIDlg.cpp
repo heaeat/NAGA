@@ -348,7 +348,16 @@ void CGUIDlg::OnBnClickedBtnVerify()
 	}
 
 	for (auto line : data) {
-		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),(LPWSTR)(line->version()), (LPWSTR)(line->lastuse()), (LPWSTR)line->cert());
+		wstring	lastuse = line->lastuse();
+		
+		wstringstream last_stm;
+		int loc = lastuse.find(L" ");
+		last_stm << lastuse.substr(0, loc);
+
+		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
+			(LPWSTR)(line->version()), 
+			(LPWSTR)(last_stm.str().c_str()), 
+			(LPWSTR)line->cert());
 	}
 }
 

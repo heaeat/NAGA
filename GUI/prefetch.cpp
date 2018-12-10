@@ -370,9 +370,18 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 	list<punknownp>::iterator iter;
 	for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++) {
 		log_info "%ws", (*iter)->id() log_end;
+		stringstream str_id;
+		str_id << WcsToMbsUTF8Ex((*iter)->id());
+
+		stringstream ms_string;
+		ms_string << "MICRO";
+		if (str_id.str().find(ms_string.str()) != string::npos) {
+			unknown_list->erase(iter);
+		}
+		continue;
+
 		for (auto remove : remove_list) {
-			stringstream str_id;
-			str_id << WcsToMbsUTF8Ex((*iter)->id());
+			
 			if ((str_id.str()).compare(remove) == 0) {
 				log_info "Recently used %s", str_id.str().c_str() log_end;
 				unknown_list->erase(iter);
