@@ -59,35 +59,35 @@ def find_website():
 		for i in range(len(result)):
 			key = result[i]
 			if key == "busanbank":
-				result_arr.append({"부산은행" :"https://ibank.busanbank.co.kr"})
+				result_arr.append({"name":"부산은행", "site":"https://ibank.busanbank.co.kr"})
 			elif key == "citibank":
-				result_arr.append({"시티은행":"https://www.citibank.co.kr"})
+				result_arr.append({"name":"시티은행","site":"https://www.citibank.co.kr"})
 			elif key == "dgb":
-				result_arr.append({"DGB대구은행":"https://www.dgb.co.kr"})
+				result_arr.append({"name":"DGB대구은행","site":"https://www.dgb.co.kr"})
 			elif key == "ibk":
-				result_arr.append({"IBk기업은행":"https://www.ibk.co.kr"})
+				result_arr.append({"name":"IBk기업은행","site":"https://www.ibk.co.kr"})
 			elif key == "jbbank":
-				result_arr.append({"전북은행":"https://www.jbbank.co.kr"})
+				result_arr.append({"name":"전북은행","site":"https://www.jbbank.co.kr"})
 			elif key == "kbstar":
-				result_arr.append({"KB국민은행":"https://www.kbstar.com"})
+				result_arr.append({"name":"KB국민은행","site":"https://www.kbstar.com"})
 			elif key == "kdb":
-				result_arr.append({"KDB산업은행":"https://www.kdb.co.kr"})
+				result_arr.append({"name":"KDB산업은행","site":"https://www.kdb.co.kr"})
 			elif key == "kebhana":
-				result_arr.append({"keb하나은행":"https://www.kebhana.com"})
+				result_arr.append({"name":"keb하나은행","site":"https://www.kebhana.com"})
 			elif key == "kjbank":
-				result_arr.append({"광주은행":"https://pib.kjbank.com"})
+				result_arr.append({"name":"광주은행","site":"https://pib.kjbank.com"})
 			elif key == "nonghyup":
-				result_arr.append({"NHBank(농협)","https://banking.nonghyup.com"})
+				result_arr.append({"name":"NHBank(농협)","site":"https://banking.nonghyup.com"})
 			elif key == "shinhan":
-				result_arr.append({"신한은행","https://www.shinhan.com"})
+				result_arr.append({"name":"신한은행","site":"https://www.shinhan.com"})
 			elif key == "standardchartered":
-				result_arr.append({"SC제일은행":"https://www.standardchartered.co.kr"})
+				result_arr.append({"name":"SC제일은행","site":"https://www.standardchartered.co.kr"})
 			elif key == "wooribank":
-				result_arr.append({"우리은행","https://www.wooribank.com"})
+				result_arr.append({"name":"우리은행","site":"https://www.wooribank.com"})
 
-
-	#print(result_arr)
-	return result_arr
+	result_obj ={"bank":result_arr}
+	#print(result_obj)
+	return result_obj
 
 def make_json_file():
 	data = find_website()
@@ -99,5 +99,6 @@ if __name__ == '__main__':
 	#print(veraport_path)
 	#compare()
 	make_json_file()
+	#find_website()
 
 	
