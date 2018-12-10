@@ -52,7 +52,7 @@ def get_hash():
 
 def make_json_file():
 	data = compare()
-	with open('result.json','w') as f:
+	with open('comapre.json','w') as f:
 		json.dump(data, f, ensure_ascii = False, indent='\t')
 
 if __name__ == '__main__':
