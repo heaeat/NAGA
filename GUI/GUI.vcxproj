@@ -229,6 +229,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="..\..\..\work.mylib\src\RegistryUtil.h" />
     <ClInclude Include="..\..\..\work.mylib\src\Win32Utils.h" />
     <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h" />
+    <ClInclude Include="CBankDlg.h" />
     <ClInclude Include="CGdiPlusBitmap.h" />
     <ClInclude Include="CStartDlg.h" />
     <ClInclude Include="GdipButton.h" />
@@ -253,6 +254,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="..\..\..\work.mylib\src\RegistryUtil.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp" />
+    <ClCompile Include="CBankDlg.cpp" />
     <ClCompile Include="CStartDlg.cpp" />
     <ClCompile Include="GdipButton.cpp" />
     <ClCompile Include="GUI.cpp" />

@@ -93,6 +93,9 @@
     <ClInclude Include="update.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CBankDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -141,6 +144,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="update.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CBankDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

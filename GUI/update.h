@@ -22,8 +22,9 @@ using namespace std;
 #pragma comment(lib, "msi.lib")
 #pragma comment(lib,"ChilkatRelDll_x64.lib")
 
+typedef list< pair<std::string, std::string> > list_t;
+
 bool get_update_info(list<pblackp> *black_list);
 bool runCompare(void);
-bool parse_compare(list<std::string> *update_list);
-bool parse_line(list<std::string> *update_list);
-bool find_veraport(list<pblackp> *black_list, list<std::string> update_list);
+bool parse_compare(list_t*update_list);
+bool find_veraport(list<pblackp> *black_list, list_t update_list);

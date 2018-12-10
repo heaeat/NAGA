@@ -78,7 +78,7 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CGUIDlg::OnLvnColumnclickList1)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CGUIDlg::OnNMCustomdrawList1)
-	ON_BN_CLICKED(IDC_BTN_UPDATE, &CGUIDlg::OnBnClickedBtnUpdate)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CGUIDlg::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 
@@ -131,7 +131,6 @@ BOOL CGUIDlg::OnInitDialog()
 		iCol.fmt = LVCFMT_CENTER;
 		m_listView.InsertColumn(i, &iCol);
 	}
-	GetDlgItem(IDC_BTN_UPDATE)->SetWindowPos(NULL, 10, 460, 60, 30, NULL);
 	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 640, 460, 60, 30, NULL);
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
@@ -184,9 +183,12 @@ void CGUIDlg::get_naga_data(void) {
 		int loc = lastuse.find(L" ");
 		last_stm << lastuse.substr(0, loc);
 
+		wstring file_name = (file_name_from_file_pathw(line->id())).c_str();
+		to_lower_string(file_name);
+
 		insertData(
 			LPWSTR(L"Unknown"),
-			LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
+			LPWSTR(file_name.c_str()),
 			(LPWSTR)(line->version()),
 			(LPWSTR)(last_stm.str().c_str()),
 			(LPWSTR)line->cert());
@@ -435,8 +437,21 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CGUIDlg::OnBnClickedBtnUpdate()
-{
-	// TODO: Add your control notification handler code here
 
+
+void CGUIDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+	*pResult = 0;
+	int row = pNMItemActivate->iItem;
+	int col = pNMItemActivate->iSubItem;
+	log_info "clicked!! %d %d", row, col log_end;
+
+	CString name = m_listView.GetItemText(row, 0);
+	if (name.Find(_T("Update")) != -1) {
+		CBankDlg dlg;
+		dlg.DoModal();
+	}
 }
