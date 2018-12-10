@@ -49,7 +49,13 @@ def get_hash():
 		hash_arr.append(temp_obj)
 
 	return hash_arr
-	
+
+def make_json_file():
+	data = compare()
+	with open('result.json','w') as f:
+		json.dump(data, f, ensure_ascii = False, indent='\t')
+
 if __name__ == '__main__':
 	#print(veraport_path)
-	compare()
+	#compare()
+	make_json_file()
