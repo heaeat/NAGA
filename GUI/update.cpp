@@ -1,25 +1,35 @@
 #include "stdafx.h"
 #include "update.h"
 
-typedef list< pair<std::string, std::string> > list_t;
+list_t update_list;
+
 
 bool get_update_info(list<pblackp> *black_list) {
 
-	list_t update_list;
 	if (!runCompare()) {
 		log_err "runCompare() err" log_end;
+		return false;
 	}
 	if (!parse_compare(&update_list)) {
 		log_err "parse_compare() err" log_end;
+		return false;
 	}
 	for (auto up : update_list) {
 		log_info "%s %s", up.first.c_str(), up.second.c_str() log_end;
+		return false;
 	}
 	if (!find_veraport(black_list, update_list)) {
 		log_err "find_veraport() err" log_end;
+		return false;
 	}
+	return true;
 }
 
+list_t get_update_list(void) {
+	runCompare();
+	parse_compare(&update_list);
+	return update_list;
+}
 bool runCompare(void) {
 	std::wstring current_dir = get_current_module_dirEx();
 	std::wstringstream strm;
@@ -121,3 +131,4 @@ bool find_veraport(list<pblackp> *black_list, list_t update_list) {
 	
 	return true;
 }
+

@@ -3,10 +3,12 @@
 		{
 			"guid": "${MUI_UNINST_PRODUCT_NAME}",
 			"name": "MarkAny WebDRM NoAX SVC",
+			"silent" : ""
 		},
 		{
 			"guid": "DaumCleaner",
 			"name": "Daum 클리너",
+			"silent" : ""
 		},
 		{
 			"guid": "UnINISafeWeb64",
@@ -27,6 +29,7 @@
 		{
 			"guid": "AnySign4PC",
 			"name": "AnySign4PC 1.1.0.8",
+			"silent" : " /S"
 		},
 		{
 			"guid": "D'Amo WebCrypto_is1",
@@ -179,6 +182,10 @@
 		{
 			"guid": "우리은행 보안 로그 수집기 ",
 			"name": "우리은행 보안 로그 수집기 ",
+		},
+		{
+			"guid": "{2D992E01-604B-472C-A883-1DDA105A24D5}_is1",
+			"name": ",Veraport",
 		}
 	]
 }

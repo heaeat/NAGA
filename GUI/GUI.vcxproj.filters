@@ -206,5 +206,11 @@
     <Image Include="res\loading.gif">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\mousetrap\out\x64_release\res\main.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\mousetrap\out\x64_release\res\transparent.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

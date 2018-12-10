@@ -28,3 +28,4 @@ bool get_update_info(list<pblackp> *black_list);
 bool runCompare(void);
 bool parse_compare(list_t*update_list);
 bool find_veraport(list<pblackp> *black_list, list_t update_list);
+list_t get_update_list(void);

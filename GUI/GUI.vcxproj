@@ -283,6 +283,8 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
   <ItemGroup>
     <Image Include="..\..\..\Users\heat\Desktop\loading.gif" />
     <Image Include="..\..\..\Users\heat\Desktop\naga.png" />
+    <Image Include="..\..\mousetrap\out\x64_release\res\main.bmp" />
+    <Image Include="..\..\mousetrap\out\x64_release\res\transparent.png" />
     <Image Include="..\out\x64_release\res\bitmap2.bmp" />
     <Image Include="..\out\x64_release\res\main.bmp" />
     <Image Include="..\out\x64_release\res\naga.png" />

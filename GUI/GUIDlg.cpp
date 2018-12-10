@@ -18,6 +18,10 @@
 
 list<pprogram> my_list;
 list<pprogram> delete_list;
+std::list<pblackp> black_list;
+std::list<punknownp> unknown_list;
+
+
 
 // CAboutDlg dialog used for App About
 
@@ -139,19 +143,24 @@ BOOL CGUIDlg::OnInitDialog()
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
 
-//	get_naga_data();
-
-	CLoadDlg load_dlg;
-	load_dlg.DoModal();
-	
+	//run_load_dlg(NULL);
+	get_naga_data();
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
+UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
+	CLoadDlg load_dlg;
+	load_dlg.DoModal();
+
+	return 1;
+}
+
 void CGUIDlg::get_naga_data(void) {
+	my_list.clear();
+	black_list.clear();
+	unknown_list.clear();
 
-	my_list = compare_lists();
-
-	list<pblackp> black_list;
+	compare_lists(&my_list);
 	wstring null_string = L"";
 	for (auto mine : my_list) {
 		pblackp temp = new blackp(mine->id(), mine->name(), mine->vendor(), mine->version(), mine->uninstaller(), null_string.c_str(), mine->vendor());
@@ -178,12 +187,11 @@ void CGUIDlg::get_naga_data(void) {
 
 	}
 
-	std::list<punknownp> data;
-	if (!get_prefetch_info(&data)) {
+	if (!get_prefetch_info(&unknown_list)) {
 		log_err "get_prefetch_info() err" log_end;
 	}
 
-	for (auto line : data) {
+	for (auto line : unknown_list) {
 		wstring	lastuse = line->lastuse();
 
 		wstringstream last_stm;
@@ -323,7 +331,6 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 				delete_list.push_back(temp);
 			}
 		}
-
 	}
 	// delete_list µéÀÇ uninstaller handle ½ÇÇà! 
 	for (auto mouse : delete_list) {
@@ -370,6 +377,8 @@ void CGUIDlg::OnBnClickedResetBtn()
 	// TODO: Add your control notification handler code here
 	m_listView.DeleteAllItems();
 	my_list.clear();
+	black_list.clear();
+	unknown_list.clear();
 	get_naga_data();
 }
 
@@ -397,8 +406,9 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	m_listView.DeleteAllItems();
 	my_list.clear();
 	delete_list.clear();
-	std::list<punknownp> data;
-	if (!get_prefetch_info(&data)) {
+	unknown_list.clear();
+	black_list.clear();
+	if (!get_prefetch_info(&unknown_list)) {
 		log_err "Èþ" log_end;
 	}
 
@@ -464,3 +474,4 @@ void CGUIDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 		dlg.DoModal();
 	}
 }
+

@@ -9,12 +9,10 @@ std::list<pprogram> removers;
 
 
 //	제거대상 목록과 설치된 프로그램을 비교하기 위한 함수
-list<pprogram> compare_lists() {
+bool compare_lists(std::list<pprogram> *my_list) {
 
 	get_installed_program();
 	read_json();
-
-	std::list<pprogram> my_list;
 	
 	int result;
 
@@ -38,7 +36,7 @@ list<pprogram> compare_lists() {
 					temp = new program(software->id(), software->name(), software->vendor(), software->version(), software->uninstaller());
 				}
 				
-				my_list.push_back(temp);
+				my_list->push_back(temp);
 			}
 		}
 	}
@@ -54,7 +52,7 @@ list<pprogram> compare_lists() {
 	softwares.clear();
 	removers.clear();
 
-	return my_list;
+	return true;
 }
 
 // 설치된 프로그램을 받아오기 위한 함수
@@ -123,6 +121,5 @@ void read_json(void) {
 	
 	json.dispose();
 	getchar();
-	
 
 }
