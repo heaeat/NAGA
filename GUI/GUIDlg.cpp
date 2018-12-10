@@ -43,12 +43,14 @@ CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
 {
 }
 
+
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, CGUIDlg::OnNMCustomdrawList1)
 END_MESSAGE_MAP()
 
 
@@ -73,9 +75,10 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_DELETE_BTN, &CGUIDlg::OnBnClickedDeleteBtn)
 	ON_BN_CLICKED(IDC_SELECT_BTN, &CGUIDlg::OnBnClickedSelectBtn)
 	ON_BN_CLICKED(IDC_RESET_BTN, &CGUIDlg::OnBnClickedResetBtn)
-	ON_BN_CLICKED(IDC_BTN_VERIFY, &CGUIDlg::OnBnClickedBtnVerify)
 	ON_WM_DESTROY()
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CGUIDlg::OnLvnColumnclickList1)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CGUIDlg::OnNMCustomdrawList1)
+	ON_BN_CLICKED(IDC_BTN_UPDATE, &CGUIDlg::OnBnClickedBtnUpdate)
 END_MESSAGE_MAP()
 
 
@@ -150,6 +153,24 @@ BOOL CGUIDlg::OnInitDialog()
 	for (auto black : black_list)
 	{
 		insertData(const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
+	}
+
+	std::list<punknownp> data;
+	if (!get_prefetch_info(&data)) {
+		log_err "get_prefetch_info() err" log_end;
+	}
+
+	for (auto line : data) {
+		wstring	lastuse = line->lastuse();
+
+		wstringstream last_stm;
+		int loc = lastuse.find(L" ");
+		last_stm << lastuse.substr(0, loc);
+
+		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
+			(LPWSTR)(line->version()),
+			(LPWSTR)(last_stm.str().c_str()),
+			(LPWSTR)line->cert());
 	}
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -336,31 +357,6 @@ void CGUIDlg::OnBnClickedResetBtn()
 	*/
 }
 
-
-void CGUIDlg::OnBnClickedBtnVerify()
-{
-	//
-	// README - test 코드
-	//
-	std::list<punknownp> data;
-	if (!get_prefetch_info(&data)) {
-		log_err "get_prefetch_info() err" log_end;
-	}
-
-	for (auto line : data) {
-		wstring	lastuse = line->lastuse();
-		
-		wstringstream last_stm;
-		int loc = lastuse.find(L" ");
-		last_stm << lastuse.substr(0, loc);
-
-		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
-			(LPWSTR)(line->version()), 
-			(LPWSTR)(last_stm.str().c_str()), 
-			(LPWSTR)line->cert());
-	}
-}
-
 void CGUIDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
@@ -389,5 +385,62 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	if (!get_prefetch_info(&data)) {
 		log_err "힝" log_end;
 	}
+
+}
+
+
+void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	CString strType;
+	BOOL bErrorFlag = FALSE;
+	BOOL bWarnningFlag = FALSE;
+
+	NMLVCUSTOMDRAW* pLVCD = (NMLVCUSTOMDRAW*)pNMHDR;
+	strType = m_listView.GetItemText(pLVCD->nmcd.dwItemSpec, 1);
+
+	std::wstring hi(strType);
+
+	log_info "%ws",hi.c_str()  log_end;
+	if ((strType.Find(_T("YAHO")) != -1))
+	{
+		bErrorFlag = TRUE;
+	}
+
+	if ((strType.Find(_T("Veraport")) != -1))
+	{
+		bWarnningFlag = TRUE;
+	}
+
+	*pResult = 0;
+
+	if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
+		*pResult = CDRF_NOTIFYITEMDRAW;
+
+	else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
+	{
+		if (bErrorFlag)
+		{
+			pLVCD->clrText = RGB(255, 0, 0);  // 글자 색 변경 
+											  //pLVCD->clrTextBk = RGB(0, 0, 0);  // 배경 색 변경 
+		}
+		else if (bWarnningFlag)
+		{
+			pLVCD->clrText = RGB(0, 0, 255);
+			pLVCD->clrTextBk = RGB(237, 255, 255);
+		}
+		else
+		{
+			pLVCD->clrText = RGB(0, 0, 0);
+		}
+
+		*pResult = CDRF_DODEFAULT;
+	}
+
+}
+
+
+void CGUIDlg::OnBnClickedBtnUpdate()
+{
+	// TODO: Add your control notification handler code here
 
 }

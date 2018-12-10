@@ -170,5 +170,8 @@
     <Image Include="..\..\..\Users\heat\Desktop\naga.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\out\x64_release\res\naga.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

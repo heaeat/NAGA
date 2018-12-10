@@ -276,6 +276,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Users\heat\Desktop\naga.png" />
+    <Image Include="..\out\x64_release\res\naga.png" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\GUI.ico" />
     <Image Include="res\hing.png" />
