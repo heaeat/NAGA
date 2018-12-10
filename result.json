@@ -185,7 +185,31 @@
 		},
 		{
 			"guid": "{2D992E01-604B-472C-A883-1DDA105A24D5}_is1",
-			"name": ",Veraport",
+			"name": "Veraport",
+		},
+		{
+			"guid": "",
+			"name": "iniLINE CrossEX Service",
+		},
+		{
+			"guid": "{27640517-0513-4d81-A61E-228DC51680F9}",
+			"name": "TouchEn nxFirewall64",
+		},
+		{
+			"guid": "KeySharp CertRelay",
+			"name": "KeySharp CertRelay",
+		},
+		{
+			"guid": "SignGATE EWS",
+			"name": "SignGATE EWS v4.0",
+		},
+		{
+			"guid": "VestCert.{35C98F4B-AABD-43CB-9E08-B84B70B7FC07}",
+			"name": "VestCert",
+		},
+		{
+			"guid" : "{27640517-0513-4d81-A61E-228DC51680F8}",
+			"name" : "TouchEn nxFirewall32"
 		}
 	]
 }
