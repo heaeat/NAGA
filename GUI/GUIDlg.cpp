@@ -127,24 +127,31 @@ BOOL CGUIDlg::OnInitDialog()
 		m_listView.InsertColumn(i, &iCol);
 	}
 
+	my_list = compare_lists();
+
+	list<pblackp> black_list;
+	wstring null_string = L"";
+	for (auto mine : my_list) {
+		pblackp temp = new blackp(mine->id(), mine->name(), mine->vendor(), mine->version(), mine->uninstaller(), null_string.c_str(),  null_string.c_str());
+		black_list.push_back(temp);
+	}
 
 	//
 	//	update 부분 추가
 	//
-	runCompare();
+	if (!get_update_info(&black_list)) {
+		log_err "get_update_info err" log_end;
+	}
 
 	//
 	//	항목 추가로 인해 잠시 주석처리!
 	//
 
-	/*
-	my_list = compare_lists();
-	for (auto mine : my_list)
+	for (auto black : black_list)
 	{
-		insertData(const_cast<LPWSTR>(mine->name()), const_cast<LPWSTR>(mine->version()));
+		insertData(const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
 	}
-	*/
-
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

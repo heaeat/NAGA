@@ -34,6 +34,13 @@ public:
 	const wchar_t* uninstaller() { return _uninstaller.c_str(); }
 	const wchar_t* update() { return _update.c_str(); }
 	const wchar_t* bank() { return _bank.c_str(); }
+	void setId(_In_ std::wstring id) { _id = id; }
+	void setName(_In_ std::wstring name) { _name = name; }
+	void setVendor(_In_ std::wstring vender) { _vender = vender; }
+	void setVersion(_In_ std::wstring version) { _version = version; }
+	void setUninstaller(_In_ std::wstring uninstaller) {_uninstaller = uninstaller;	}
+	void setUpdate(_In_ std::wstring update) {_update = update; }
+	void setBank(_In_ std::wstring bank) { _bank = bank; }
 private:
 	std::wstring _id;
 	std::wstring _name;
