@@ -332,7 +332,13 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 			break;
 		}
 	}
+	SYSTEMTIME st,st1;
+	FILETIME ft;
+	GetSystemTime(&st); // gets current time
+	SystemTimeToFileTime(&st, &ft); // converts to file time 
+	//FileTimeToSystemTime(&ft, &st1);
 
+	
 	//	MyLib 활용, 현재 system 시간을 string으로 변환
 	string cur_time = time_now_to_str(true, false);
 	log_info "cur time : %s", cur_time.c_str() log_end;
@@ -344,8 +350,10 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 	FILETIME point_time = str_to_filetime(cur_time);
 	LARGE_INTEGER temp_time;
 	memcpy(&temp_time, &point_time, sizeof(FILETIME));
-	temp_time.QuadPart -= IN_DAY * DAYCONTROL;
+	temp_time.QuadPart -= (IN_DAY * DAYCONTROL);
 	memcpy(&point_time, &temp_time, sizeof(FILETIME));
+
+	FileTimeToSystemTime(&point_time, &st1);
 
 	//
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성
@@ -364,12 +372,8 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		}
 	}
 
-	//
-	//	왜 공백이 들어가지...?
-	//
 	list<punknownp>::iterator iter;
 	for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++) {
-		log_info "%ws", (*iter)->id() log_end;
 		stringstream str_id;
 		str_id << WcsToMbsUTF8Ex((*iter)->id());
 
@@ -377,16 +381,16 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		ms_string << "MICRO";
 		if (str_id.str().find(ms_string.str()) != string::npos) {
 			unknown_list->erase(iter);
+			log_info "Except microsoft file, %s", str_id.str().c_str() log_end;
 		}
-		continue;
-
-		for (auto remove : remove_list) {
-			
-			if ((str_id.str()).compare(remove) == 0) {
-				log_info "Recently used %s", str_id.str().c_str() log_end;
-				unknown_list->erase(iter);
+		else {
+			for (auto remove : remove_list) {
+				if ((str_id.str()).compare(remove) == 0) {
+					log_info "Recently used %s", str_id.str().c_str() log_end;
+					unknown_list->erase(iter);
+				}
 			}
-		}
+		}	
 	}
 	return true;
 }
@@ -646,6 +650,9 @@ bool check_certification(list<punknownp> *unknown_list) {
 					unknown_list->erase(iter);
 				}
 				(*iter)->setCert(signer_name);
+			}
+			else if (vr == VrUnknown) {										//	파일이 없으면
+				unknown_list->erase(iter);
 			}
 			else
 			{

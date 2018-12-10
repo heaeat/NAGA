@@ -24,7 +24,7 @@ using namespace std;
 #pragma comment(lib, "msi.lib")
 #pragma comment(lib,"ChilkatRelDll_x64.lib")
 
-#define DAYCONTROL 10
+#define DAYCONTROL 2
 
 
 /// prefetch 관련 함수

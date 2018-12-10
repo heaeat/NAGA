@@ -20,6 +20,8 @@ list<pprogram> my_list;
 list<pprogram> delete_list;
 std::list<pblackp> black_list;
 std::list<punknownp> unknown_list;
+std::list<punknownp> del_unknown_list;
+
 
 
 
@@ -126,7 +128,7 @@ BOOL CGUIDlg::OnInitDialog()
 	LV_COLUMN iCol;
 	iCol.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 	iCol.fmt = LVCFMT_LEFT;
-	
+
 
 
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
@@ -320,25 +322,78 @@ void CGUIDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CGUIDlg::OnBnClickedDeleteBtn()
 {
+	delete_list.clear();
+	del_unknown_list.clear();
+
+	bool blackFlag = false, unknownFlag = false;
+
 	log_warn "[ 사용자가 선택한 프로그램 ]" log_end;
 	// TODO: Add your control notification handler code here
 	for (int i = 0; i < m_listView.GetItemCount(); i++) {
 		if (m_listView.GetCheck(i) == true) {
-			CString delete_name = m_listView.GetItemText(i, 1);
-			pprogram temp = find_program(delete_name, my_list);
-			log_info "%ws", temp->name() log_end;
-			if (temp != NULL) {
-				delete_list.push_back(temp);
+			CString p_kind = m_listView.GetItemText(i, 0);
+			if ((p_kind.Find(_T("Security")) != -1) || (p_kind.Find(_T("Update")) != -1)) {
+				blackFlag = true; unknownFlag = false;
 			}
+			else if (p_kind.Find(_T("Unknown")) != -1) {
+				blackFlag = false; unknownFlag = true;
+			}
+
+			CString delete_name = m_listView.GetItemText(i, 1);
+
+			if (blackFlag) {
+				pprogram temp = find_program(delete_name, my_list);
+				log_info "black list : %ws", temp->name() log_end;
+				if (temp != NULL) {
+					delete_list.push_back(temp);
+				}
+			}
+			else if (unknownFlag) {
+				punknownp temp = find_unknown(delete_name, unknown_list);
+				log_info "unknown list : %ws", temp->id() log_end;
+				if (temp != NULL) {
+					del_unknown_list.push_back(temp);
+				}
+			}
+
 		}
 	}
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
-	//	MessageBox(mouse->uninstaller());
+		//	MessageBox(mouse->uninstaller());
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
 		::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo);
+	}
+
+	// unknown_list 들의 uninstaller handle 실행! 
+	for (auto mouse : del_unknown_list) {
+		
+		wstring full_path = mouse->id();
+		wstring dir_path = directory_from_file_pathw(full_path.c_str());
+		to_lower_string(dir_path);
+
+		list<pprogram> temp_list;
+		get_all_program(&temp_list);
+
+		for (auto installed : temp_list) {
+			wstring temp_full_path = installed->uninstaller();
+			wstring installed_path = directory_from_file_pathw(temp_full_path.c_str());
+			to_lower_string(installed_path);
+
+			if (installed_path.find(dir_path) != wstring::npos) {
+				mouse->setUninstaller(temp_full_path);
+			}
+		}
+		STARTUPINFO startupInfo = { 0 };
+		PROCESS_INFORMATION processInfo;
+		startupInfo.cb = sizeof(STARTUPINFO);
+		if (!::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {
+			wstring temp_path = mouse->id();
+			wstring temp_dir = directory_from_file_pathw(temp_path.c_str());
+			ShellExecute(NULL,L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
+		}
 	}
 
 }
@@ -348,8 +403,11 @@ punknownp CGUIDlg::find_unknown(CString program_name, std::list<punknownp> temp_
 	log_info "%ws", program_name log_end;
 	int result;
 	for (auto mine : temp_list) {
-		result = wcscmp(program_name, mine->id());
-		if (result == 0) return mine;
+		wstring temp_id = mine->id();
+		to_lower_string(temp_id);
+		if (temp_id.find(program_name) != wstring::npos) {
+			return mine;
+		}
 	}
 	return NULL;
 }
@@ -434,7 +492,7 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		if (p_type.Find(_T("Security")) != -1)			//	금융관련 프로그램
 		{
-			pLVCD->clrText = RGB(33, 151, 216);  
+			pLVCD->clrText = RGB(33, 151, 216);
 			pLVCD->clrTextBk = RGB(237, 255, 255);
 		}
 		else if (p_type.Find(_T("Update")) != -1)	//	update가 필요한 금융관련 프로그램

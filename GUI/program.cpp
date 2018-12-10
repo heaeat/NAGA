@@ -79,6 +79,11 @@ bool get_installed_program(void)
 	
 }
 
+bool get_all_program(list<pprogram> *installed_list) {
+	get_installed_programs(*installed_list);
+	return true;
+}
+
 // json 파일을 읽어와 파싱하는 함수
 void read_json(void) {
 	

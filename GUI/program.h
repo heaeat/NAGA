@@ -24,3 +24,4 @@ using namespace std;
 bool get_installed_program(void);
 void read_json(void);
 bool compare_lists(std::list<pprogram> *my_list);
+bool get_all_program(list<pprogram> *installed_list);
