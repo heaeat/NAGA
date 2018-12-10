@@ -614,10 +614,8 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 
 				log_info "%s", temp.c_str() log_end;
 				wstring null = L"";
-				// id , lastuse, version, cert, uninstaller의 순서
 				(*iter)->setId(Utf8MbsToWcsEx(temp.c_str()).c_str());
-				//	punknownp temp_unknown = new unknownp(Utf8MbsToWcsEx(temp.c_str()).c_str(), (*iter)->lastuse(), null.c_str(), null.c_str(), null.c_str());
-				//	unknown_list->push_back(temp_unknown);
+
 			}
 
 		}
@@ -648,12 +646,10 @@ bool check_certification(list<punknownp> *unknown_list) {
 					unknown_list->erase(iter);
 				}
 				(*iter)->setCert(signer_name);
-				// insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str(), (LPWSTR)signer_name.c_str());
 			}
 			else
 			{
-				(*iter)->setCert(L"Not verified");
-				//	insertData((LPWSTR)Utf8MbsToWcsEx(file_name_from_file_patha(line.first.c_str()).c_str()).c_str() ,L"not verified");
+				(*iter)->setCert(L"X");
 			}
 		}
 	}

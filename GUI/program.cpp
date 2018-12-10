@@ -32,10 +32,10 @@ list<pprogram> compare_lists() {
 					std::wstring path = L"";
 					std::wstringstream path_strm;
 					path_strm << software->uninstaller() << remover->uninstaller();
-					temp = new program(software->id(), software->name(), software->version(), software->version(), path_strm.str().c_str());
+					temp = new program(software->id(), software->name(), software->vendor(), software->version(), path_strm.str().c_str());
 				}
 				else {
-					temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
+					temp = new program(software->id(), software->name(), software->vendor(), software->version(), software->uninstaller());
 				}
 				
 				my_list.push_back(temp);

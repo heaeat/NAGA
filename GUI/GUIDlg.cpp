@@ -114,14 +114,16 @@ BOOL CGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	LPWSTR szText[COLNUM] = { L"삭제여부" ,L"이름", L"마지막 사용",  L"버젼", L"인증서" };
-	int nWidth[COLNUM] = { 60,300,200,100,100 };
+	SetWindowPos(NULL, -1, -1, 900, 550, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+	LPWSTR szText[COLNUM] = { L" " ,L"이름", L"마지막 사용시간",  L"인증서", L"버젼" };
+	int nWidth[COLNUM] = { 25,300,200,200,100 };
 
 	LV_COLUMN iCol;
 	iCol.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 	iCol.fmt = LVCFMT_LEFT;
+	
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
-
+	m_listView.SetWindowPos(NULL, 10, 10, 860, 440, NULL);
 	for (int i = 0; i < COLNUM; i++) {
 		iCol.pszText = szText[i];
 		iCol.iSubItem = i;
@@ -129,13 +131,24 @@ BOOL CGUIDlg::OnInitDialog()
 		iCol.fmt = LVCFMT_CENTER;
 		m_listView.InsertColumn(i, &iCol);
 	}
+	GetDlgItem(IDC_BTN_UPDATE)->SetWindowPos(NULL, 10, 460, 60, 30, NULL);
+	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 640, 460, 60, 30, NULL);
+	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
+	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
+
+	get_naga_data();
+
+	return TRUE;  // return TRUE  unless you set the focus to a control
+}
+
+void CGUIDlg::get_naga_data(void) {
 
 	my_list = compare_lists();
 
 	list<pblackp> black_list;
 	wstring null_string = L"";
 	for (auto mine : my_list) {
-		pblackp temp = new blackp(mine->id(), mine->name(), mine->vendor(), mine->version(), mine->uninstaller(), null_string.c_str(),  null_string.c_str());
+		pblackp temp = new blackp(mine->id(), mine->name(), mine->vendor(), mine->version(), mine->uninstaller(), null_string.c_str(), mine->vendor());
 		black_list.push_back(temp);
 	}
 
@@ -145,14 +158,18 @@ BOOL CGUIDlg::OnInitDialog()
 	if (!get_update_info(&black_list)) {
 		log_err "get_update_info err" log_end;
 	}
-
-	//
-	//	항목 추가로 인해 잠시 주석처리!
-	//
-
 	for (auto black : black_list)
 	{
-		insertData(const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
+		wstring name = black->name();
+		if (name.find(L"Veraport") != std::string::npos) {
+			insertData(
+				L"Update", const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
+		}
+		else {
+			insertData(
+				LPWSTR(L"Security"), const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
+		}
+
 	}
 
 	std::list<punknownp> data;
@@ -167,19 +184,19 @@ BOOL CGUIDlg::OnInitDialog()
 		int loc = lastuse.find(L" ");
 		last_stm << lastuse.substr(0, loc);
 
-		insertData(LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
+		insertData(
+			LPWSTR(L"Unknown"),
+			LPWSTR((file_name_from_file_pathw(line->id())).c_str()),
 			(LPWSTR)(line->version()),
 			(LPWSTR)(last_stm.str().c_str()),
 			(LPWSTR)line->cert());
 	}
-	
-	return TRUE;  // return TRUE  unless you set the focus to a control
-}
 
+}
 
 /// @brief	리스트 컨트롤에 데이터를 추가하기 위한 함수
 ///	이름, 마지막사용시간, 버젼, 인증서의 순서로 삽입한다.
-void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cert) {
+void CGUIDlg::insertData(LPWSTR type, LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cert) {
 	LV_ITEM lvitem;
 	int count = m_listView.GetItemCount();
 
@@ -187,7 +204,7 @@ void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cer
 	lvitem.mask = LVIF_TEXT;
 	lvitem.iItem = count;
 	lvitem.iSubItem = 0;
-	lvitem.pszText = L"";
+	lvitem.pszText = type;
 	m_listView.InsertItem(&lvitem);
 
 	// 이름 입력
@@ -207,14 +224,14 @@ void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cer
 	// 버젼 입력
 	lvitem.mask = LVIF_TEXT;
 	lvitem.iItem = count;
-	lvitem.iSubItem = 3;
+	lvitem.iSubItem = 4;
 	lvitem.pszText = version;
 	m_listView.SetItem(&lvitem);
 
 	//	인증서 유무 검증
 	lvitem.mask = LVIF_TEXT;
 	lvitem.iItem = count;
-	lvitem.iSubItem = 4;
+	lvitem.iSubItem = 3;
 	lvitem.pszText = cert;
 	m_listView.SetItem(&lvitem);
 
@@ -223,7 +240,7 @@ void CGUIDlg::insertData(LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cer
 void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 
-	
+
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
 		CAboutDlg dlgAbout;
@@ -233,7 +250,7 @@ void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	{
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
-	
+
 }
 
 // If you add a minimize button to your dialog, you will need the code below
@@ -343,18 +360,8 @@ void CGUIDlg::OnBnClickedResetBtn()
 {
 	// TODO: Add your control notification handler code here
 	m_listView.DeleteAllItems();
-
-
 	my_list.clear();
-	my_list = compare_lists();
-
-	// 잠시 주석처리
-	/*
-	for (auto mine : my_list)
-	{
-		insertData(const_cast<LPWSTR>(mine->name()), const_cast<LPWSTR>(mine->version()));
-	}
-	*/
+	get_naga_data();
 }
 
 void CGUIDlg::OnDestroy()
@@ -388,28 +395,16 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 }
 
-
+///
+///
+///
 void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	CString strType;
-	BOOL bErrorFlag = FALSE;
-	BOOL bWarnningFlag = FALSE;
-
+	BOOL bUpdateFlag = FALSE;
+	BOOL bSecurityFlag = FALSE;
 	NMLVCUSTOMDRAW* pLVCD = (NMLVCUSTOMDRAW*)pNMHDR;
-	strType = m_listView.GetItemText(pLVCD->nmcd.dwItemSpec, 1);
 
-	std::wstring hi(strType);
-
-	log_info "%ws",hi.c_str()  log_end;
-	if ((strType.Find(_T("YAHO")) != -1))
-	{
-		bErrorFlag = TRUE;
-	}
-
-	if ((strType.Find(_T("Veraport")) != -1))
-	{
-		bWarnningFlag = TRUE;
-	}
+	CString p_type = m_listView.GetItemText(pLVCD->nmcd.dwItemSpec, 0);
 
 	*pResult = 0;
 
@@ -418,19 +413,20 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
 	{
-		if (bErrorFlag)
+		if (p_type.Find(_T("Security")) != -1)			//	금융관련 프로그램
 		{
-			pLVCD->clrText = RGB(255, 0, 0);  // 글자 색 변경 
-											  //pLVCD->clrTextBk = RGB(0, 0, 0);  // 배경 색 변경 
-		}
-		else if (bWarnningFlag)
-		{
-			pLVCD->clrText = RGB(0, 0, 255);
+			pLVCD->clrText = RGB(33, 151, 216);  
 			pLVCD->clrTextBk = RGB(237, 255, 255);
+		}
+		else if (p_type.Find(_T("Update")) != -1)	//	update가 필요한 금융관련 프로그램
+		{
+			pLVCD->clrText = RGB(255, 107, 107);
 		}
 		else
 		{
-			pLVCD->clrText = RGB(0, 0, 0);
+			//
+			//	unknown program의 경우
+			//
 		}
 
 		*pResult = CDRF_DODEFAULT;
