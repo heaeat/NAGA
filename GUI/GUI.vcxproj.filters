@@ -96,6 +96,12 @@
     <ClInclude Include="CBankDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PictureEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLoadDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GUI.cpp">
@@ -149,6 +155,12 @@
     <ClCompile Include="CBankDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PictureEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLoadDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GUI.rc">
@@ -177,6 +189,21 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\out\x64_release\res\naga.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\out\x64_release\res\main.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\out\x64_release\res\transparent.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\out\x64_release\res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\heat\Desktop\loading.gif">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\loading.gif">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

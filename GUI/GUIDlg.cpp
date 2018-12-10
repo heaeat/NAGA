@@ -64,6 +64,7 @@ CGUIDlg::CGUIDlg(CWnd* pParent /*=nullptr*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
+
 void CGUIDlg::DoDataExchange(CDataExchange* pDX)
 {
 	DDX_Control(pDX, IDC_LIST1, m_listView);
@@ -122,6 +123,8 @@ BOOL CGUIDlg::OnInitDialog()
 	iCol.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 	iCol.fmt = LVCFMT_LEFT;
 	
+
+
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 	m_listView.SetWindowPos(NULL, 10, 10, 860, 440, NULL);
 	for (int i = 0; i < COLNUM; i++) {
@@ -131,12 +134,16 @@ BOOL CGUIDlg::OnInitDialog()
 		iCol.fmt = LVCFMT_CENTER;
 		m_listView.InsertColumn(i, &iCol);
 	}
+
 	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 640, 460, 60, 30, NULL);
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
 
-	get_naga_data();
+//	get_naga_data();
 
+	CLoadDlg load_dlg;
+	load_dlg.DoModal();
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -320,7 +327,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 	}
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
-		MessageBox(mouse->uninstaller());
+	//	MessageBox(mouse->uninstaller());
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
@@ -389,7 +396,7 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	m_listView.DeleteAllItems();
 	my_list.clear();
-
+	delete_list.clear();
 	std::list<punknownp> data;
 	if (!get_prefetch_info(&data)) {
 		log_err "힝" log_end;
@@ -423,6 +430,8 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 		else if (p_type.Find(_T("Update")) != -1)	//	update가 필요한 금융관련 프로그램
 		{
 			pLVCD->clrText = RGB(255, 107, 107);
+			pLVCD->clrTextBk = RGB(253, 212, 212);
+
 		}
 		else
 		{

@@ -231,6 +231,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="..\..\work.mylib\src\FileIoHelper.h" />
     <ClInclude Include="CBankDlg.h" />
     <ClInclude Include="CGdiPlusBitmap.h" />
+    <ClInclude Include="CLoadDlg.h" />
     <ClInclude Include="CStartDlg.h" />
     <ClInclude Include="GdipButton.h" />
     <ClInclude Include="GUI.h" />
@@ -239,6 +240,7 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClInclude Include="MemDC.h" />
     <ClInclude Include="phVerify\verify.h" />
     <ClInclude Include="phVerify\verifyp.h" />
+    <ClInclude Include="PictureEx.h" />
     <ClInclude Include="prefetch.h" />
     <ClInclude Include="program.h" />
     <ClInclude Include="Resource.h" />
@@ -255,11 +257,13 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
     <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp" />
     <ClCompile Include="CBankDlg.cpp" />
+    <ClCompile Include="CLoadDlg.cpp" />
     <ClCompile Include="CStartDlg.cpp" />
     <ClCompile Include="GdipButton.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="GUIDlg.cpp" />
     <ClCompile Include="phVerify\verify.cpp" />
+    <ClCompile Include="PictureEx.cpp" />
     <ClCompile Include="prefetch.cpp" />
     <ClCompile Include="program.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -277,12 +281,17 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <None Include="res\GUI.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\heat\Desktop\loading.gif" />
     <Image Include="..\..\..\Users\heat\Desktop\naga.png" />
+    <Image Include="..\out\x64_release\res\bitmap2.bmp" />
+    <Image Include="..\out\x64_release\res\main.bmp" />
     <Image Include="..\out\x64_release\res\naga.png" />
+    <Image Include="..\out\x64_release\res\transparent.png" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\GUI.ico" />
     <Image Include="res\hing.png" />
     <Image Include="res\icon1.ico" />
+    <Image Include="res\loading.gif" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
