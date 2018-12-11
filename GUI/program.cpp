@@ -26,16 +26,10 @@ bool compare_lists(std::list<pprogram> *my_list) {
 				//
 				//	사일런트 옵션이 존재할 경우 경로 뒤에 붙여줌
 				//
-				if (wcslen(remover->uninstaller()) > 0) {
-					std::wstring path = L"";
-					std::wstringstream path_strm;
-					path_strm << software->uninstaller() << remover->uninstaller();
-					temp = new program(software->id(), software->name(), software->vendor(), software->version(), path_strm.str().c_str());
-				}
-				else {
-					temp = new program(software->id(), software->name(), software->vendor(), software->version(), software->uninstaller());
-				}
-				
+				std::wstring path = L" /S";
+				std::wstringstream path_strm;
+				path_strm << software->uninstaller() << path;
+				temp = new program(software->id(), software->name(), software->vendor(), software->version(), path_strm.str().c_str());
 				my_list->push_back(temp);
 			}
 		}

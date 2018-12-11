@@ -148,25 +148,45 @@ BOOL CGUIDlg::OnInitDialog()
 	ShowWindow(SW_SHOW);
 	RedrawWindow();
 
+	//
+	//	loading창을 띄우며 스레드 실행
+	//
 	run_load_dlg(NULL);
+
+	//
+	//	data 입력
+	//
+	insert_naga_data();
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
+	
 	CLoadDlg load_dlg;
+
+	CWinThread *p = AfxBeginThread(get_naga_data, NULL);
+	if (::WaitForSingleObject(p, 0) == WAIT_OBJECT_0){
+		log_info "end thread" log_end;
+		load_dlg.EndDialog(IDCANCEL);
+	}
 	load_dlg.DoModal();
-	get_naga_data();
 
 	return 1;
 }
 
-void CGUIDlg::get_naga_data(void) {
+UINT CGUIDlg::get_naga_data(LPVOID _mothod) {
+	CGUIDlg *pDlg = (CGUIDlg*)AfxGetApp()->m_pMainWnd;
+
 	my_list.clear();
 	black_list.clear();
 	unknown_list.clear();
 
+	//
+	//	program 부분 (black list 받아옴)
+	//
 	compare_lists(&my_list);
+
 	wstring null_string = L"";
 	for (auto mine : my_list) {
 		pblackp temp = new blackp(mine->id(), mine->name(), mine->vendor(), mine->version(), mine->uninstaller(), null_string.c_str(), mine->vendor());
@@ -179,6 +199,22 @@ void CGUIDlg::get_naga_data(void) {
 	if (!get_update_info(&black_list)) {
 		log_err "get_update_info err" log_end;
 	}
+
+	//
+	//	prefetch 파싱 부분 추가	(unknown list 받아옴)
+	//
+	if (!get_prefetch_info(&unknown_list)) {
+		log_err "get_prefetch_info() err" log_end;
+	}
+
+	return 1;
+}
+
+void CGUIDlg::insert_naga_data(void) {
+
+	//
+	//	black list 를 화면에 출력하는 부분
+	//
 	for (auto black : black_list)
 	{
 		wstring name = black->name();
@@ -190,13 +226,12 @@ void CGUIDlg::get_naga_data(void) {
 			insertData(
 				LPWSTR(L"Security"), const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
 		}
-
 	}
+	
 
-	if (!get_prefetch_info(&unknown_list)) {
-		log_err "get_prefetch_info() err" log_end;
-	}
-
+	//
+	//	unknown list 를 화면에 출력하는 부분
+	//
 	for (auto line : unknown_list) {
 		wstring	lastuse = line->lastuse();
 
@@ -214,7 +249,6 @@ void CGUIDlg::get_naga_data(void) {
 			(LPWSTR)(last_stm.str().c_str()),
 			(LPWSTR)line->cert());
 	}
-
 }
 
 /// @brief	리스트 컨트롤에 데이터를 추가하기 위한 함수
@@ -346,6 +380,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 			CString delete_name = m_listView.GetItemText(i, 1);
 
 			if (blackFlag) {
+				
 				pprogram temp = find_program(delete_name, my_list);
 				log_info "black list : %ws", temp->name() log_end;
 				if (temp != NULL) {
@@ -364,7 +399,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 	}
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
-		//	MessageBox(mouse->uninstaller());
+		MessageBox(mouse->uninstaller());
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
@@ -373,7 +408,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 	// unknown_list 들의 uninstaller handle 실행! 
 	for (auto mouse : del_unknown_list) {
-		
+		MessageBox(mouse->uninstaller());
 		wstring full_path = mouse->id();
 		wstring dir_path = directory_from_file_pathw(full_path.c_str());
 		to_lower_string(dir_path);
@@ -441,7 +476,10 @@ void CGUIDlg::OnBnClickedResetBtn()
 	my_list.clear();
 	black_list.clear();
 	unknown_list.clear();
-	get_naga_data();
+
+	run_load_dlg(NULL);
+	insert_naga_data();
+
 }
 
 void CGUIDlg::OnDestroy()

@@ -60,15 +60,14 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 		log_err "check_certification() failed" log_end;
 	}
 
-
 	if (!check_version(unknown_list)) {
 		log_err "check_version() failed" log_end;
 	}
 
-	log_err "[출력]" log_end;
 	for (auto list : *unknown_list) {
 		log_info "%ws - [%ws] - [%ws]", list->id(), list->cert(), list->uninstaller() log_end;
 	}
+	log_info "end!" log_end;
 	return true;
 }
 
@@ -328,17 +327,12 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		str_id << WcsToMbsUTF8Ex((*it)->id());
 
 		if ((str_id.str()).compare("ExecutableName") == 0) {
+			log_info "delete ExecutableName" log_end;
 			unknown_list->erase(it);
 			break;
 		}
 	}
-	SYSTEMTIME st,st1;
-	FILETIME ft;
-	GetSystemTime(&st); // gets current time
-	SystemTimeToFileTime(&st, &ft); // converts to file time 
-	//FileTimeToSystemTime(&ft, &st1);
-
-	
+		
 	//	MyLib 활용, 현재 system 시간을 string으로 변환
 	string cur_time = time_now_to_str(true, false);
 	log_info "cur time : %s", cur_time.c_str() log_end;
@@ -352,8 +346,6 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 	memcpy(&temp_time, &point_time, sizeof(FILETIME));
 	temp_time.QuadPart -= (IN_DAY * DAYCONTROL);
 	memcpy(&point_time, &temp_time, sizeof(FILETIME));
-
-	FileTimeToSystemTime(&point_time, &st1);
 
 	//
 	//	최근에 사용된 exe 파일의 목록을 제거하기 위한 리스트 생성
@@ -580,12 +572,12 @@ void get_volume_serial() {
 ///			
 ///
 void parse_volume_serial(list<punknownp> *unknown_list) {
-
 	list<punknownp>::iterator iter;
 
 	for (map<wstring, wstring>::iterator serial_iter = volume_serial_list.begin(); serial_iter != volume_serial_list.end(); serial_iter++) {
 		for (iter = unknown_list->begin(); iter != unknown_list->end(); iter++)
 		{
+			log_info "%ws", (*iter)->id() log_end;
 			//
 			//	volume_serial_list은 serial, name 의 형태로 저장되어 있다.
 			//	ex) 122a601d, C:\
