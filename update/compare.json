@@ -1,0 +1,24 @@
+{
+	"bank": [
+		{
+			"name": "시티은행",
+			"site": "https://www.citibank.co.kr"
+		},
+		{
+			"name": "IBk기업은행",
+			"site": "https://www.ibk.co.kr"
+		},
+		{
+			"name": "KDB산업은행",
+			"site": "https://www.kdb.co.kr"
+		},
+		{
+			"name": "신한은행",
+			"site": "https://www.shinhan.com"
+		},
+		{
+			"name": "SC제일은행",
+			"site": "https://www.standardchartered.co.kr"
+		}
+	]
+}
