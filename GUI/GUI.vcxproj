@@ -295,6 +295,9 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <Image Include="res\icon1.ico" />
     <Image Include="res\loading.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\loading.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -145,14 +145,18 @@ BOOL CGUIDlg::OnInitDialog()
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
 
-	//run_load_dlg(NULL);
-	get_naga_data();
+	ShowWindow(SW_SHOW);
+	RedrawWindow();
+
+	run_load_dlg(NULL);
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
 UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	CLoadDlg load_dlg;
 	load_dlg.DoModal();
+	get_naga_data();
 
 	return 1;
 }
