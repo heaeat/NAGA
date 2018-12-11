@@ -1,63 +1,72 @@
+#test.py
 import os
+import sys
 import hashlib
 import json
 from collections import OrderedDict
 
-key_arr = []
 
-veraport_path = 'C:\Program Files\Wizvera\Veraport20'
-#veraport_path = "/mnt/c/Program Files/Wizvera/Veraport20/"
+result_key_arr = []
 
-def compare():
-	if not os.path.isdir(veraport_path):
+def get_client_data(path):
+	if not os.path.isdir(path):
+		print("폴더가 음썰...")
 		return -1
-	
-	client_data = get_hash()
-	#print(client_data)
-	#print('')
-	with open('combine.json') as json_file:
-		json_data = json.load(json_file)
-		for key in json_data.keys():
-			#print(key)
-			#print(json_data[key])
-			if client_data == json_data[key]:
-				#print(key)
-				key_arr.append(key)
-			#for i in range(len(json_data[key])):
-	#print(key_arr)
-	return key_arr
-				
 
-def get_hash():
 	hash_arr = []
-	
-	files = next(os.walk(veraport_path))[2]
+	file_list = next(os.walk(path))[2]
 	#print(files)
 	
-	for i in range(len(files)):
-		temp_obj = {}
-		if 'unins' in files[i] :
-			continue
+	return get_hash(path, file_list)
 
-		#elif '.dll' in files[i]:
-		#	continue
-		#print(files[i])
-		f = open(veraport_path+'\\'+files[i],"rb")
+def get_hash(path, file_list):
+	hash_arr = []
+	#print(file_list)
+	for i in range(len(file_list)) :
+		if 'unins' in file_list[i]:
+			continue
+		
+		temp_obj = {}
+
+		#print(file_list[i])
+		f = open(path+file_list[i],"rb")
 		data = f.read()
 		hash = hashlib.sha256(data).hexdigest()
-		temp_obj = {files[i]:hash}
+		#print(hash)
+		#print('')
+		temp_obj = {file_list[i]:hash}
+		#print(temp_obj)
 		hash_arr.append(temp_obj)
+
+	#print('')
+	#print(hash_arr)
 
 	return hash_arr
 
-def find_website():
-	result = compare()
-	print(result)
-	result_arr =[]
+def compare():
+	
+	client_data = get_client_data(path)
 
-	if len(result) :
-		for i in range(len(result)):
-			key = result[i]
+	with open('combine.json') as json_file:
+		combine_json_data = json.load(json_file)
+		for key in combine_json_data.keys():
+			if client_data == combine_json_data[key]:
+				result_key_arr.append(key)
+
+	return result_key_arr
+
+def find_website():
+
+	result_key = compare()
+	#print(result_key)
+
+	result_arr = []
+
+	if len(result_key):
+		for i in range(len(result_key)):
+			
+			key = result_key[i]
+
 			if key == "busanbank":
 				result_arr.append({"name":"부산은행", "site":"https://ibank.busanbank.co.kr"})
 			elif key == "citibank":
@@ -85,20 +94,32 @@ def find_website():
 			elif key == "wooribank":
 				result_arr.append({"name":"우리은행","site":"https://www.wooribank.com"})
 
-	result_obj ={"bank":result_arr}
-	#print(result_obj)
-	return result_obj
+		result = {"bank":result_arr}
+
+		return result
 
 def make_json_file():
 	data = find_website()
 	with open('compare.json','w') as f:
-		json.dump(data, f, ensure_ascii = False, indent='\t')
+		json.dump(data, f, ensure_ascii  = False, indent = '\t')
 
+def check_path(path):
+	
+	if 'x86' in path:
+		
+		#print("은행 사이트 경로는 x86이 안들어갑니당...!!")
+
+		return -1
+	else:
+		return 0
 
 if __name__ == '__main__':
-	#print(veraport_path)
-	#compare()
-	make_json_file()
-	#find_website()
-
 	
+	path = sys.argv[1]
+
+	if not check_path(path):
+		#print(type(path))
+		#print(path)
+		make_json_file()
+
+
