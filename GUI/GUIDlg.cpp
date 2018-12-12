@@ -415,7 +415,6 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 	}
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
-		//		MessageBox(mouse->uninstaller());
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
@@ -424,7 +423,6 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 	// unknown_list 들의 uninstaller handle 실행! 
 	for (auto mouse : del_unknown_list) {
-		//		MessageBox(mouse->uninstaller());
 		wstring full_path = mouse->id();
 		wstring dir_path = directory_from_file_pathw(full_path.c_str());
 		to_lower_string(dir_path);

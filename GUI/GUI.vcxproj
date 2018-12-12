@@ -251,11 +251,11 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
   <ItemGroup>
     <ClCompile Include="..\..\..\work.mylib\src\CStream.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\curl_client.cpp" />
+    <ClCompile Include="..\..\..\work.mylib\src\FileIoHelper.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\log.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\process_tree.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\RegistryUtil.cpp" />
     <ClCompile Include="..\..\..\work.mylib\src\Win32Utils.cpp" />
-    <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp" />
     <ClCompile Include="CBankDlg.cpp" />
     <ClCompile Include="CLoadDlg.cpp" />
     <ClCompile Include="CStartDlg.cpp" />
