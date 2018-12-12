@@ -140,9 +140,6 @@
     <ClCompile Include="phVerify\verify.cpp">
       <Filter>phverify</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\work.mylib\src\FileIoHelper.cpp">
-      <Filter>mylib</Filter>
-    </ClCompile>
     <ClCompile Include="CStartDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -160,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="CLoadDlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\work.mylib\src\FileIoHelper.cpp">
+      <Filter>mylib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
