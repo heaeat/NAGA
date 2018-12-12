@@ -16,13 +16,11 @@
 #define new DEBUG_NEW
 #endif
 
-list<pprogram> my_list;
-list<pprogram> delete_list;
+std::list<pprogram> my_list;
+std::list<pprogram> delete_list;
 std::list<pblackp> black_list;
 std::list<punknownp> unknown_list;
 std::list<punknownp> del_unknown_list;
-
-
 
 
 // CAboutDlg dialog used for App About
@@ -121,6 +119,10 @@ BOOL CGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+
+	//
+	//	list control 초기화
+	//
 	SetWindowPos(NULL, -1, -1, 900, 550, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 	LPWSTR szText[COLNUM] = { L" " ,L"이름", L"마지막 사용시간",  L"인증서", L"버젼" };
 	int nWidth[COLNUM] = { 25,300,200,200,100 };
@@ -130,9 +132,15 @@ BOOL CGUIDlg::OnInitDialog()
 	iCol.fmt = LVCFMT_LEFT;
 
 
-
+	//
+	//	LVS_EX_CHECKBOXES 를 통해 체크박스를 이용할 수 있다.
+	//
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 	m_listView.SetWindowPos(NULL, 10, 10, 860, 440, NULL);
+	
+	//
+	//	각각의 Column을 생성하고 크기를 지정
+	//
 	for (int i = 0; i < COLNUM; i++) {
 		iCol.pszText = szText[i];
 		iCol.iSubItem = i;
@@ -141,6 +149,9 @@ BOOL CGUIDlg::OnInitDialog()
 		m_listView.InsertColumn(i, &iCol);
 	}
 
+	//
+	//	버튼들의 위치 조정 (수정 필요)
+	//
 	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 640, 460, 60, 30, NULL);
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
@@ -162,6 +173,10 @@ BOOL CGUIDlg::OnInitDialog()
 }
 
 
+
+///	@brief  data를 읽어오는 동안 로딩 다이얼로그를 출력하기 위한 함수
+///
+///
 UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	// 
 	// Dialog 를 별도의 스레드에서 띄워줍니다.
@@ -190,7 +205,9 @@ UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	return 1;
 }
 
-
+///	@brief  실제적으로 data를 읽어오는 함수
+///
+///
 UINT CGUIDlg::get_naga_data(LPVOID _mothod) {
 	CGUIDlg *pDlg = (CGUIDlg*)AfxGetApp()->m_pMainWnd;
 
@@ -226,6 +243,9 @@ UINT CGUIDlg::get_naga_data(LPVOID _mothod) {
 	return 1;
 }
 
+///	@brief 읽어온 데이터를 리스트 컨트롤에 출력하는 함수
+///
+///
 void CGUIDlg::insert_naga_data(void) {
 
 	//
@@ -249,6 +269,14 @@ void CGUIDlg::insert_naga_data(void) {
 	//	unknown list 를 화면에 출력하는 부분
 	//
 	for (auto line : unknown_list) {
+
+		log_err "--- %ws",line->id() log_end;
+		//
+		//	valid 하지 않을경우 출력하지 않음
+		//
+		if (!line->isValid()) {
+			continue;
+		}
 		wstring	lastuse = line->lastuse();
 
 		wstringstream last_stm;
@@ -309,6 +337,7 @@ void CGUIDlg::insertData(LPWSTR type, LPWSTR name, LPWSTR version, LPWSTR lastus
 	m_listView.SetItem(&lvitem);
 
 }
+
 
 void CGUIDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -372,8 +401,8 @@ void CGUIDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 }
 
-
-
+///	@brief  Delete 버튼을 누를 시 실행되는 함수
+///
 void CGUIDlg::OnBnClickedDeleteBtn()
 {
 	delete_list.clear();
@@ -383,9 +412,14 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 	log_warn "[ 사용자가 선택한 프로그램 ]" log_end;
 	// TODO: Add your control notification handler code here
+
 	for (int i = 0; i < m_listView.GetItemCount(); i++) {
 		if (m_listView.GetCheck(i) == true) {
 			CString p_kind = m_listView.GetItemText(i, 0);
+
+			//
+			//	black list인지 unknown list인지 판별
+			//
 			if ((p_kind.Find(_T("Security")) != -1) || (p_kind.Find(_T("Update")) != -1)) {
 				blackFlag = true; unknownFlag = false;
 			}
@@ -395,14 +429,20 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 			CString delete_name = m_listView.GetItemText(i, 1);
 
+			//
+			//	black list 인 경우
+			//
 			if (blackFlag) {
-
 				pprogram temp = find_program(delete_name, my_list);
 				log_info "black list : %ws", temp->name() log_end;
 				if (temp != NULL) {
 					delete_list.push_back(temp);
 				}
 			}
+
+			//
+			//	unknown list 인 경우
+			//
 			else if (unknownFlag) {
 				punknownp temp = find_unknown(delete_name, unknown_list);
 				log_info "unknown list : %ws", temp->id() log_end;
@@ -413,6 +453,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 		}
 	}
+
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
 		STARTUPINFO startupInfo = { 0 };
@@ -434,24 +475,37 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 			wstring temp_full_path = installed->uninstaller();
 			wstring installed_path = directory_from_file_pathw(temp_full_path.c_str());
 			to_lower_string(installed_path);
-
+			
+			//
+			//	exe 파일이 존재하는 경로와 프로그램 추가/제거에 있는 프로그램의 경로를 비교한다.
+			//
 			if (installed_path.find(dir_path) != wstring::npos) {
 				mouse->setUninstaller(temp_full_path);
 			}
 		}
+
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
+
+		//
+		//	uninstaller가 존재할 경우 uninstaller를 실행
+		//
 		if (!::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {
 			wstring temp_path = mouse->id();
 			wstring temp_dir = directory_from_file_pathw(temp_path.c_str());
+			
+			//
+			//	uninstaller가 존재하지 않을 경우 해당 경로를 실행해준다.
+			//
 			ShellExecute(NULL, L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
 		}
 	}
 
 }
 
-
+///	@brief 이름으로 unknown 을 찾아서 반환하는 함수
+///
 punknownp CGUIDlg::find_unknown(CString program_name, std::list<punknownp> temp_list) {
 	log_info "%ws", program_name log_end;
 	int result;
@@ -465,6 +519,8 @@ punknownp CGUIDlg::find_unknown(CString program_name, std::list<punknownp> temp_
 	return NULL;
 }
 
+///	@brief 이름으로 black 을 찾아서 반환하는 함수
+///
 pprogram CGUIDlg::find_program(CString program_name, list<pprogram> temp_list) {
 	log_info "%ws", program_name log_end;
 	int result;
@@ -475,6 +531,9 @@ pprogram CGUIDlg::find_program(CString program_name, list<pprogram> temp_list) {
 	return NULL;
 }
 
+
+///	@brief check box를 체크하면 실행되는 함수
+///
 void CGUIDlg::OnBnClickedSelectBtn()
 {
 	for (int i = 0; i < m_listView.GetItemCount(); i++)
@@ -483,6 +542,9 @@ void CGUIDlg::OnBnClickedSelectBtn()
 	}
 }
 
+
+///	@brief reset 버튼을 클릭하면 실행되는 함수
+///
 void CGUIDlg::OnBnClickedResetBtn()
 {
 	// TODO: Add your control notification handler code here
@@ -496,6 +558,9 @@ void CGUIDlg::OnBnClickedResetBtn()
 
 }
 
+
+///	@brief 종료될 떄 실행되는 함수
+///			메모리 반환을 여기서 하자!
 void CGUIDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
@@ -510,26 +575,69 @@ void CGUIDlg::OnDestroy()
 	my_list.clear();
 }
 
-
+///	@brief  list control을 정렬하기 위한 함수
+///
 void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: Add your control notification handler code here
 	*pResult = 0;
 
-	m_listView.DeleteAllItems();
-	my_list.clear();
-	delete_list.clear();
-	unknown_list.clear();
-	black_list.clear();
-	if (!get_prefetch_info(&unknown_list)) {
-		log_err "힝" log_end;
+	int count = m_listView.GetItemCount();
+	int unknown_loc = -1;
+
+	for (int i = 0; i < count; i++)
+	{
+		//
+		//	각각의 행을 읽어와 Unknown이 발견되면 Stop
+		//
+		CString name = m_listView.GetItemText(i, 0);
+		if (name.Find(_T("Unknown")) != -1) {
+			log_info "loc : %d", i log_end;
+			unknown_loc = i;
+			break;
+		}
 	}
 
+	if (unknown_loc == -1) return;
+
+	for (int j = unknown_loc; j < count; j++) {
+		m_listView.DeleteItem(unknown_loc);
+	}
+
+	
+	unknown_list.sort(unknown_list_sort());
+	
+	//
+	//	unknown list 를 화면에 출력하는 부분
+	//
+	for (auto line : unknown_list) {
+		//
+		//	valid 하지 않을경우 출력하지 않음
+		//
+		if (!line->isValid()) {
+			continue;
+		}
+		wstring	lastuse = line->lastuse();
+
+		wstringstream last_stm;
+		int loc = lastuse.find(L" ");
+		last_stm << lastuse.substr(0, loc);
+
+		wstring file_name = (file_name_from_file_pathw(line->id())).c_str();
+		to_lower_string(file_name);
+
+		insertData(
+			LPWSTR(L"Unknown"),
+			LPWSTR(file_name.c_str()),
+			(LPWSTR)(line->version()),
+			(LPWSTR)(last_stm.str().c_str()),
+			(LPWSTR)line->cert());
+	}
+	
 }
 
-///
-///
+///	@brief  list control의 행 별로 색깔을 입히기 위한 함수
 ///
 void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -546,12 +654,19 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
 	{
-		if (p_type.Find(_T("Security")) != -1)			//	금융관련 프로그램
+		//
+		//	black list인 경우
+		//	(제거 대상인 금융권 보안 프로그램)
+		if (p_type.Find(_T("Security")) != -1)		
 		{
 			pLVCD->clrText = RGB(33, 151, 216);
 			pLVCD->clrTextBk = RGB(237, 255, 255);
 		}
-		else if (p_type.Find(_T("Update")) != -1)	//	update가 필요한 금융관련 프로그램
+
+		//
+		//	update list인 경우
+		//	(업데이트가 필요한 금융권 보안 프로그램) like veraport
+		else if (p_type.Find(_T("Update")) != -1)	
 		{
 			pLVCD->clrText = RGB(255, 107, 107);
 			pLVCD->clrTextBk = RGB(253, 212, 212);
@@ -561,7 +676,7 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			//
 			//	unknown program의 경우
-			//
+			//	색칠하지 않음
 		}
 
 		*pResult = CDRF_DODEFAULT;
@@ -570,8 +685,8 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-
-
+///	@brief	list control의 항목을 더블클릭시 실행되는 함수
+///
 void CGUIDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);

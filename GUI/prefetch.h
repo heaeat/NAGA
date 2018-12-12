@@ -24,8 +24,7 @@ using namespace std;
 #pragma comment(lib, "msi.lib")
 #pragma comment(lib,"ChilkatRelDll_x64.lib")
 
-#define DAYCONTROL 30
-
+#define DAYCONTROL 0
 
 /// prefetch 관련 함수
 bool get_prefetch_info(list<punknownp> *unknown_list);
@@ -47,3 +46,15 @@ bool check_certification(list<punknownp> *unknown_list);
 
 /// 버젼 관련 함수
 bool check_version(list<punknownp> *unknown_list);
+
+struct unknown_list_sort {
+	bool operator()(unknownp *p1, unknownp *p2)const {
+		string p1_list_use = WcsToMbsUTF8Ex(p1->lastuse());
+		string p2_list_use = WcsToMbsUTF8Ex(p2->lastuse());
+		
+		if (CompareFileTime(&str_to_filetime(p1_list_use), &str_to_filetime(p2_list_use)) == -1) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+};

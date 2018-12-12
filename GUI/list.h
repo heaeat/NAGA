@@ -64,23 +64,29 @@ public:
 		_lastuse(lastuse),
 		_version(version),
 		_cert(cert),
-		_uninstaller(uninstaller)
+		_uninstaller(uninstaller),
+		_valid(TRUE)
 	{}
 public:
 	const wchar_t* id() { return _id.c_str(); }
 	const wchar_t* lastuse() { return _lastuse.c_str(); }
 	const wchar_t* version() { return _version.c_str(); }
 	const wchar_t* cert() { return _cert.c_str(); }
+	bool isValid() { return _valid; };
 	const wchar_t* uninstaller() { return _uninstaller.c_str(); }
 	void setId(_In_ std::wstring id) { _id = id; }
 	void setUse(_In_ std::wstring lastuse) { _lastuse = lastuse; }
 	void setVersion(_In_ std::wstring version) { _version = version; }
 	void setCert(_In_ std::wstring cert) { _cert = cert; }
 	void setUninstaller(_In_ std::wstring uninstaller) { _uninstaller = uninstaller; }
+	void setValid(_In_ bool valid) { _valid = valid; };
 private:
 	std::wstring _id;
 	std::wstring _lastuse;
 	std::wstring _version;
 	std::wstring _cert;
 	std::wstring _uninstaller;
+	bool _valid;
 } *punknownp;
+
+

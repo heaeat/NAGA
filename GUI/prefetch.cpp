@@ -12,6 +12,7 @@ map<wstring, wstring> volume_serial_list;
 wstring result_path = L"\"C:\\Temp\\result\\";
 
 
+
 bool get_prefetch_info(list<punknownp> *unknown_list)
 {
 
@@ -328,7 +329,8 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 
 		if ((str_id.str()).compare("ExecutableName") == 0) {
 			log_info "delete ExecutableName" log_end;
-			unknown_list->erase(it);
+			(*it)->setValid(FALSE);
+//			unknown_list->erase(it);
 			break;
 		}
 	}
@@ -372,14 +374,16 @@ bool check_recently_used(list<punknownp> *unknown_list) {
 		stringstream ms_string;
 		ms_string << "MICRO";
 		if (str_id.str().find(ms_string.str()) != string::npos) {
-			unknown_list->erase(iter);
+			(*iter)->setValid(FALSE);
+//			unknown_list->erase(iter);
 			log_info "Except microsoft file, %s", str_id.str().c_str() log_end;
 		}
 		else {
 			for (auto remove : remove_list) {
 				if ((str_id.str()).compare(remove) == 0) {
 					log_info "Recently used %s", str_id.str().c_str() log_end;
-					unknown_list->erase(iter);
+					(*iter)->setValid(FALSE);
+//					unknown_list->erase(iter);
 				}
 			}
 		}	
@@ -591,7 +595,8 @@ void parse_volume_serial(list<punknownp> *unknown_list) {
 
 			if ((str_id.str()).find("\\") == string::npos) {		//	full path를 알 수 없는 파일인 경우
 				log_info "No full path file : %ws", (*iter)->id() log_end;
-				unknown_list->erase(iter);				//	우선은 목록에서 제거
+				(*iter)->setValid(FALSE);
+//				unknown_list->erase(iter);				//	우선은 목록에서 제거
 				continue;
 			}
 
@@ -639,12 +644,14 @@ bool check_certification(list<punknownp> *unknown_list) {
 			if (vr == VrTrusted)
 			{
 				if (signer_name.find(L"Microsoft") != string::npos) {		// 인증서가 MS 사의 것이면
-					unknown_list->erase(iter);
+					(*iter)->setValid(FALSE);
+//					unknown_list->erase(iter);
 				}
 				(*iter)->setCert(signer_name);
 			}
-			else if (vr == VrUnknown) {										//	파일이 없으면
-				unknown_list->erase(iter);
+			else if (vr == VrUnknown) {			//	파일이 없으면
+				(*iter)->setValid(FALSE);
+//				unknown_list->erase(iter);
 			}
 			else
 			{
