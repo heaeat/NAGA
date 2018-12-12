@@ -157,23 +157,39 @@ BOOL CGUIDlg::OnInitDialog()
 	//	data 입력
 	//
 	insert_naga_data();
-	
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
-	
-	CLoadDlg load_dlg;
 
-	CWinThread *p = AfxBeginThread(get_naga_data, NULL);
-	if (::WaitForSingleObject(p, 0) == WAIT_OBJECT_0){
-		log_info "end thread" log_end;
-		load_dlg.EndDialog(IDCANCEL);
-	}
-	load_dlg.DoModal();
+UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
+	// 
+	// Dialog 를 별도의 스레드에서 띄워줍니다.
+	//
+	CLoadDlg load_dlg;
+	boost::thread* dlg_thread = new boost::thread([&load_dlg]() {
+		load_dlg.DoModal();
+	});
+
+	//
+	// 데이터를 가져오고...
+	//
+	get_naga_data(NULL);
+
+	//
+	// 로딩 다이얼로그를 종료합니다. 
+	//
+	load_dlg.EndDialog(0);
+
+	// 
+	// 다이얼로그를 띄워주었던 스레드 객체도 종료해줍니다. 
+	// 
+	dlg_thread->join();
+	delete dlg_thread;
 
 	return 1;
 }
+
 
 UINT CGUIDlg::get_naga_data(LPVOID _mothod) {
 	CGUIDlg *pDlg = (CGUIDlg*)AfxGetApp()->m_pMainWnd;
@@ -227,7 +243,7 @@ void CGUIDlg::insert_naga_data(void) {
 				LPWSTR(L"Security"), const_cast<LPWSTR>(black->name()), const_cast<LPWSTR>(black->version()), L"", const_cast<LPWSTR>(black->bank()));
 		}
 	}
-	
+
 
 	//
 	//	unknown list 를 화면에 출력하는 부분
@@ -380,7 +396,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 			CString delete_name = m_listView.GetItemText(i, 1);
 
 			if (blackFlag) {
-				
+
 				pprogram temp = find_program(delete_name, my_list);
 				log_info "black list : %ws", temp->name() log_end;
 				if (temp != NULL) {
@@ -399,7 +415,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 	}
 	// delete_list 들의 uninstaller handle 실행! 
 	for (auto mouse : delete_list) {
-		MessageBox(mouse->uninstaller());
+		//		MessageBox(mouse->uninstaller());
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
@@ -408,7 +424,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 
 	// unknown_list 들의 uninstaller handle 실행! 
 	for (auto mouse : del_unknown_list) {
-		MessageBox(mouse->uninstaller());
+		//		MessageBox(mouse->uninstaller());
 		wstring full_path = mouse->id();
 		wstring dir_path = directory_from_file_pathw(full_path.c_str());
 		to_lower_string(dir_path);
@@ -431,7 +447,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 		if (!::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {
 			wstring temp_path = mouse->id();
 			wstring temp_dir = directory_from_file_pathw(temp_path.c_str());
-			ShellExecute(NULL,L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
+			ShellExecute(NULL, L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
 		}
 	}
 
