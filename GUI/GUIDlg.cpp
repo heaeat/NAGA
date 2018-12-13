@@ -566,8 +566,13 @@ void CGUIDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
+	std::wstring user_temp_dir;
+	get_temp_dirW(user_temp_dir);
+
+	std::wstringstream create_strm;
+	create_strm << user_temp_dir << L"Naga\\result";
 	// TODO: Add your message handler code here
-	delete_all_csv(L"C:\\Temp\\result", 1);
+	delete_all_csv(create_strm.str().c_str(), 1);
 	finalize_log();
 	for (auto p : my_list)
 	{

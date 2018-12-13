@@ -21,8 +21,22 @@ bool compare_lists(std::list<pprogram> *my_list) {
 		for (auto software : softwares) {
 			result = wcscmp(software->id(), remover->id());
 			pprogram temp;
+			wstring guid;
 
 			if (result == 0) {
+				//
+				//	yessign 예외처리
+				//
+				guid = remover->id();
+				wstring yes_id = L"yessign7ActiveX";
+				if (guid.find(yes_id) != wstring::npos) {
+					std::wstringstream path_strm;
+					path_strm << L"C:\\Windows\\SysWOW64\\yessign7Clear.exe";
+					temp = new program(software->id(), software->name(), software->version(), software->version(), path_strm.str().c_str());
+					my_list->push_back(temp);
+					continue;
+				}
+
 				//
 				//	사일런트 옵션이 존재할 경우 경로 뒤에 붙여줌
 				//
