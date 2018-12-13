@@ -74,6 +74,9 @@ void CGUIDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_listView);
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_SIDE_PIC, sideImg);
+	DDX_Control(pDX, IDC_GITHUB_BTN, m_github_btn);
+	DDX_Control(pDX, IDC_BLOG_BTN, m_blog_btn);
+	DDX_Control(pDX, IDC_MAIL_BTN, m_mail_btn);
 }
 
 BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
@@ -86,6 +89,9 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CGUIDlg::OnNMCustomdrawList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CGUIDlg::OnNMDblclkList1)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_GITHUB_BTN, &CGUIDlg::OnBnClickedGithubBtn)
+	ON_BN_CLICKED(IDC_BLOG_BTN, &CGUIDlg::OnBnClickedBlogBtn)
+	ON_BN_CLICKED(IDC_MAIL_BTN, &CGUIDlg::OnBnClickedMailBtn)
 END_MESSAGE_MAP()
 
 
@@ -146,10 +152,27 @@ BOOL CGUIDlg::OnInitDialog()
 	//	사이드 이미지 수정
 	//
 	sideImg.SetWindowPos(NULL, 10, 10, 300, 450, NULL);
-//	sideImg.SetWindowPos(NULL, 870, 10, 300, 450, NULL);
 	HBITMAP hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS);
 	sideImg.SetBitmap(hBmp);
+	sideImg.ShowWindow(SW_SHOW);
 
+
+	//
+	//	사이드 이미지 위에 버튼 올리기
+	//
+	m_github_btn.LoadBitmaps(IDB_BITMAP2, IDB_BITMAP5, IDB_BITMAP5, IDB_BITMAP2);
+	m_github_btn.SetWindowPos(&wndTopMost, 0, 400, 40, 40, NULL);
+	m_github_btn.SizeToContent();
+
+	m_blog_btn.LoadBitmaps(IDB_BITMAP4, IDB_BITMAP6, IDB_BITMAP4, IDB_BITMAP6);
+	m_blog_btn.SetWindowPos(&wndTopMost, 500, 400, 40, 40, NULL);
+	m_blog_btn.SizeToContent();
+
+	m_mail_btn.LoadBitmaps(IDB_BITMAP3, IDB_BITMAP7, IDB_BITMAP3, IDB_BITMAP7);
+	m_mail_btn.SetWindowPos(&wndTopMost, 200, 400, 40, 40, NULL);
+	m_mail_btn.SizeToContent();
+
+	
 	//
 	//	LVS_EX_CHECKBOXES 를 통해 체크박스를 이용할 수 있다.
 	//
@@ -175,11 +198,20 @@ BOOL CGUIDlg::OnInitDialog()
 	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 1110 -65, 465, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 1110, 465, 60, 30, NULL);
 
+	
 	//
-	//	로그를 출력하기 위한 static text 추가
+	//	status bar 추가
 	//
-//	GetDlgItem(IDC_LOG_STATIC)->SetWindowPos(NULL, 0, 500 , 1200, 20, NULL);
-//	SetDlgItemTextW(IDC_LOG_STATIC, L"프로그램이 실행되었습니다. ");
+	m_statusBar.Create(WS_CHILD | WS_VISIBLE | SBT_OWNERDRAW, CRect(0, 0, 0, 0), this, 0);
+
+	int strPartDim[4] = { 400, 400, 300,100};
+	m_statusBar.SetParts(3, strPartDim);
+	m_statusBar.SetText(L"프로그램이 시작되었습니다", 0, 0);
+	m_statusBar.SetText(L"야호~", 1, 0);
+	m_statusBar.SetDlgItemInt(IDC_DELETE_BTN, 2, 0);
+//	m_statusBar.MoveWindow(rect.left, rect.bottom, rect.Width(), 10);
+	m_statusBar.SetBkColor(RGB(255, 255, 255));
+
 	
 	//
 	//	일단 창이 실행되면 list control을 출력해준다
@@ -211,17 +243,20 @@ UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	//
 	CLoadDlg load_dlg;
 	boost::thread* dlg_thread = new boost::thread([&load_dlg]() {
-		load_dlg.DoModal();
+		get_naga_data(NULL);
 	});
 
+	
 	//
 	// 데이터를 가져오고...
 	//
-	get_naga_data(NULL);
+	load_dlg.DoModal();
+	
 
 	//
 	// 로딩 다이얼로그를 종료합니다. 
 	//
+	dlg_thread->join();
 	load_dlg.EndDialog(0);
 
 	// 
@@ -748,12 +783,35 @@ HBRUSH CGUIDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	// TODO:  Change any attributes of the DC here
-
+	/*
 	// TODO:  Return a different brush if the default is not desired
 	if (pWnd->GetDlgCtrlID() == IDC_LOG_STATIC)
 	{
 		pDC->SetBkColor(RGB(255, 255, 255));
 	}
 
+	*/
 	return hbr;
+}
+
+void CGUIDlg::OnBnClickedGithubBtn()
+{
+	// TODO: Add your control notification handler code here
+	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT("https://github.com/heaeat/naga"), NULL, SW_SHOW);
+
+}
+
+
+void CGUIDlg::OnBnClickedBlogBtn()
+{
+	// TODO: Add your control notification handler code here
+	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT("https://bobnaga679428248.wordpress.com/%EB%B8%94%EB%A1%9C%EA%B7%B8/"), NULL, SW_SHOW);
+
+}
+
+
+void CGUIDlg::OnBnClickedMailBtn()
+{
+	// TODO: Add your control notification handler code here
+	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT(" mailto:shj.heath@gmail.com"), NULL, SW_SHOW);
 }

@@ -281,7 +281,10 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <None Include="res\GUI.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\heat\Desktop\blog_pressed.bmp" />
+    <Image Include="..\..\..\Users\heat\Desktop\github_pressed.bmp" />
     <Image Include="..\..\..\Users\heat\Desktop\loading.gif" />
+    <Image Include="..\..\..\Users\heat\Desktop\mail_pressed.bmp" />
     <Image Include="..\..\..\Users\heat\Desktop\naga.png" />
     <Image Include="..\..\mousetrap\out\x64_release\res\main.bmp" />
     <Image Include="..\..\mousetrap\out\x64_release\res\transparent.png" />
@@ -290,14 +293,20 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <Image Include="..\out\x64_release\res\naga.png" />
     <Image Include="..\out\x64_release\res\transparent.png" />
     <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\blog_pressed.bmp" />
+    <Image Include="res\github.bmp" />
+    <Image Include="res\github_pressed.bmp" />
     <Image Include="res\GUI.ico" />
     <Image Include="res\hing.png" />
     <Image Include="res\icon1.ico" />
     <Image Include="res\loading.gif" />
+    <Image Include="res\mail.bmp" />
+    <Image Include="res\mail_pressed.bmp" />
     <Image Include="res\main.bmp" />
     <Image Include="res\sidebar.bmp" />
     <Image Include="res\sidebar.png" />
     <Image Include="res\transparent.png" />
+    <Image Include="res\wordpress.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\loading.txt" />

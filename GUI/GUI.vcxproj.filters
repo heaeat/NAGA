@@ -224,6 +224,33 @@
     <Image Include="res\sidebar.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\github.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\mail.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\wordpress.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\heat\Desktop\github_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\heat\Desktop\blog_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\heat\Desktop\mail_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\github_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\blog_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\mail_pressed.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\loading.txt" />
