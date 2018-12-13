@@ -294,6 +294,8 @@ copy tools\PECmd.exe $(TargetDir)PECmd.exe</Command>
     <Image Include="res\hing.png" />
     <Image Include="res\icon1.ico" />
     <Image Include="res\loading.gif" />
+    <Image Include="res\main.bmp" />
+    <Image Include="res\transparent.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\loading.txt" />

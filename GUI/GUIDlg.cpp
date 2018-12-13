@@ -459,6 +459,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 		STARTUPINFO startupInfo = { 0 };
 		PROCESS_INFORMATION processInfo;
 		startupInfo.cb = sizeof(STARTUPINFO);
+		log_info "uninstaller : %ws", mouse->uninstaller() log_end;
 		::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo);
 	}
 
