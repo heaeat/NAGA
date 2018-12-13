@@ -9,12 +9,21 @@
 
 list<wstring> volume_list;
 map<wstring, wstring> volume_serial_list;
-wstring result_path = L"\"C:\\Temp\\result\\";
-
-
+wstring result_path;
 
 bool get_prefetch_info(list<punknownp> *unknown_list)
 {
+
+	std::wstring user_temp_dir;
+	get_temp_dirW(user_temp_dir);
+
+	std::wstringstream create_strm;
+	create_strm << user_temp_dir << L"Naga\\result\\";
+	CreateDirectory(create_strm.str().c_str(), NULL);
+	
+	std::wstringstream result_strm;
+	result_strm << user_temp_dir << L"Naga\\result";
+	result_path = result_strm.str();
 
 	bool ret = run_PECmd();
 	if (true != ret)
@@ -77,6 +86,7 @@ bool get_prefetch_info(list<punknownp> *unknown_list)
 ///
 bool run_PECmd(void)
 {
+
 	std::wstring current_dir = get_current_module_dirEx();
 	std::wstringstream strm;
 	strm << current_dir << L"\\PECmd.exe -d \"C:\\Windows\\Prefetch\" --csv " << result_path;
@@ -170,7 +180,7 @@ wchar_t *find_timeline_file(wstring path) {
 	long handle;
 
 	wstringstream strm;
-	strm << L"C:\\Temp\\result\\" << L"*Timeline.csv";
+	strm << result_path << L"\\" << L"*Timeline.csv";
 	handle = _tfindfirst(strm.str().c_str(), &file_search);
 
 	if (handle == -1) {
@@ -195,7 +205,7 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list)
 	//
 
 	std::wstringstream strm;
-	strm << L"C:\\Temp\\result\\" << filename;
+	strm << result_path << "\\" << filename;
 
 	PFILE_CTX file_context = nullptr;
 	if (true != OpenFileContext(strm.str().c_str(), true, file_context))
