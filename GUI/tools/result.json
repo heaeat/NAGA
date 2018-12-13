@@ -186,6 +186,7 @@
 		{
 			"guid": "{2D992E01-604B-472C-A883-1DDA105A24D5}_is1",
 			"name": "Veraport",
+			"silent" : " /verysilent"
 		},
 		{
 			"guid": "",

@@ -173,6 +173,7 @@ BOOL CGUIDlg::OnInitDialog()
 	m_mail_btn.SizeToContent();
 
 	
+
 	//
 	//	LVS_EX_CHECKBOXES 를 통해 체크박스를 이용할 수 있다.
 	//
@@ -243,20 +244,17 @@ UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	//
 	CLoadDlg load_dlg;
 	boost::thread* dlg_thread = new boost::thread([&load_dlg]() {
-		get_naga_data(NULL);
+		load_dlg.DoModal();
 	});
 
-	
 	//
 	// 데이터를 가져오고...
 	//
-	load_dlg.DoModal();
-	
+	get_naga_data(NULL);
 
 	//
 	// 로딩 다이얼로그를 종료합니다. 
 	//
-	dlg_thread->join();
 	load_dlg.EndDialog(0);
 
 	// 
@@ -652,6 +650,7 @@ void CGUIDlg::OnDestroy()
 void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+
 	// TODO: Add your control notification handler code here
 	*pResult = 0;
 
@@ -715,11 +714,14 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	BOOL bUpdateFlag = FALSE;
 	BOOL bSecurityFlag = FALSE;
-	NMLVCUSTOMDRAW* pLVCD = (NMLVCUSTOMDRAW*)pNMHDR;
 
+	NMLVCUSTOMDRAW* pLVCD = (NMLVCUSTOMDRAW*)pNMHDR;
 	CString p_type = m_listView.GetItemText(pLVCD->nmcd.dwItemSpec, 0);
 
 	*pResult = 0;
+
+
+
 
 	if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
 		*pResult = CDRF_NOTIFYITEMDRAW;

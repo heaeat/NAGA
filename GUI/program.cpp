@@ -32,7 +32,7 @@ bool compare_lists(std::list<pprogram> *my_list) {
 				if (guid.find(yes_id) != wstring::npos) {
 					std::wstringstream path_strm;
 					path_strm << L"C:\\Windows\\SysWOW64\\yessign7Clear.exe";
-					temp = new program(software->id(), software->name(), software->version(), software->version(), path_strm.str().c_str());
+					temp = new program(software->id(), software->name(), software->vendor(), software->version(), path_strm.str().c_str());
 					my_list->push_back(temp);
 					continue;
 				}
@@ -44,10 +44,10 @@ bool compare_lists(std::list<pprogram> *my_list) {
 					std::wstring path = L"";
 					std::wstringstream path_strm;
 					path_strm << software->uninstaller() << remover->uninstaller();
-					temp = new program(software->id(), software->name(), software->version(), software->version(), path_strm.str().c_str());
+					temp = new program(software->id(), software->name(), software->vendor(), software->version(), path_strm.str().c_str());
 				}
 				else {
-					temp = new program(software->id(), software->name(), software->version(), software->version(), software->uninstaller());
+					temp = new program(software->id(), software->name(), software->vendor(), software->version(), software->uninstaller());
 				}
 				my_list->push_back(temp);
 			}
