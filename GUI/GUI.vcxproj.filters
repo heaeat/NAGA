@@ -218,6 +218,12 @@
     <Image Include="res\transparent.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\sidebar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sidebar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\loading.txt" />

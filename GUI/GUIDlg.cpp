@@ -73,6 +73,7 @@ void CGUIDlg::DoDataExchange(CDataExchange* pDX)
 {
 	DDX_Control(pDX, IDC_LIST1, m_listView);
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SIDE_PIC, sideImg);
 }
 
 BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
@@ -84,6 +85,7 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CGUIDlg::OnLvnColumnclickList1)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST1, &CGUIDlg::OnNMCustomdrawList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CGUIDlg::OnNMDblclkList1)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -123,7 +125,16 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	//	list control 초기화
 	//
-	SetWindowPos(NULL, -1, -1, 900, 550, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+
+	CRect rect;
+
+	GetClientRect(&rect);
+	CPoint pos;
+	pos.x = GetSystemMetrics(SM_CXSCREEN) / 2.0f - rect.Width() / 2.0f;
+	pos.y = GetSystemMetrics(SM_CYSCREEN) / 2.0f - rect.Height() / 2.0f;;
+
+	SetWindowPos(NULL, pos.x, pos.y, 1200, 570, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+
 	LPWSTR szText[COLNUM] = { L" " ,L"이름", L"마지막 사용시간",  L"인증서", L"버젼" };
 	int nWidth[COLNUM] = { 25,300,200,200,100 };
 
@@ -131,12 +142,20 @@ BOOL CGUIDlg::OnInitDialog()
 	iCol.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 	iCol.fmt = LVCFMT_LEFT;
 
+	//
+	//	사이드 이미지 수정
+	//
+	sideImg.SetWindowPos(NULL, 10, 10, 300, 450, NULL);
+//	sideImg.SetWindowPos(NULL, 870, 10, 300, 450, NULL);
+	HBITMAP hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_LOADMAP3DCOLORS);
+	sideImg.SetBitmap(hBmp);
 
 	//
 	//	LVS_EX_CHECKBOXES 를 통해 체크박스를 이용할 수 있다.
 	//
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
-	m_listView.SetWindowPos(NULL, 10, 10, 860, 440, NULL);
+	m_listView.SetWindowPos(NULL, 320, 10, 850, 450, NULL);
+//	m_listView.SetWindowPos(NULL, 10, 10, 850, 450, NULL);
 	
 	//
 	//	각각의 Column을 생성하고 크기를 지정
@@ -152,10 +171,19 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	//	버튼들의 위치 조정 (수정 필요)
 	//
-	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 640, 460, 60, 30, NULL);
-	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 720, 460, 60, 30, NULL);
-	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 800, 460, 60, 30, NULL);
+	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 1110 - 65 - 65, 465, 60, 30, NULL);
+	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 1110 -65, 465, 60, 30, NULL);
+	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 1110, 465, 60, 30, NULL);
 
+	//
+	//	로그를 출력하기 위한 static text 추가
+	//
+//	GetDlgItem(IDC_LOG_STATIC)->SetWindowPos(NULL, 0, 500 , 1200, 20, NULL);
+//	SetDlgItemTextW(IDC_LOG_STATIC, L"프로그램이 실행되었습니다. ");
+	
+	//
+	//	일단 창이 실행되면 list control을 출력해준다
+	//
 	ShowWindow(SW_SHOW);
 	RedrawWindow();
 
@@ -377,6 +405,9 @@ void CGUIDlg::OnPaint()
 
 		// Draw the icon
 		dc.DrawIcon(x, y, m_hIcon);
+
+
+
 	}
 	else
 	{
@@ -710,3 +741,19 @@ void CGUIDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
+
+
+HBRUSH CGUIDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  Change any attributes of the DC here
+
+	// TODO:  Return a different brush if the default is not desired
+	if (pWnd->GetDlgCtrlID() == IDC_LOG_STATIC)
+	{
+		pDC->SetBkColor(RGB(255, 255, 255));
+	}
+
+	return hbr;
+}
