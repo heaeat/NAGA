@@ -225,7 +225,7 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	m_statusBar.Create(WS_CHILD | WS_VISIBLE | SBT_OWNERDRAW, CRect(0, 0, 0, 0), this, 0);
 
-	int strPartDim[4] = { 400, 400, 300,100 };
+	int strPartDim[4] = { 1200, 0, 0,0 };
 	m_statusBar.SetParts(3, strPartDim);
 	m_statusBar.SetText(L"프로그램이 시작되었습니다", 0, 0);
 	m_statusBar.SetDlgItemInt(IDC_DELETE_BTN, 2, 0);
@@ -623,6 +623,8 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 			ShellExecute(NULL, L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
 		}
 	}
+	pMainDlg->m_statusBar.SetText(L"완료되었습니다.", 0, 0);
+
 }
 
 ///	@brief 이름으로 unknown 을 찾아서 반환하는 함수
