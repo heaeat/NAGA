@@ -77,6 +77,9 @@ void CGUIDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_GITHUB_BTN, m_github_btn);
 	DDX_Control(pDX, IDC_BLOG_BTN, m_blog_btn);
 	DDX_Control(pDX, IDC_MAIL_BTN, m_mail_btn);
+	DDX_Control(pDX, IDC_BLUE_BTN, m_bluebtn);
+	DDX_Control(pDX, IDC_WHITE_BTN, m_whitebtn);
+	DDX_Control(pDX, IDC_SELECT_BTN, m_allbtn);
 }
 
 BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
@@ -92,6 +95,8 @@ BEGIN_MESSAGE_MAP(CGUIDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_GITHUB_BTN, &CGUIDlg::OnBnClickedGithubBtn)
 	ON_BN_CLICKED(IDC_BLOG_BTN, &CGUIDlg::OnBnClickedBlogBtn)
 	ON_BN_CLICKED(IDC_MAIL_BTN, &CGUIDlg::OnBnClickedMailBtn)
+	ON_BN_CLICKED(IDC_BLUE_BTN, &CGUIDlg::OnBnClickedBlueBtn)
+	ON_BN_CLICKED(IDC_WHITE_BTN, &CGUIDlg::OnBnClickedWhiteBtn)
 END_MESSAGE_MAP()
 
 
@@ -133,7 +138,7 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	//	list control 초기화
 	//
-	
+
 	CRect rect;
 	GetClientRect(&rect);
 
@@ -174,18 +179,18 @@ BOOL CGUIDlg::OnInitDialog()
 	m_mail_btn.SetWindowPos(&wndTopMost, 200, 400, 40, 40, NULL);
 	m_mail_btn.SizeToContent();
 
-	
+
 
 	//
 	//	LVS_EX_CHECKBOXES 를 통해 체크박스를 이용할 수 있다.
 	//
 	m_listView.SetExtendedStyle(LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 	m_listView.SetWindowPos(NULL, 320, 10, 850, 450, NULL);
-//	m_listView.SetWindowPos(NULL, 10, 10, 850, 450, NULL);
-	
-	//
-	//	각각의 Column을 생성하고 크기를 지정
-	//
+	//	m_listView.SetWindowPos(NULL, 10, 10, 850, 450, NULL);
+
+		//
+		//	각각의 Column을 생성하고 크기를 지정
+		//
 	for (int i = 0; i < COLNUM; i++) {
 		iCol.pszText = szText[i];
 		iCol.iSubItem = i;
@@ -197,24 +202,37 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	//	버튼들의 위치 조정 (수정 필요)
 	//
-	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 1110 - 65 - 65, 465, 60, 30, NULL);
-	GetDlgItem(IDC_SELECT_BTN)->SetWindowPos(NULL, 1110 -65, 465, 60, 30, NULL);
+
+
+	m_bluebtn.SetWindowPos(NULL, 320, 465, 30, 30, NULL);
+	m_bluebtn.EnableWindowsTheming(FALSE);
+	m_bluebtn.SetFaceColor(RGB(33, 151, 216));
+
+
+	m_whitebtn.EnableWindowsTheming(FALSE);
+	m_whitebtn.SetWindowPos(NULL, 320 + 35, 465, 30, 30, NULL);
+	m_whitebtn.SetFaceColor(RGB(255, 255, 255));
+
+	m_allbtn.SetWindowPos(NULL, 320 + 35 * 2, 465, 30, 30, NULL);
+	m_allbtn.EnableWindowsTheming(FALSE);
+	m_allbtn.SetFaceColor(RGB(207, 141, 234));
+
+	GetDlgItem(IDC_RESET_BTN)->SetWindowPos(NULL, 1110 - 65, 465, 60, 30, NULL);
 	GetDlgItem(IDC_DELETE_BTN)->SetWindowPos(NULL, 1110, 465, 60, 30, NULL);
 
-	
 	//
 	//	status bar 추가
 	//
 	m_statusBar.Create(WS_CHILD | WS_VISIBLE | SBT_OWNERDRAW, CRect(0, 0, 0, 0), this, 0);
 
-	int strPartDim[4] = { 400, 400, 300,100};
+	int strPartDim[4] = { 400, 400, 300,100 };
 	m_statusBar.SetParts(3, strPartDim);
 	m_statusBar.SetText(L"프로그램이 시작되었습니다", 0, 0);
 	m_statusBar.SetDlgItemInt(IDC_DELETE_BTN, 2, 0);
-//	m_statusBar.MoveWindow(rect.left, rect.bottom, rect.Width(), 10);
+	//	m_statusBar.MoveWindow(rect.left, rect.bottom, rect.Width(), 10);
 	m_statusBar.SetBkColor(RGB(255, 255, 255));
 
-	
+
 	//
 	//	일단 창이 실행되면 list control을 출력해준다
 	//
@@ -224,11 +242,13 @@ BOOL CGUIDlg::OnInitDialog()
 	//
 	//	loading창을 띄우며 스레드 실행
 	//
+	m_statusBar.SetText(L"설치된 프로그램 정보를 받아오고 있습니다", 0, 0);
 	run_load_dlg(NULL);
 
 	//
 	//	data 입력
 	//
+	m_statusBar.SetText(L"정보를 불러왔습니다.", 0, 0);
 	insert_naga_data();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -243,6 +263,7 @@ UINT CGUIDlg::run_load_dlg(LPVOID _mothod) {
 	// 
 	// Dialog 를 별도의 스레드에서 띄워줍니다.
 	//
+
 	CLoadDlg load_dlg;
 	boost::thread* dlg_thread = new boost::thread([&load_dlg]() {
 		load_dlg.DoModal();
@@ -336,7 +357,7 @@ void CGUIDlg::insert_naga_data(void) {
 		//
 		//	valid 하지 않을경우 출력하지 않음
 		//
-		
+
 		if (!line->isValid()) {
 			continue;
 		}
@@ -501,6 +522,10 @@ void CGUIDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 ///
 void CGUIDlg::OnBnClickedDeleteBtn()
 {
+
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"선택된 프로그램을 제거합니다.", 0, 0);
+
 	delete_list.clear();
 	del_unknown_list.clear();
 
@@ -572,7 +597,7 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 			wstring temp_full_path = installed->uninstaller();
 			wstring installed_path = directory_from_file_pathw(temp_full_path.c_str());
 			to_lower_string(installed_path);
-			
+
 			//
 			//	exe 파일이 존재하는 경로와 프로그램 추가/제거에 있는 프로그램의 경로를 비교한다.
 			//
@@ -591,14 +616,13 @@ void CGUIDlg::OnBnClickedDeleteBtn()
 		if (!::CreateProcess(NULL, (LPWSTR)(mouse->uninstaller()), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {
 			wstring temp_path = mouse->id();
 			wstring temp_dir = directory_from_file_pathw(temp_path.c_str());
-			
+
 			//
 			//	uninstaller가 존재하지 않을 경우 해당 경로를 실행해준다.
 			//
 			ShellExecute(NULL, L"open", L"explorer.exe", temp_dir.c_str(), NULL, SW_SHOW);
 		}
 	}
-
 }
 
 ///	@brief 이름으로 unknown 을 찾아서 반환하는 함수
@@ -633,10 +657,25 @@ pprogram CGUIDlg::find_program(CString program_name, list<pprogram> temp_list) {
 ///
 void CGUIDlg::OnBnClickedSelectBtn()
 {
+	BOOL isChecked = FALSE;
 	for (int i = 0; i < m_listView.GetItemCount(); i++)
 	{
-		m_listView.SetCheck(i, TRUE);
+		if (m_listView.GetCheck(i)) {
+			isChecked = TRUE;
+			break;
+		}
 	}
+	for (int i = 0; i < m_listView.GetItemCount(); i++)
+	{
+		m_listView.SetCheck(i, !isChecked);
+	}
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	if (!isChecked) {
+		pMainDlg->m_statusBar.SetText(L"전체 목록이 선택되었습니다.", 0, 0);
+	}else{
+		pMainDlg->m_statusBar.SetText(L"전체 목록이 선택해제되었습니다.", 0, 0);
+	}
+	
 }
 
 
@@ -644,6 +683,8 @@ void CGUIDlg::OnBnClickedSelectBtn()
 ///
 void CGUIDlg::OnBnClickedResetBtn()
 {
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"정보를 다시 불러옵니다.", 0, 0);
 	// TODO: Add your control notification handler code here
 	m_listView.DeleteAllItems();
 	my_list.clear();
@@ -683,6 +724,12 @@ void CGUIDlg::OnDestroy()
 ///
 void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
+
+
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"사용시간을 기준으로 정렬합니다.", 0, 0);
+
+
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 
 	// TODO: Add your control notification handler code here
@@ -710,9 +757,9 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 		m_listView.DeleteItem(unknown_loc);
 	}
 
-	
+
 	unknown_list.sort(unknown_list_sort());
-	
+
 	//
 	//	unknown list 를 화면에 출력하는 부분
 	//
@@ -739,7 +786,7 @@ void CGUIDlg::OnLvnColumnclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 			(LPWSTR)(last_stm.str().c_str()),
 			(LPWSTR)line->cert());
 	}
-	
+
 }
 
 ///	@brief  list control의 행 별로 색깔을 입히기 위한 함수
@@ -754,9 +801,6 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	*pResult = 0;
 
-
-
-
 	if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
 		*pResult = CDRF_NOTIFYITEMDRAW;
 
@@ -765,7 +809,7 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 		//
 		//	black list인 경우
 		//	(제거 대상인 금융권 보안 프로그램)
-		if (p_type.Find(_T("Security")) != -1)		
+		if (p_type.Find(_T("Security")) != -1)
 		{
 			pLVCD->clrText = RGB(33, 151, 216);
 			pLVCD->clrTextBk = RGB(237, 255, 255);
@@ -774,7 +818,7 @@ void CGUIDlg::OnNMCustomdrawList1(NMHDR *pNMHDR, LRESULT *pResult)
 		//
 		//	update list인 경우
 		//	(업데이트가 필요한 금융권 보안 프로그램) like veraport
-		else if (p_type.Find(_T("Update")) != -1)	
+		else if (p_type.Find(_T("Update")) != -1)
 		{
 			pLVCD->clrText = RGB(255, 107, 107);
 			pLVCD->clrTextBk = RGB(253, 212, 212);
@@ -833,6 +877,8 @@ HBRUSH CGUIDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 void CGUIDlg::OnBnClickedGithubBtn()
 {
 	// TODO: Add your control notification handler code here
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"Github에 방문합니다.", 0, 0);
 	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT("https://github.com/heaeat/naga"), NULL, SW_SHOW);
 
 }
@@ -841,6 +887,8 @@ void CGUIDlg::OnBnClickedGithubBtn()
 void CGUIDlg::OnBnClickedBlogBtn()
 {
 	// TODO: Add your control notification handler code here
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"홈페이지에 방문합니다.", 0, 0);
 	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT("https://bobnaga679428248.wordpress.com/%EB%B8%94%EB%A1%9C%EA%B7%B8/"), NULL, SW_SHOW);
 
 }
@@ -849,5 +897,82 @@ void CGUIDlg::OnBnClickedBlogBtn()
 void CGUIDlg::OnBnClickedMailBtn()
 {
 	// TODO: Add your control notification handler code here
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	pMainDlg->m_statusBar.SetText(L"문의 메일을 보냅니다.", 0, 0);
 	ShellExecute(this->m_hWnd, TEXT("open"), TEXT("IEXPLORE.EXE"), TEXT(" mailto:shj.heath@gmail.com"), NULL, SW_SHOW);
+}
+
+
+void CGUIDlg::OnBnClickedBlueBtn()
+{
+	BOOL isChecked = FALSE;
+	CString p_type;
+	for (int i = 0; i < m_listView.GetItemCount(); i++)
+	{
+		p_type = m_listView.GetItemText(i, 0);
+		if (p_type.Find(_T("Security")) != -1) {
+			if (m_listView.GetCheck(i)) {
+				isChecked = TRUE;
+				break;
+			}
+		}
+	}
+
+	int count = 0;
+	for (int i = 0; i < m_listView.GetItemCount(); i++)
+	{
+		p_type = m_listView.GetItemText(i, 0);
+		if (p_type.Find(_T("Security")) != -1) {
+			count++;
+			m_listView.SetCheck(i, !isChecked);
+		}
+	}
+
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	wstringstream temp;
+	if (isChecked) {
+		temp << count << L"개의 금융보안프로그램을 선택해제하였습니다.";
+		pMainDlg->m_statusBar.SetText(temp.str().c_str(), 0, 0);
+	}
+	else {
+		temp << count << L"개의 금융보안프로그램을 선택하였습니다.";
+		pMainDlg->m_statusBar.SetText(temp.str().c_str(), 0, 0);
+	}
+}
+
+
+void CGUIDlg::OnBnClickedWhiteBtn()
+{
+	BOOL isChecked = FALSE;
+	CString p_type;
+	for (int i = 0; i < m_listView.GetItemCount(); i++)
+	{
+		p_type = m_listView.GetItemText(i, 0);
+		if (p_type.Find(_T("Unknown")) != -1) {
+			if (m_listView.GetCheck(i)) {
+				isChecked = TRUE;
+				break;
+			}
+		}
+	}
+
+	int count = 0;
+	for (int i = 0; i < m_listView.GetItemCount(); i++)
+	{
+		p_type = m_listView.GetItemText(i, 0);
+		if (p_type.Find(_T("Unknown")) != -1) {
+			m_listView.SetCheck(i, !isChecked);
+			count++;
+		}
+	}
+	CGUIDlg *pMainDlg = (CGUIDlg *)::AfxGetMainWnd();
+	wstringstream temp;
+	if (isChecked) {
+		temp << count << L"개의 필요없을지도 모르는 프로그램을 선택해제하였습니다.";
+		pMainDlg->m_statusBar.SetText(temp.str().c_str(), 0, 0);
+	}
+	else {
+		temp << count << L"개의 필요없을지도 모르는 프로그램을 선택해제하였습니다.";
+		pMainDlg->m_statusBar.SetText(temp.str().c_str(), 0, 0);
+	}
 }
