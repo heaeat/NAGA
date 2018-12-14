@@ -35,11 +35,17 @@ bool read_csv(wchar_t *filename, list<punknownp> *unknown_list);
 bool check_recently_used(list<punknownp> *unknown_list);
 FILETIME str_to_filetime(string &sTime);
 
+
 /// volume과 관련된 함수
 void get_volume_name();
 void get_volume_serial();
+void get_device_volume();
+bool is_serial_type(list<punknownp> *unknown_list);
 void get_volume_path(__in PWCHAR VolumeName);
 void parse_volume_serial(list<punknownp> *unknown_list);
+void parse_device_ver(list<punknownp> *unknown_list);
+wstring volume_path_to_normal(__in PWCHAR VolumeName);
+
 
 ///	인증서 관련 함수
 bool check_certification(list<punknownp> *unknown_list);

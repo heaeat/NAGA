@@ -127,19 +127,21 @@ BOOL CGUIDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	InitLog();
+
 
 	//
 	//	list control 초기화
 	//
-
+	
 	CRect rect;
-
 	GetClientRect(&rect);
+
 	CPoint pos;
 	pos.x = GetSystemMetrics(SM_CXSCREEN) / 2.0f - rect.Width() / 2.0f;
 	pos.y = GetSystemMetrics(SM_CYSCREEN) / 2.0f - rect.Height() / 2.0f;;
 
-	SetWindowPos(NULL, pos.x, pos.y, 1200, 570, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
+	SetWindowPos(NULL, -1, -1, 1200, 570, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 
 	LPWSTR szText[COLNUM] = { L" " ,L"이름", L"마지막 사용시간",  L"인증서", L"버젼" };
 	int nWidth[COLNUM] = { 25,300,200,200,100 };
@@ -208,7 +210,6 @@ BOOL CGUIDlg::OnInitDialog()
 	int strPartDim[4] = { 400, 400, 300,100};
 	m_statusBar.SetParts(3, strPartDim);
 	m_statusBar.SetText(L"프로그램이 시작되었습니다", 0, 0);
-	m_statusBar.SetText(L"야호~", 1, 0);
 	m_statusBar.SetDlgItemInt(IDC_DELETE_BTN, 2, 0);
 //	m_statusBar.MoveWindow(rect.left, rect.bottom, rect.Width(), 10);
 	m_statusBar.SetBkColor(RGB(255, 255, 255));
@@ -309,6 +310,8 @@ UINT CGUIDlg::get_naga_data(LPVOID _mothod) {
 ///
 void CGUIDlg::insert_naga_data(void) {
 
+
+	log_info "insert black list!" log_end;
 	//
 	//	black list 를 화면에 출력하는 부분
 	//
@@ -325,16 +328,15 @@ void CGUIDlg::insert_naga_data(void) {
 		}
 	}
 
-
+	log_info "insert unknown list!" log_end;
 	//
 	//	unknown list 를 화면에 출력하는 부분
 	//
 	for (auto line : unknown_list) {
-
-		log_err "--- %ws",line->id() log_end;
 		//
 		//	valid 하지 않을경우 출력하지 않음
 		//
+		
 		if (!line->isValid()) {
 			continue;
 		}
@@ -343,7 +345,6 @@ void CGUIDlg::insert_naga_data(void) {
 		wstringstream last_stm;
 		int loc = lastuse.find(L" ");
 		last_stm << lastuse.substr(0, loc);
-
 		wstring file_name = (file_name_from_file_pathw(line->id())).c_str();
 		to_lower_string(file_name);
 
@@ -359,6 +360,7 @@ void CGUIDlg::insert_naga_data(void) {
 /// @brief	리스트 컨트롤에 데이터를 추가하기 위한 함수
 ///	이름, 마지막사용시간, 버젼, 인증서의 순서로 삽입한다.
 void CGUIDlg::insertData(LPWSTR type, LPWSTR name, LPWSTR version, LPWSTR lastuse, LPWSTR cert) {
+
 	LV_ITEM lvitem;
 	int count = m_listView.GetItemCount();
 
@@ -448,6 +450,36 @@ void CGUIDlg::OnPaint()
 	}
 }
 
+void CGUIDlg::InitLog() {
+	//
+	//	파일 로그를 초기화한다. 
+	// 
+
+
+	//
+	//	사용자 임시 경로 받아오기
+	//
+	std::wstring user_temp_dir;
+	get_temp_dirW(user_temp_dir);
+
+	std::wstringstream strm;
+	strm << user_temp_dir << L"Naga\\";
+	CreateDirectory(strm.str().c_str(), NULL);
+	strm << L"Naga.log";
+
+	if (true != initialize_log(log_mask_all,
+		log_level_debug,
+		log_to_file | log_to_con | log_to_ods,
+		strm.str().c_str()))
+	{
+		fwprintf(stderr, L"initialize_log() fail. give up! \n");
+	}
+
+	//
+	//	로그의 출력 형식을 지정한다. 
+	//
+	set_log_format(false, false, false, true);
+}
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
 HCURSOR CGUIDlg::OnQueryDragIcon()
@@ -636,6 +668,8 @@ void CGUIDlg::OnDestroy()
 	std::wstringstream create_strm;
 	create_strm << user_temp_dir << L"Naga\\result";
 	// TODO: Add your message handler code here
+
+	//
 	delete_all_csv(create_strm.str().c_str(), 1);
 	finalize_log();
 	for (auto p : my_list)
