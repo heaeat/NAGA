@@ -56,4 +56,4 @@
 * [chilckat](https://www.chilkatsoft.com/)
 
 ### Special thanks to
-[somma](https://gibhub.com/somma), [kog](http://github.com/iamkog)
+[somma](https://github.com/somma), [kog](http://github.com/iamkog)
